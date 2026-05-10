@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Informe SED-2026 — Análisis UML</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <script src="https://kit.fontawesome.com/ff1a3f5508.js" crossorigin="anonymous"></script>
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       RESET Y BASE DEL INFORME
+    ═══════════════════════════════════════════════════════════ */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--fuente-cuerpo);
+      background: var(--azul-oscuro);
+      color: var(--blanco);
+      overflow-x: hidden;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       NAVBAR INFORME
+    ═══════════════════════════════════════════════════════════ */
+    .navbar-informe {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 58px;
+      background: rgba(0, 18, 40, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(201, 168, 76, 0.25);
+    }
+    .navbar-informe .logo {
+      font-family: var(--fuente-titulo);
+      font-size: 1.2rem;
+      color: var(--blanco);
+    }
+    .navbar-informe .logo span { color: var(--dorado); font-size: 0.8rem; }
+    .nav-informe-links {
+      display: flex;
+      gap: 4px;
+      list-style: none;
+    }
+    .nav-informe-links a {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.78rem;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: all 0.2s;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .nav-informe-links a:hover { color: var(--blanco); background: rgba(255,255,255,0.08); }
+    .nav-informe-links a.activa { color: var(--dorado); }
+
+    .btn-volver-sistema {
+      padding: 7px 18px;
+      background: var(--dorado);
+      color: var(--azul-oscuro);
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-volver-sistema:hover {
+      background: var(--dorado-claro);
+      transform: translateY(-1px);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       PUNTOS DE NAVEGACIÓN LATERAL
+    ═══════════════════════════════════════════════════════════ */
+    .nav-puntos {
+      position: fixed;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 9998;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .punto {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.4);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .punto:hover::after,
+    .punto.activo::after {
+      content: attr(data-label);
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,18,40,0.9);
+      color: var(--blanco);
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      font-family: var(--fuente-cuerpo);
+    }
+    .punto.activo {
+      background: var(--dorado);
+      border-color: var(--dorado);
+      transform: scale(1.3);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       SECCIONES — SCROLL SNAP
+    ═══════════════════════════════════════════════════════════ */
+    .seccion {
+      min-height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 80px 40px 40px;
+    }
+
+    .seccion-contenido {
+      max-width: 1100px;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Fondos alternativos por sección */
+    .sec-caratula    { background: linear-gradient(135deg, #000d1a 0%, #002a5c 60%, #004b8d 100%); }
+    .sec-intro       { background: linear-gradient(160deg, #001830 0%, #003366 100%); }
+    .sec-stakeholders{ background: linear-gradient(160deg, #0a0a1a 0%, #1a1a3e 100%); }
+    .sec-cu          { background: linear-gradient(160deg, #001220 0%, #002244 100%); }
+    .sec-secuencia   { background: linear-gradient(160deg, #0d0d0d 0%, #1a2a1a 100%); }
+    .sec-actividades { background: linear-gradient(160deg, #1a0d00 0%, #2a1a00 100%); }
+    .sec-componentes { background: linear-gradient(160deg, #0d001a 0%, #1a0033 100%); }
+    .sec-despliegue  { background: linear-gradient(160deg, #001a1a 0%, #003333 100%); }
+    .sec-trazabilidad{ background: linear-gradient(160deg, #1a1a00 0%, #2a2a00 100%); }
+    .sec-reflexion   { background: linear-gradient(160deg, #1a0000 0%, #2a0000 100%); }
+
+    /* ═══════════════════════════════════════════════════════════
+       PARTÍCULAS DE FONDO
+    ═══════════════════════════════════════════════════════════ */
+    .particulas-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .particula {
+      position: absolute;
+      border-radius: 50%;
+      animation: flotar-particula linear infinite;
+      opacity: 0;
+    }
+    @keyframes flotar-particula {
+      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.6; }
+      100% { transform: translateY(-100px) scale(1); opacity: 0; }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       TIPOGRAFÍA DEL INFORME
+    ═══════════════════════════════════════════════════════════ */
+    .tag-seccion {
+      font-size: 0.72rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--dorado);
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tag-seccion::before {
+      content: '';
+      display: block;
+      width: 30px;
+      height: 1px;
+      background: var(--dorado);
+    }
+
+    .titulo-seccion-inf {
+      font-family: var(--fuente-titulo);
+      font-size: 3rem;
+      line-height: 1.1;
+      color: var(--blanco);
+      margin-bottom: 16px;
+    }
+    .titulo-seccion-inf span { color: var(--dorado); font-style: italic; }
+
+    .subtitulo-inf {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.7;
+      max-width: 600px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       CARÁTULA — SECCIÓN 0
+    ═══════════════════════════════════════════════════════════ */
+    .caratula-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .caratula-titulo {
+      font-family: var(--fuente-titulo);
+      font-size: 4rem;
+      line-height: 1;
+      color: var(--blanco);
+      margin-bottom: 16px;
+    }
+    .caratula-titulo span {
+      color: var(--dorado);
+      display: block;
+      font-size: 2.5rem;
+      font-style: italic;
+    }
+    .caratula-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 28px;
+    }
+    .caratula-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.7);
+    }
+    .caratula-meta-item i { color: var(--dorado); width: 16px; }
+    .caratula-meta-item strong { color: var(--blanco); }
+
+    /* ═══════════════════════════════════════════════════════════
+       ÍCONOS HEXAGONALES SVG ANIMADOS
+    ═══════════════════════════════════════════════════════════ */
+    .hex-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .hex-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .hex-item:hover { transform: translateY(-8px); }
+    .hex-item:hover .hex-svg .hex-ring {
+      stroke-dashoffset: 0;
+      opacity: 1;
+    }
+    .hex-item:hover .particulas-hex circle {
+      animation-play-state: running;
+    }
+    .hex-label {
+      margin-top: 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      transition: color 0.3s;
+    }
+    .hex-item:hover .hex-label { color: var(--dorado); }
+
+    /* ═══════════════════════════════════════════════════════════
+       CARDS DE CONTENIDO
+    ═══════════════════════════════════════════════════════════ */
+    .info-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 24px;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s;
+    }
+    .info-card:hover {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(201,168,76,0.3);
+    }
+    .info-card h4 {
+      font-family: var(--fuente-titulo);
+      font-size: 1rem;
+      color: var(--dorado);
+      margin-bottom: 10px;
+    }
+    .info-card p, .info-card li {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.6;
+    }
+    .info-card ul { padding-left: 16px; }
+    .info-card li { margin-bottom: 4px; }
+
+    /* ═══════════════════════════════════════════════════════════
+       TABLA STAKEHOLDERS
+    ═══════════════════════════════════════════════════════════ */
+    .tabla-informe {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 16px;
+    }
+    .tabla-informe th {
+      background: rgba(201,168,76,0.15);
+      color: var(--dorado);
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.78rem;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+    }
+    .tabla-informe td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.75);
+      vertical-align: top;
+    }
+    .tabla-informe tr:hover td {
+      background: rgba(255,255,255,0.03);
+    }
+    .badge-actor {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .badge-interno  { background: rgba(0,75,141,0.3);  color: #7eb8f7; }
+    .badge-externo  { background: rgba(198,40,40,0.3); color: #f78080; }
+    .badge-sistema  { background: rgba(46,125,50,0.3); color: #80c880; }
+
+    /* ═══════════════════════════════════════════════════════════
+       DIAGRAMA VIEWER
+    ═══════════════════════════════════════════════════════════ */
+    .diagrama-viewer {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .diagrama-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: rgba(0,0,0,0.3);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .diagrama-toolbar span {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.5);
+    }
+    .diagrama-toolbar .dots {
+      display: flex;
+      gap: 6px;
+    }
+    .diagrama-toolbar .dots span {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: block;
+    }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #febc2e; }
+    .dot-g { background: #28c840; }
+    .diagrama-placeholder {
+      padding: 32px;
+      text-align: center;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+    .diagrama-placeholder .icono-diagrama {
+      font-size: 3rem;
+      opacity: 0.4;
+    }
+    .diagrama-placeholder p {
+      color: rgba(255,255,255,0.4);
+      font-size: 0.85rem;
+      max-width: 400px;
+    }
+    .diagrama-img {
+      width: 100%;
+      max-height: 340px;
+      object-fit: contain;
+      padding: 16px;
+      display: none;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       TABLA DE TRAZABILIDAD
+    ═══════════════════════════════════════════════════════════ */
+    .trazabilidad-check {
+      color: var(--dorado);
+      font-size: 1rem;
+    }
+    .trazabilidad-x {
+      color: rgba(255,255,255,0.2);
+      font-size: 0.9rem;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       REFLEXIÓN FINAL
+    ═══════════════════════════════════════════════════════════ */
+    .reflexion-quote {
+      border-left: 3px solid var(--dorado);
+      padding: 20px 28px;
+      background: rgba(201,168,76,0.06);
+      border-radius: 0 12px 12px 0;
+      margin: 20px 0;
+      font-style: italic;
+      color: rgba(255,255,255,0.8);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       BOTÓN SISTEMA DESDE INFORME
+    ═══════════════════════════════════════════════════════════ */
+    .btn-ir-sistema {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      background: var(--dorado);
+      color: var(--azul-oscuro);
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-top: 8px;
+    }
+    .btn-ir-sistema:hover {
+      background: var(--dorado-claro);
+      transform: translateY(-2px);
+    }
+    .btn-ir-sistema-outline {
+      background: transparent;
+      border: 2px solid var(--dorado);
+      color: var(--dorado);
+    }
+    .btn-ir-sistema-outline:hover {
+      background: var(--dorado);
+      color: var(--azul-oscuro);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       SCROLL INDICATOR
+    ═══════════════════════════════════════════════════════════ */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.72rem;
+      letter-spacing: 2px;
+      animation: bounce 2s ease-in-out infinite;
+      z-index: 3;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .caratula-grid    { grid-template-columns: 1fr; }
+      .hex-grid         { grid-template-columns: repeat(2, 1fr); }
+      .titulo-seccion-inf { font-size: 2rem; }
+      .caratula-titulo    { font-size: 2.5rem; }
+      .nav-puntos         { display: none; }
+      .navbar-informe     { padding: 0 16px; }
+    }
+    @media (max-width: 600px) {
+      .seccion { padding: 70px 20px 40px; }
+      .hex-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       NAVBAR FIJO
+  ═══════════════════════════════════════════════════════════ -->
+  <nav class="navbar-informe">
+    <div class="logo">ONPE<span> INFORME SED-2026</span></div>
+    <ul class="nav-informe-links">
+      <li><a href="#caratula"      class="activa">Inicio</a></li>
+      <li><a href="#introduccion"            >Intro</a></li>
+      <li><a href="#stakeholders"            >Actores</a></li>
+      <li><a href="#casos-uso"               >CU</a></li>
+      <li><a href="#secuencia"               >Sec.</a></li>
+      <li><a href="#actividades"             >Act.</a></li>
+      <li><a href="#componentes"             >Comp.</a></li>
+      <li><a href="#despliegue"              >Desp.</a></li>
+      <li><a href="#trazabilidad"            >Traz.</a></li>
+      <li><a href="#reflexion"               >Reflexión</a></li>
+    </ul>
+    <a href="../index.html" class="btn-volver-sistema">
+      <i class="fas fa-external-link-alt"></i> Ver Sistema
+    </a>
+  </nav>
+
+  <!-- PUNTOS DE NAVEGACIÓN -->
+  <div class="nav-puntos" id="nav-puntos"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       00 · CARÁTULA
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="seccion sec-caratula" id="caratula" data-label="Carátula">
+
+    <div class="particulas-bg" id="part-caratula"></div>
+
+    <div class="seccion-contenido">
+      <div class="caratula-grid">
+
+        <div>
+          <div class="tag-seccion">SENATI · ISMA · HT-02</div>
+          <h1 class="caratula-titulo">
+            Sistema de
+            <span>Escrutinio</span>
+            Digital
+          </h1>
+          <p style="color:rgba(255,255,255,0.6); font-size:1rem; line-height:1.7; max-width:480px;">
+            Análisis UML completo del sistema SED-2026 de la ONPE para
+            las Elecciones Generales — Segunda Vuelta del 7 de junio de 2026.
+          </p>
+          <div class="caratula-meta">
+            <div class="caratula-meta-item">
+              <i class="fas fa-users"></i>
+              <span>Analistas: <strong>Pareja HT-02</strong></span>
+            </div>
+            <div class="caratula-meta-item">
+              <i class="fas fa-building"></i>
+              <span>Institución: <strong>ISMA · SENATI</strong></span>
+            </div>
+            <div class="caratula-meta-item">
+              <i class="fas fa-calendar-alt"></i>
+              <span>Fecha: <strong>Mayo 2026</strong></span>
+            </div>
+            <div class="caratula-meta-item">
+              <i class="fas fa-code-branch"></i>
+              <span>Módulo: <strong>HT-02 · Análisis de Sistemas</strong></span>
+            </div>
+          </div>
+          <div style="display:flex; gap:12px; margin-top:28px; flex-wrap:wrap;">
+            <a href="#introduccion" class="btn-ir-sistema">
+              <i class="fas fa-play"></i> Ver Informe
+            </a>
+            <a href="../index.html" class="btn-ir-sistema btn-ir-sistema-outline">
+              <i class="fas fa-desktop"></i> Ver Sistema
+            </a>
+          </div>
+        </div>
+
+        <!-- SVG ONPE decorativo -->
+        <div style="display:flex; justify-content:center; align-items:center;">
+          <svg viewBox="0 0 320 320" width="300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="grad1" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#004b8d" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#002a5c" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <!-- Fondo -->
+            <circle cx="160" cy="160" r="150" fill="url(#grad1)"/>
+            <!-- Anillos -->
+            <circle cx="160" cy="160" r="130" fill="none" stroke="rgba(201,168,76,0.15)" stroke-width="1"/>
+            <circle cx="160" cy="160" r="100" fill="none" stroke="rgba(201,168,76,0.1)"  stroke-width="1"/>
+            <circle cx="160" cy="160" r="70"  fill="none" stroke="rgba(201,168,76,0.2)"  stroke-width="1.5"/>
+
+            <!-- ONPE texto central -->
+            <text x="160" y="148" text-anchor="middle"
+              font-family="Georgia, serif" font-size="32" font-weight="700"
+              fill="white" opacity="0.9">ONPE</text>
+            <text x="160" y="172" text-anchor="middle"
+              font-family="Inter, sans-serif" font-size="11" letter-spacing="4"
+              fill="rgba(201,168,76,0.9)">SED-2026</text>
+
+            <!-- Escudo decorativo -->
+            <path d="M160,90 L190,110 L190,145 Q190,165 160,178 Q130,165 130,145 L130,110 Z"
+              fill="rgba(0,75,141,0.3)" stroke="rgba(201,168,76,0.5)" stroke-width="1.5"/>
+            <path d="M150,130 L157,138 L173,122" fill="none"
+              stroke="rgba(201,168,76,0.8)" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+
+            <!-- Partículas orbitales animadas -->
+            <circle r="5" fill="rgba(201,168,76,0.8)">
+              <animateMotion dur="8s" repeatCount="indefinite">
+                <mpath href="#orbita-130"/>
+              </animateMotion>
+            </circle>
+            <circle r="3.5" fill="rgba(0,119,204,0.7)">
+              <animateMotion dur="12s" repeatCount="indefinite" begin="-4s">
+                <mpath href="#orbita-100"/>
+              </animateMotion>
+            </circle>
+            <circle r="2.5" fill="rgba(201,168,76,0.4)">
+              <animateMotion dur="16s" repeatCount="indefinite" begin="-8s">
+                <mpath href="#orbita-130"/>
+              </animateMotion>
+            </circle>
+            <circle r="4" fill="rgba(255,255,255,0.3)">
+              <animateMotion dur="10s" repeatCount="indefinite" begin="-2s">
+                <mpath href="#orbita-100"/>
+              </animateMotion>
+            </circle>
+
+            <defs>
+              <path id="orbita-130" d="M160,30 A130,130 0 1,1 159.9,30"/>
+              <path id="orbita-100" d="M160,60 A100,100 0 1,1 159.9,60"/>
+            </defs>
+          </svg>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      SCROLL <i class="fas fa-chevron-down"></i>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       01 · INTRODUCCIÓN
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="seccion sec-intro" id="introduccion" data-label="Introducción">
+    <div class="particulas-bg" id="part-intro"></div>
+    <div class="seccion-contenido">
+      <div class="tag-seccion">01 · Introducción Ejecutiva</div>
+      <h2 class="titulo-seccion-inf">El <span>sistema</span> que necesita la ONPE</h2>
+      <p class="subtitulo-inf" style="margin-bottom:32px;">
+        Tras las fallas del sistema STAE en la primera vuelta del 12 de abril,
+        la ONPE requiere un sistema rediseñado, simplificado y robusto para
+        la segunda vuelta del 7 de junio de 2026.
+      </p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:32px;">
+        <div class="info-card">
+          <h4><i class="fas fa-exclamation-triangle"></i> El Problema</h4>
+          <p>El sistema STAE tuvo fallas críticas durante la primera vuelta,
+          generando retrasos logísticos y extendiendo las votaciones hasta el
+          lunes 13 de abril. La ONPE decidió eliminarlo para la segunda vuelta.</p>
+        </div>
+        <div class="info-card">
+          <h4><i class="fas fa-bullseye"></i> El Encargo</h4>
+          <p>Modelar el "Sistema de Escrutinio Digital ONPE 2026" (SED-2026):
+          el sistema interno que recibe actas de mesas, procesa votos y
+          publica resultados oficiales en tiempo real.</p>
+        </div>
+        <div class="info-card">
+          <h4><i class="fas fa-chart-line"></i> La Escala</h4>
+          <ul>
+            <li>27 millones de electores</li>
+            <li>86,488 mesas de sufragio</li>
+            <li>126 centros de cómputo</li>
+            <li>900,000 votos en el exterior</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <a href="../index.html" class="btn-ir-sistema">
+          <i class="fas fa-desktop"></i> Ver Sistema en Acción
+        </a>
+        <a href="#stakeholders" class="btn-ir-sistema btn-ir-sistema-outline">
+          Siguiente: Actores <i class="fas fa-arrow-down"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       02 · STAKEHOLDERS Y ACTORES
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="seccion sec-stakeholders" id="stakeholders" data-label="Stakeholders">
+    <div class="particulas-bg" id="part-stake"></div>
+    <div class="seccion-contenido">
+      <div class="tag-seccion">02 · Stakeholders y Actores</div>
+      <h2 class="titulo-seccion-inf">¿Quiénes <span>intervienen</span>?</h2>
+
+      <table class="tabla-informe">
+        <thead>
+          <tr>
+            <th>Actor / Stakeholder</th>
+            <th>Tipo</th>
+            <th>Rol en el sistema</th>
+            <th>Interacción directa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Presidente de Mesa</strong></td>
+            <td><span class="badge-actor badge-interno">Actor interno</span></td>
+            <td>Registra el acta digitalmente al cierre del conteo</td>
+            <td>Sí — usa la App Tablet SED</td>
+          </tr>
+          <tr>
+            <td><strong>Fiscalizador de Partido</strong></td>
+            <td><span class="badge-actor badge-interno">Actor interno</span></td>
+            <td>Consulta actas para vigilar el proceso electoral</td>
+            <td>Sí — consulta el Portal Público</td>
+          </tr>
+          <tr>
+            <td><strong>Ciudadano</strong></td>
+            <td><span class="badge-actor badge-interno">Actor interno</span></td>
+            <td>Consulta el porcentaje de avance y resultados</td>
+            <td>Sí — consulta el Portal Público</td>
+          </tr>
+          <tr>
+            <td><strong>JNE</strong></td>
+            <td><span class="badge-actor badge-interno">Actor interno</span></td>
+            <td>Recibe actas observadas para resolución</td>
+            <td>Sí — recibe alertas automáticas</td>
+          </tr>
+          <tr>
+            <td><strong>RENIEC</strong></td>
+            <td><span class="badge-actor badge-externo">Sistema externo</span></td>
+            <td>Valida la identidad del presidente de mesa</td>
+            <td>Sí — API de consulta DNI</td>
+          </tr>
+          <tr>
+            <td><strong>Servicio SMS</strong></td>
+            <td><span class="badge-actor badge-externo">Sistema externo</span></td>
+            <td>Envía notificaciones al presidente de mesa</td>
+            <td>Sí — Movistar / Claro</td>
+          </tr>
+          <tr>
+            <td><strong>ONPE (institución)</strong></td>
+            <td><span class="badge-actor badge-sistema">Stakeholder</span></td>
+            <td>Cliente del sistema, define reglas de negocio</td>
+            <td>No — stakeholder, no actor</td>
+          </tr>
+          <tr>
+            <td><strong>Partidos Políticos</strong></td>
+            <td><span class="badge-actor badge-sistema">Stakeholder</span></td>
+            <td>Interesados en la transparencia del proceso</td>
+            <td>No — stakeholder, no actor</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       03 · DIAGRAMA CASOS DE USO
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="seccion sec-cu" id="casos-uso" data-label="Casos de Uso">
+    <div class="particulas-bg" id="part-cu"></div>
+    <div class="seccion-contenido">
+      <div class="tag-seccion">03 · Diagrama 01 — Vista Funcional</div>
+      <h2 class="titulo-seccion-inf">Casos de <span>Uso</span></h2>
+      <p class="subtitulo-inf" style="margin-bottom:24px;">
+        ¿Qué hace el sistema y quién lo usa? 4 actores humanos + 2 sistemas externos,
+        10 casos de uso con relaciones «include» y «extend».
+      </p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div class="diagrama-viewer">
+          <div class="diagrama-toolbar">
+            <div class="dots">
+              <span class="dot-r"></span>
+              <span class="dot-y"></span>
+              <span class="dot-g"></span>
+            </div>
+            <span>Diagrama de Casos de Uso · draw.io</span>
+            <span>SED-2026</span>
+          </div>
+          <div class="diagrama-placeholder" id="img-cu-wrapper">
+            <img src="../assets/img/diagramas/casos-uso.png"
+                 class="diagrama-img" id="img-cu"
+                 alt="Diagrama de Casos de Uso"
+                 onerror="this.style.display='none'"
+                 onload="this.style.display='block'">
+            <div class="icono-diagrama" id="placeholder-cu">🎭</div>
+            <p id="texto-placeholder-cu">
+              Exporta el diagrama de Casos de Uso como PNG desde draw.io y
+              colócalo en <code>assets/img/diagramas/casos-uso.png</code>
+            </p>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div class="info-card">
+            <h4>Actores del sistema</h4>
+            <ul>
+              <li>👤 Presidente de Mesa</li>
+              <li>👤 Fiscalizador de Partido</li>
+              <li>👤 Ciudadano</li>
+              <li>👤 JNE</li>
+              <li>🖥 RENIEC (externo)</li>
+              <li>🖥 Servicio SMS (externo)</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h4>Casos de uso principales</h4>
+            <ul>
+              <li>Registrar Acta de Mesa</li>
+              <li>Autenticar Identidad «include»</li>
+              <li>Validar Suma de Votos «include»</li>
+              <li>Consultar Resultados</li>
+              <li>Enviar Alerta al JNE «extend»</li>
+              <li>Enviar Notificación SMS «extend»</li>
+            </ul>
+          </div>
+          <a href="../index.html#registro" class="btn-ir-sistema">
+            <i class="fas fa-desktop"></i> Ver registro en el sistema
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       04 · DIAGRAMA DE SECUENCIA
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="seccion sec-secuencia" id="secuencia" data-label="Secuencia">
+    <div class="particulas-bg" id="part-sec"></div>
+    <div class="seccion-contenido">
+      <div class="tag-seccion">04 · Diagrama 02 — Vista Técnica</div>
+      <h2 class="titulo-seccion-inf">Diagrama de <span>Secuencia</span></h2>
+      <p class="subtitulo-inf" style="margin-bottom:24px;">
+        ¿Cómo se hablan los objetos? Flujo del caso "Registrar Acta" con bloque
+        par para el paralelismo de la Regla #4.
+      </p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div class="info-card">
+            <h4>Objetos en el diagrama</h4>
+            <ul>
+              <li>:Presidente de Mesa (actor)</li>
+              <li>:App Tablet SED</li>
+              <li>:API Central SED</li>
+              <li>:Módulo Autenticación</li>
+              <li>:Módulo Validación</li>
+              <li>:Base de Datos Central</li>
+              <li>:Módulo Notificaciones</li>
+              <li>:RENIEC (externo)</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h4>Bloque par — Regla #4</h4>
+            <p>Al registrar el acta, en paralelo el sistema:<br><br>
+            ① Actualiza el contador nacional<br>
+            ② Notifica al JNE si hay observación<br>
+            ③ Envía SMS al presidente de mesa</p>
+          </div>
+        </div>
+
+        <div class="diagrama-viewer">
+          <div class="diagrama-toolbar">
+            <div class="dots">
+              <span class="dot-r"></span>
+              <span class="dot-y"></span>
+              <span class="dot-g"></span>
+            </div>
+            <span>Diagrama de Secuencia · js-sequence-diagrams</span>
+            <span>SED-2026</span>
+          </div>
+          <div class="diagrama-placeholder">
+            <img src="../assets/img/diagramas/secuencia.png"
+                 class="diagrama-img"
+                 alt="Diagrama de Secuencia"
+                 onerror="this.style.display='none'"
+                 onload="this.style.display='block'">
+            <div class="icono-diagrama">⚡</div>
+            <p>Exporta el diagrama de Secuencia como PNG y colócalo en
+            <code>assets/img/diagramas/secuencia.png</code></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       05 · DIAGRAMA DE ACTIVIDADES
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="seccion sec-actividades" id="actividades" data-label="Actividades">
+    <div class="particulas-bg" id="part-act"></div>
+    <div class="seccion-contenido">
+      <div class="tag-seccion">05 · Diagrama 03 — Vista de Proceso</div>
+      <h2 class="titulo-seccion-inf">Diagrama de <span>Actividades</span></h2>
+      <p class="subtitulo-inf" style="margin-bottom:24px;">
+        ¿Cómo fluye el proceso? Swimlanes con 4 actores, 3 decisiones clave
+        y fork-join para el paralelismo.
+      </p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div class="diagrama-viewer">
+          <div class="diagrama-toolbar">
+            <div class="dots">
+              <span class="dot-r"></span>
+              <span class="dot-y"></span>
+              <span class="dot-g"></span>
+            </div>
+            <span>Diagrama de Actividades · draw.io</span>
+            <span>SED-2026</span>
+          </div>
+          <div class="diagrama-placeholder">
+            <img src="../assets/img/diagramas/actividades.png"
+                 class="diagrama-img"
+                 alt="Diagrama de Actividades"
+                 onerror="this.style.display='none'"
+                 onload="this.style.display='block'">
+            <div class="icono-diagrama">🔄</div>
+            <p>Exporta el diagrama de Actividades como PNG y colócalo en
+            <code>assets/img/diagramas/actividades.png</code></p>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div class="info-card">
+            <h4>Swimlanes del diagrama</h4>
+            <ul>
+              <li>🟦 Presidente de Mesa</li>
+              <li>🟩 Sistema SED-2026</li>
+              <li>🟥 RENIEC</li>
+              <li>🟨 JNE / SMS</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h4>3 Decisiones clave</h4>
+            <ul>
+              <li>¿DNI válido en RENIEC?</li>
+              <li>¿Mesa ya registró acta?</li>
+              <li>¿Suma cuadra con el padrón?</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h4>Fork-Join — Paralelismo</h4>
+            <p>Tras validar el acta, el sistema bifurca en 3 acciones simultáneas:
+            actualizar contador, alertar JNE y enviar SMS.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       06 · DIAGRAMA DE COMPONENTES
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="seccion sec-componentes" id="componentes" data-label="Componentes">
+    <div class="particulas-bg" id="part-comp"></div>
+    <div class="seccion-contenido">
+      <div class="tag-seccion">06 · Diagrama 04 — Vista Estructural</div>
+      <h2 class="titulo-seccion-inf">Diagrama de <span>Componentes</span></h2>
+      <p class="subtitulo-inf" style="margin-bottom:24px;">
+        ¿De qué piezas está hecho el software? API Central como hub,
+        6 módulos internos, 3 sistemas externos.
+      </p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div class="info-card">
+            <h4>Componentes internos</h4>
+            <ul>
+              <li>🔵 App Tablet SED (frontend)</li>
+              <li>🌐 Portal Web Público (frontend)</li>
+              <li>⚙️ API Central SED (hub)</li>
+              <li>🔐 Módulo de Autenticación</li>
+              <li>✅ Módulo de Validación</li>
+              <li>📊 Motor de Resultados</li>
+              <li>🔔 Módulo de Notificaciones</li>
+              <li>🗄 Base de Datos Central</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h4>Interfaces etiquetadas</h4>
+            <ul>
+              <li>IAutenticacion · IValidacion</li>
+              <li>IResultados · INotificacion</li>
+              <li>IRENIEC · ISMS · IJNE · IBD</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="diagrama-viewer">
+          <div class="diagrama-toolbar">
+            <div class="dots">
+              <span class="dot-r"></span>
+              <span class="dot-y"></span>
+              <span class="dot-g"></span>
+            </div>
+            <span>Diagrama de Componentes · draw.io</span>
+            <span>SED-2026</span>
+          </div>
+          <div class="diagrama-placeholder">
+            <img src="../assets/img/diagramas/componentes.png"
+                 class="diagrama-img"
+                 alt="Diagrama de Componentes"
+                 onerror="this.style.display='none'"
+                 onload="this.style.display='block'">
+            <div class="icono-diagrama">📦</div>
+            <p>Exporta el diagrama de Componentes como PNG y colócalo en
+            <code>assets/img/diagramas/componentes.png</code></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       07 · DIAGRAMA DE DESPLIEGUE
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="seccion sec-despliegue" id="despliegue" data-label="Despliegue">
+    <div class="particulas-bg" id="part-desp"></div>
+    <div class="seccion-contenido">
+      <div class="tag-seccion">07 · Diagrama 05 — Vista Física (Bono)</div>
+      <h2 class="titulo-seccion-inf">Diagrama de <span>Despliegue</span></h2>
+      <p class="subtitulo-inf" style="margin-bottom:24px;">
+        ¿Dónde se instala el software? Infraestructura AWS Lima,
+        cluster de 3 servidores EC2, PostgreSQL Multi-AZ.
+      </p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+        <div class="diagrama-viewer">
+          <div class="diagrama-toolbar">
+            <div class="dots">
+              <span class="dot-r"></span>
+              <span class="dot-y"></span>
+              <span class="dot-g"></span>
+            </div>
+            <span>Diagrama de Despliegue · draw.io</span>
+            <span>SED-2026 · Bono</span>
+          </div>
+          <div class="diagrama-placeholder">
+            <img src="../assets/img/diagramas/despliegue.png"
+                 class="diagrama-img"
+                 alt="Diagrama de Despliegue"
+                 onerror="this.style.display='none'"
+                 onload="this.style.display='block'">
+            <div class="icono-diagrama">🚀</div>
+            <p>Exporta el diagrama de Despliegue como PNG y colócalo en
+            <code>assets/img/diagramas/despliegue.png</code></p>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div class="info-card">
+            <h4>Nodos del sistema</h4>
+            <ul>
+              <li>«device» Tablet Android 14</li>
+              <li>«device» PC / Smartphone ciudadano</li>
+              <li>«cloud» Load Balancer nginx · AWS Lima</li>
+              <li>«executionEnv» Cluster EC2 · 3 instancias</li>
+              <li>«database» PostgreSQL 16 · RDS Multi-AZ</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h4>Protocolos de comunicación</h4>
+            <ul>
+              <li>«HTTPS» Tablet → Load Balancer</li>
+              <li>«HTTP» Load Balancer → Cluster EC2</li>
+              <li>«JDBC» Cluster → Base de Datos</li>
+              <li>«REST/HTTPS» Cluster → RENIEC</li>
+              <li>«SMTP» Cluster → JNE</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       08 · TRAZABILIDAD
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="seccion sec-trazabilidad" id="trazabilidad" data-label="Trazabilidad">
+    <div class="particulas-bg" id="part-traz"></div>
+    <div class="seccion-contenido">
+      <div class="tag-seccion">08 · Tabla de Trazabilidad</div>
+      <h2 class="titulo-seccion-inf">Coherencia entre <span>los 5 diagramas</span></h2>
+      <p class="subtitulo-inf" style="margin-bottom:24px;">
+        Los mismos elementos aparecen en todos los diagramas. Esta es la prueba
+        de coherencia arquitectónica del sistema SED-2026.
+      </p>
+
+      <table class="tabla-informe">
+        <thead>
+          <tr>
+            <th>Elemento</th>
+            <th>Casos de Uso</th>
+            <th>Secuencia</th>
+            <th>Actividades</th>
+            <th>Componentes</th>
+            <th>Despliegue</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Presidente de Mesa</strong></td>
+            <td class="trazabilidad-check">✦ Actor</td>
+            <td class="trazabilidad-check">✦ Actor</td>
+            <td class="trazabilidad-check">✦ Swimlane</td>
+            <td class="trazabilidad-check">✦ Usuario App</td>
+            <td class="trazabilidad-check">✦ Tablet device</td>
+          </tr>
+          <tr>
+            <td><strong>RENIEC</strong></td>
+            <td class="trazabilidad-check">✦ Actor externo</td>
+            <td class="trazabilidad-check">✦ Objeto externo</td>
+            <td class="trazabilidad-check">✦ Swimlane</td>
+            <td class="trazabilidad-check">✦ «external»</td>
+            <td class="trazabilidad-check">✦ Nodo externo</td>
+          </tr>
+          <tr>
+            <td><strong>Registrar Acta</strong></td>
+            <td class="trazabilidad-check">✦ Caso de uso</td>
+            <td class="trazabilidad-check">✦ Flujo principal</td>
+            <td class="trazabilidad-check">✦ Flujo principal</td>
+            <td class="trazabilidad-check">✦ IValidacion</td>
+            <td class="trazabilidad-check">✦ validador.jar</td>
+          </tr>
+          <tr>
+            <td><strong>Base de Datos</strong></td>
+            <td class="trazabilidad-x">— No aplica</td>
+            <td class="trazabilidad-check">✦ Objeto</td>
+            <td class="trazabilidad-check">✦ Acción guardar</td>
+            <td class="trazabilidad-check">✦ «database»</td>
+            <td class="trazabilidad-check">✦ PostgreSQL RDS</td>
+          </tr>
+          <tr>
+            <td><strong>Servicio SMS</strong></td>
+            <td class="trazabilidad-check">✦ Actor externo</td>
+            <td class="trazabilidad-check">✦ Bloque par</td>
+            <td class="trazabilidad-check">✦ Fork-join</td>
+            <td class="trazabilidad-check">✦ «external»</td>
+            <td class="trazabilidad-check">✦ Gateway SMS</td>
+          </tr>
+          <tr>
+            <td><strong>JNE</strong></td>
+            <td class="trazabilidad-check">✦ Actor</td>
+            <td class="trazabilidad-check">✦ Bloque par</td>
+            <td class="trazabilidad-check">✦ Fork-join</td>
+            <td class="trazabilidad-check">✦ «external»</td>
+            <td class="trazabilidad-check">✦ Nodo externo</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       09 · REFLEXIÓN FINAL
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="seccion sec-reflexion" id="reflexion" data-label="Reflexión">
+    <div class="particulas-bg" id="part-ref"></div>
+    <div class="seccion-contenido">
+      <div class="tag-seccion">09 · Reflexión Final</div>
+      <h2 class="titulo-seccion-inf">¿Qué decisión arquitectónica es <span>más crítica</span>?</h2>
+
+      <div class="reflexion-quote">
+        "El sistema STAE falló porque era un único componente monolítico.
+        Cuando colapsó, todo el proceso electoral colapsó con él.
+        La decisión más crítica en el SED-2026 es la introducción de la
+        API Central como hub distribuidor de responsabilidades."
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px;">
+        <div class="info-card">
+          <h4>🔴 El error del STAE</h4>
+          <p>Arquitectura de punto único de fallo (SPOF). Un solo componente
+          concentraba toda la lógica. Al fallar, no había fallback ni
+          distribución de carga. 453 toneladas de cédulas y 27 millones
+          de electores dependían de un sistema frágil.</p>
+        </div>
+        <div class="info-card">
+          <h4>🟢 La solución en el SED-2026</h4>
+          <p>La API Central distribuye la carga entre módulos especializados
+          e independientes. Si el Módulo de Notificaciones falla, el registro
+          de actas continúa. El Cluster EC2 con 3 instancias garantiza
+          alta disponibilidad. PostgreSQL Multi-AZ elimina el SPOF en datos.</p>
+        </div>
+        <div class="info-card">
+          <h4>📋 Decisiones clave del diseño</h4>
+          <ul>
+            <li>API Central como hub único de entrada</li>
+            <li>Módulos especializados e independientes</li>
+            <li>Cluster de 3 instancias EC2 (escalabilidad)</li>
+            <li>BD PostgreSQL Multi-AZ (sin SPOF de datos)</li>
+            <li>Paralelismo en la Regla #4 (fork-join)</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h4>🏆 Conclusión</h4>
+          <p>El SED-2026 modela un sistema que aprende del fracaso del STAE.
+          La coherencia entre los 5 diagramas UML garantiza que cada
+          decisión arquitectónica — desde el caso de uso hasta el nodo
+          de despliegue — responde a una necesidad real del proceso electoral.</p>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:12px; margin-top:28px; flex-wrap:wrap; align-items:center;">
+        <a href="../index.html" class="btn-ir-sistema">
+          <i class="fas fa-desktop"></i> Explorar el Sistema Completo
+        </a>
+        <a href="../pages/estadisticas.html" class="btn-ir-sistema btn-ir-sistema-outline">
+          <i class="fas fa-chart-line"></i> Ver Estadísticas en Vivo
+        </a>
+        <a href="#caratula" class="btn-ir-sistema btn-ir-sistema-outline">
+          <i class="fas fa-arrow-up"></i> Volver al inicio
+        </a>
+      </div>
+
+      <p style="margin-top:32px; color:rgba(255,255,255,0.3); font-size:0.78rem; text-align:center;">
+        &copy; 2026 · Pareja HT-02 · ISMA SENATI · Sistema de Escrutinio Digital ONPE SED-2026
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCRIPTS
+  ═══════════════════════════════════════════════════════════ -->
+  <script>
+    /* ── DATOS DE SECCIONES ──────────────────────────────────── */
+    const SECCIONES = [
+      { id: 'caratula',      label: 'Carátula'      },
+      { id: 'introduccion',  label: 'Introducción'  },
+      { id: 'stakeholders',  label: 'Stakeholders'  },
+      { id: 'casos-uso',     label: 'Casos de Uso'  },
+      { id: 'secuencia',     label: 'Secuencia'     },
+      { id: 'actividades',   label: 'Actividades'   },
+      { id: 'componentes',   label: 'Componentes'   },
+      { id: 'despliegue',    label: 'Despliegue'    },
+      { id: 'trazabilidad',  label: 'Trazabilidad'  },
+      { id: 'reflexion',     label: 'Reflexión'     },
+    ];
+
+    /* ── PUNTOS DE NAVEGACIÓN ────────────────────────────────── */
+    function initPuntos() {
+      const contenedor = document.getElementById('nav-puntos');
+      if (!contenedor) return;
+
+      SECCIONES.forEach((sec, i) => {
+        const punto = document.createElement('div');
+        punto.className = 'punto' + (i === 0 ? ' activo' : '');
+        punto.setAttribute('data-label', sec.label);
+        punto.setAttribute('data-target', sec.id);
+        punto.title = sec.label;
+        punto.addEventListener('click', () => {
+          document.getElementById(sec.id)?.scrollIntoView({ behavior: 'smooth' });
+        });
+        contenedor.appendChild(punto);
+      });
+    }
+
+    /* ── OBSERVER — ACTUALIZAR PUNTO ACTIVO ──────────────────── */
+    function initObserver() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            // Puntos
+            document.querySelectorAll('.punto').forEach(p => {
+              p.classList.toggle('activo', p.getAttribute('data-target') === id);
+            });
+            // Nav links
+            document.querySelectorAll('.nav-informe-links a').forEach(a => {
+              a.classList.toggle('activa', a.getAttribute('href') === '#' + id);
+            });
+          }
+        });
+      }, { threshold: 0.4 });
+
+      SECCIONES.forEach(sec => {
+        const el = document.getElementById(sec.id);
+        if (el) observer.observe(el);
+      });
+    }
+
+    /* ── PARTÍCULAS FLOTANTES ────────────────────────────────── */
+    function generarParticulas(contenedorId, cantidad = 12) {
+      const contenedor = document.getElementById(contenedorId);
+      if (!contenedor) return;
+
+      for (let i = 0; i < cantidad; i++) {
+        const p = document.createElement('div');
+        p.className = 'particula';
+
+        const size  = Math.random() * 4 + 2;
+        const left  = Math.random() * 100;
+        const delay = Math.random() * 8;
+        const dur   = Math.random() * 10 + 8;
+        const isGold = Math.random() > 0.6;
+
+        p.style.cssText = `
+          width: ${size}px;
+          height: ${size}px;
+          left: ${left}%;
+          bottom: -10px;
+          background: ${isGold
+            ? 'rgba(201,168,76,' + (Math.random() * 0.4 + 0.2) + ')'
+            : 'rgba(0,119,204,'  + (Math.random() * 0.3 + 0.1) + ')'};
+          animation-duration: ${dur}s;
+          animation-delay: ${delay}s;
+        `;
+        contenedor.appendChild(p);
+      }
+    }
+
+    /* ── ANIMACIONES GSAP ────────────────────────────────────── */
+    function initGSAP() {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Animar contenido de cada sección al entrar
+      SECCIONES.forEach(sec => {
+        const el = document.getElementById(sec.id);
+        if (!el) return;
+
+        gsap.fromTo(
+          el.querySelector('.seccion-contenido'),
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 80%',
+              toggleActions: 'play none none reverse',
+            }
+          }
+        );
+
+        // Animar cards con stagger
+        const cards = el.querySelectorAll('.info-card, .diagrama-viewer');
+        if (cards.length > 0) {
+          gsap.fromTo(
+            cards,
+            { opacity: 0, y: 30 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              stagger: 0.12,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: el,
+                start: 'top 70%',
+                toggleActions: 'play none none reverse',
+              }
+            }
+          );
+        }
+
+        // Animar tabla
+        const filas = el.querySelectorAll('.tabla-informe tbody tr');
+        if (filas.length > 0) {
+          gsap.fromTo(
+            filas,
+            { opacity: 0, x: -20 },
+            {
+              opacity: 1,
+              x: 0,
+              duration: 0.4,
+              stagger: 0.08,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: el,
+                start: 'top 60%',
+                toggleActions: 'play none none reverse',
+              }
+            }
+          );
+        }
+      });
+    }
+
+    /* ── INICIALIZAR TODO ────────────────────────────────────── */
+    document.addEventListener('DOMContentLoaded', () => {
+      initPuntos();
+      initObserver();
+
+      // Partículas en cada sección
+      const particulas = [
+        { id: 'part-caratula', n: 15 },
+        { id: 'part-intro',    n: 10 },
+        { id: 'part-stake',    n: 8  },
+        { id: 'part-cu',       n: 10 },
+        { id: 'part-sec',      n: 8  },
+        { id: 'part-act',      n: 10 },
+        { id: 'part-comp',     n: 10 },
+        { id: 'part-desp',     n: 8  },
+        { id: 'part-traz',     n: 8  },
+        { id: 'part-ref',      n: 12 },
+      ];
+      particulas.forEach(p => generarParticulas(p.id, p.n));
+
+      // GSAP
+      initGSAP();
+    });
+  </script>
+
+</body>
+</html>

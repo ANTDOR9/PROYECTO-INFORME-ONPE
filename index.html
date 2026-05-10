@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ONPE — Sistema de Escrutinio Digital SED-2026</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://kit.fontawesome.com/ff1a3f5508.js" crossorigin="anonymous"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* ── SPINNER DE CARGA ──────────────────────────────────────── */
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── RESUMEN CARDS ─────────────────────────────────────────── */
+    .resumen-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .resumen-card {
+      border-radius: 12px;
+      padding: 20px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--sombra-card);
+    }
+    .resumen-card.azul   { background: linear-gradient(135deg,#004b8d,#0077cc); color:#fff; }
+    .resumen-card.verde  { background: linear-gradient(135deg,#2e7d32,#43a047); color:#fff; }
+    .resumen-card.dorado { background: linear-gradient(135deg,#92640a,#c9a84c); color:#fff; }
+    .resumen-card.gris   { background: linear-gradient(135deg,#455a64,#78909c); color:#fff; }
+    .resumen-icon  { font-size: 1.8rem; }
+    .resumen-numero {
+      font-family: var(--fuente-titulo);
+      font-size: 1.6rem;
+      font-weight: 700;
+      display: block;
+      line-height: 1;
+    }
+    .resumen-label {
+      font-size: 0.75rem;
+      opacity: 0.85;
+      margin-top: 2px;
+      display: block;
+    }
+
+    /* ── BARRAS CANDIDATOS ─────────────────────────────────────── */
+    .candidatos-resumen  { margin-top: 8px; }
+    .candidato-barra {
+      display: grid;
+      grid-template-columns: 200px 1fr 60px;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .candidato-info strong {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--azul-oscuro);
+    }
+    .candidato-info span {
+      font-size: 0.73rem;
+      color: var(--gris-suave);
+    }
+    .barra-candidato-wrapper {
+      background: var(--gris-borde);
+      border-radius: 20px;
+      height: 12px;
+      overflow: hidden;
+    }
+    .barra-candidato {
+      height: 100%;
+      border-radius: 20px;
+      width: 0;
+    }
+    .barra-candidato.azul   { background: linear-gradient(90deg,#004b8d,#0077cc); }
+    .barra-candidato.dorado { background: linear-gradient(90deg,#92640a,#c9a84c); }
+    .candidato-pct {
+      font-family: var(--fuente-titulo);
+      font-size: 1rem;
+      color: var(--azul-oscuro);
+      font-weight: 700;
+      text-align: right;
+    }
+
+    /* ── MESA ASIGNADA ─────────────────────────────────────────── */
+    #mesa-asignada {
+      display: none;
+      background: var(--dorado);
+      color: var(--azul-oscuro);
+      font-weight: 700;
+      font-family: var(--fuente-titulo);
+      padding: 8px 16px;
+      border-radius: 8px;
+      margin-top: 12px;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    /* ── FORM REGISTRO ─────────────────────────────────────────── */
+    #nombre-presidente {
+      font-weight: 600;
+      color: var(--azul-onpe);
+    }
+
+    #contador-suma {
+      font-size: 0.875rem;
+      margin: 8px 0 4px;
+      min-height: 22px;
+      transition: all 0.2s ease;
+    }
+
+    /* ── DONA WRAPPER ──────────────────────────────────────────── */
+    .dona-wrapper {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      margin: 0 auto;
+    }
+    #dona-porcentaje {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--fuente-titulo);
+      font-size: 1.8rem;
+      color: var(--azul-oscuro);
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    @media (max-width: 900px) {
+      .resumen-grid       { grid-template-columns: 1fr 1fr; }
+      .candidato-barra    { grid-template-columns: 140px 1fr 50px; }
+    }
+    @media (max-width: 600px) {
+      .resumen-grid       { grid-template-columns: 1fr; }
+      .candidato-barra    { grid-template-columns: 1fr; }
+      .candidato-pct      { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- NAVBAR                                                    -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <header>
+    <nav id="navbar">
+      <a href="index.html" style="text-decoration:none;">
+        <div class="logo">ONPE<span>SED-2026</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="activo">Inicio</a></li>
+        <li><a href="pages/estadisticas.html">Resultados</a></li>
+        <li><a href="pages/resultados.html">Monitor de Mesas</a></li>
+        <li><a href="informe/index.html" style="color:var(--dorado);">
+          <i class="fas fa-book-open"></i> Informe
+        </a></li>
+        <li class="nav-cart">
+          <a href="#" title="Alertas JNE" id="btn-alertas">
+            <i class="fas fa-bell"></i>
+            <span id="cart-count">!</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!-- HERO                                                      -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section id="inicio" class="hero">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h2>Elecciones Generales — 07 de Junio</h2>
+          <h1>Segunda Vuelta 2026</h1>
+          <p>
+            Sistema robusto para el procesamiento de
+            <strong>86,488 mesas de sufragio</strong>.
+            Garantizando trazabilidad y transparencia total del voto ciudadano.
+          </p>
+
+          <!-- Auth Box -->
+          <div class="auth-box">
+            <h3><i class="fas fa-id-card" style="color:var(--dorado);margin-right:8px;"></i>Acceso Presidente de Mesa</h3>
+            <p>Ingrese su DNI para validación con RENIEC:</p>
+            <input
+              type="text"
+              id="dni-input"
+              placeholder="DNI de 8 dígitos"
+              maxlength="8"
+              class="caja"
+              style="background:rgba(255,255,255,0.95);"
+            />
+            <button
+              id="btn-auth"
+              onclick="Auth.validarIdentidad()"
+              class="btn btn-dorado"
+            >
+              <i class="fas fa-shield-alt"></i> Autenticar Identidad
+            </button>
+            <div id="mesa-asignada"></div>
+            <p id="auth-msg" class="error-msg" style="margin-top:10px;"></p>
+          </div>
+        </div>
+
+        <!-- SVG animado hero -->
+        <div class="hero-image">
+          <svg viewBox="0 0 300 300" width="280" xmlns="http://www.w3.org/2000/svg">
+            <!-- Círculo base -->
+            <circle cx="150" cy="150" r="120" fill="rgba(255,255,255,0.04)" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>
+            <circle cx="150" cy="150" r="85"  fill="rgba(255,255,255,0.06)" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+
+            <!-- Urna electoral -->
+            <rect x="100" y="130" width="100" height="80" rx="6" fill="rgba(255,255,255,0.15)" stroke="rgba(201,168,76,0.6)" stroke-width="2"/>
+            <rect x="110" y="118" width="80"  height="18" rx="4" fill="rgba(201,168,76,0.5)" stroke="rgba(201,168,76,0.8)" stroke-width="1.5"/>
+            <rect x="145" y="122" width="10"  height="6"  rx="2" fill="rgba(255,255,255,0.9)"/>
+
+            <!-- Líneas decorativas -->
+            <line x1="115" y1="155" x2="185" y2="155" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+            <line x1="115" y1="168" x2="185" y2="168" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+            <line x1="115" y1="181" x2="165" y2="181" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+
+            <!-- Check -->
+            <circle cx="175" cy="185" r="14" fill="rgba(46,125,50,0.8)"/>
+            <polyline points="169,185 173,190 182,180" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+            <!-- Partículas orbitales -->
+            <circle r="4" fill="rgba(201,168,76,0.8)">
+              <animateMotion dur="6s" repeatCount="indefinite">
+                <mpath href="#orbita1"/>
+              </animateMotion>
+            </circle>
+            <circle r="3" fill="rgba(0,119,204,0.7)">
+              <animateMotion dur="9s" repeatCount="indefinite" begin="-3s">
+                <mpath href="#orbita2"/>
+              </animateMotion>
+            </circle>
+            <circle r="2.5" fill="rgba(201,168,76,0.5)">
+              <animateMotion dur="12s" repeatCount="indefinite" begin="-6s">
+                <mpath href="#orbita1"/>
+              </animateMotion>
+            </circle>
+
+            <!-- Rutas de órbita -->
+            <defs>
+              <path id="orbita1" d="M150,30 A120,120 0 1,1 149.9,30"/>
+              <path id="orbita2" d="M150,65 A85,85 0 1,1 149.9,65"/>
+            </defs>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!-- ESCRUTINIO GENERAL                                        -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section id="estadisticas" class="benefits-section">
+      <h2 class="section-title">Escrutinio General</h2>
+
+      <div class="container" style="padding-top:0;">
+
+        <!-- Resumen dinámico desde localStorage -->
+        <div id="resumen-dinamico"></div>
+
+        <div class="panel-onpe-container" style="margin-top:24px;">
+
+          <!-- Card principal: avance + dona -->
+          <div class="monitor-actas-card">
+            <div class="card-header-onpe">
+              <h3><i class="fas fa-chart-pie" style="color:var(--azul-onpe);margin-right:8px;"></i>Avance de Actas Contabilizadas</h3>
+              <p class="update-time" id="hora-actualizacion">Cargando...</p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:center; margin-top:16px;">
+              <!-- Barra de progreso -->
+              <div class="onpe-progress-bar-wrapper">
+                <span class="porcentaje-grande" id="pct-avance-main">—</span>
+                <div class="onpe-progress-bar">
+                  <div class="progress-fill" id="barra-avance" style="width:0%;"></div>
+                </div>
+                <p class="total-actas-info">Total de mesas: <strong id="total-mesas-txt">—</strong></p>
+              </div>
+
+              <!-- Dona -->
+              <div class="dona-wrapper">
+                <canvas id="grafico-dona" width="220" height="220"></canvas>
+                <span id="dona-porcentaje">—</span>
+              </div>
+            </div>
+
+            <hr class="onpe-divider">
+
+            <div class="leyenda-onpe">
+              <div class="leyenda-item">
+                <span class="circle contabilizadas"></span>
+                Contabilizadas (<span id="num-contabilizadas">—</span>)
+              </div>
+              <div class="leyenda-item">
+                <span class="circle jne"></span>
+                Para envío al JNE (<span id="num-observadas">—</span>)
+              </div>
+              <div class="leyenda-item">
+                <span class="circle pendientes"></span>
+                Pendientes (<span id="num-pendientes">—</span>)
+              </div>
+            </div>
+
+            <div class="botones-contenedor">
+              <a href="pages/estadisticas.html" class="btn btn-onpe-stats" style="text-decoration:none;">
+                <i class="fas fa-chart-line"></i> Ver Estadísticas
+              </a>
+              <a href="pages/resultados.html" class="btn btn-onpe-actas" style="text-decoration:none;">
+                <i class="fas fa-file-contract"></i> Ver Actas Detalladas
+              </a>
+            </div>
+          </div>
+
+          <!-- Cards secundarias -->
+          <div class="monitor-secundario-card">
+            <div class="benefit-card">
+              <div class="icon">🌍</div>
+              <h3>Voto Exterior</h3>
+              <p><strong>900,000</strong> peruanos habilitados en el extranjero</p>
+            </div>
+            <div class="benefit-card">
+              <div class="icon">🏢</div>
+              <h3>Centros de Cómputo</h3>
+              <p><strong>126</strong> sedes descentralizadas a nivel nacional</p>
+            </div>
+            <div class="benefit-card">
+              <div class="icon">🗳️</div>
+              <h3>Mesas de Sufragio</h3>
+              <p><strong>86,488</strong> mesas a nivel nacional</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!-- REGISTRO DE ACTA — Se muestra tras autenticación         -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <section id="registro" class="contacto" style="display:none;">
+      <h2 class="section-title">Registro de Acta Digital</h2>
+      <div class="contenedor-contacto">
+        <div>
+          <p style="margin-bottom:20px; color:var(--gris-suave); font-size:0.9rem;">
+            Presidente: <strong id="nombre-presidente">—</strong> &nbsp;|&nbsp;
+            <span style="color:var(--azul-onpe); font-weight:600;" id="mesa-form-label">Mesa N° —</span>
+          </p>
+
+          <input type="hidden" id="num-mesa-form" />
+
+          <div class="grid-votos">
+            <div class="voto-item">
+              <label><i class="fas fa-circle" style="color:#004b8d;font-size:0.7rem;"></i> Fuerza Popular (K. Fujimori)</label>
+              <input type="number" id="votos-fp" placeholder="0" min="0" max="300" class="caja" />
+            </div>
+            <div class="voto-item">
+              <label><i class="fas fa-circle" style="color:#c9a84c;font-size:0.7rem;"></i> Juntos por el Perú (R. Sánchez)</label>
+              <input type="number" id="votos-jp" placeholder="0" min="0" max="300" class="caja" />
+            </div>
+            <div class="voto-item">
+              <label><i class="fas fa-circle" style="color:#999;font-size:0.7rem;"></i> Votos en Blanco</label>
+              <input type="number" id="votos-blancos" placeholder="0" min="0" max="300" class="caja" />
+            </div>
+            <div class="voto-item">
+              <label><i class="fas fa-circle" style="color:#c62828;font-size:0.7rem;"></i> Votos Nulos</label>
+              <input type="number" id="votos-nulos" placeholder="0" min="0" max="300" class="caja" />
+            </div>
+          </div>
+
+          <div id="contador-suma"></div>
+          <p style="font-size:0.8rem; color:var(--gris-suave); margin-bottom:16px;">
+            * La suma debe ser exactamente <strong>300</strong> votos (padrón de mesa).
+          </p>
+
+          <button
+            id="btn-enviar-acta"
+            onclick="Actas.procesarActa()"
+            class="btn"
+          >
+            <i class="fas fa-paper-plane"></i> Firmar y Enviar Acta
+          </button>
+
+          <div id="resumen-post-registro" style="display:none;"></div>
+        </div>
+
+        <div class="imagen">
+          <img src="https://img.icons8.com/illustrations/150/security-checked.png" alt="Validación segura" />
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- MODALES                                                   -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+
+  <!-- Modal Éxito -->
+  <div class="modal" id="modal-exito">
+    <div class="modal-contenido">
+      <i class="fas fa-check-circle" style="color:var(--verde-exito);"></i>
+      <h3>¡Acta Enviada!</h3>
+      <p>Los datos han sido validados y registrados correctamente.</p>
+      <div class="modal-detalle"></div>
+      <button onclick="Actas.cerrarModal('modal-exito')">
+        <i class="fas fa-arrow-right"></i> Siguiente Mesa
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal Observada -->
+  <div class="modal" id="modal-observada">
+    <div class="modal-contenido">
+      <i class="fas fa-balance-scale" style="color:var(--dorado);"></i>
+      <h3>Acta Observada</h3>
+      <p>La suma no cuadra con el padrón. El acta fue enviada al JNE.</p>
+      <div class="modal-detalle"></div>
+      <button
+        onclick="Actas.cerrarModal('modal-observada')"
+        style="background:var(--dorado); color:var(--azul-oscuro);"
+      >
+        Entendido
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- FOOTER                                                    -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <p>
+        &copy; 2026 ONPE — Sistema de Escrutinio Digital SED-2026 &nbsp;|&nbsp;
+        Analistas: Pareja HT-02 · ISMA SENATI
+      </p>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- SCRIPTS — Orden importante                                -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <script src="assets/js/storage.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/actas.js"></script>
+  <script src="assets/js/estadisticas.js"></script>
+
+  <script>
+    /* ── ACTUALIZAR UI CON DATOS REALES ──────────────────────── */
+    document.addEventListener('DOMContentLoaded', () => {
+      const c   = SED.getContador();
+      const pct = SED.getPorcentajeAvance();
+
+      // Barra de progreso animada
+      setTimeout(() => {
+        const barra = document.getElementById('barra-avance');
+        if (barra) barra.style.width = pct + '%';
+      }, 300);
+
+      // Textos de avance
+      const elPct = document.getElementById('pct-avance-main');
+      if (elPct) elPct.textContent = pct + '%';
+
+      const elTotal = document.getElementById('total-mesas-txt');
+      if (elTotal) elTotal.textContent = c.totalMesas.toLocaleString('es-PE');
+
+      // Leyenda
+      const elCont = document.getElementById('num-contabilizadas');
+      const elObs  = document.getElementById('num-observadas');
+      const elPend = document.getElementById('num-pendientes');
+      if (elCont) elCont.textContent = c.contabilizadas;
+      if (elObs)  elObs.textContent  = c.observadas;
+      if (elPend) elPend.textContent = c.pendientes;
+
+      // Hora de actualización
+      const horaEl = document.getElementById('hora-actualizacion');
+      if (horaEl) horaEl.textContent = 'Actualizado: ' + SED.formatearFecha(c.ultimaActualizacion);
+
+      // Badge de alertas JNE
+      const alertas = JSON.parse(localStorage.getItem('sed_jne_alertas')) || [];
+      const badge   = document.getElementById('cart-count');
+      if (badge) badge.textContent = alertas.length > 0 ? alertas.length : '!';
+
+      // Label de mesa en formulario
+      const mesaLabel = document.getElementById('mesa-form-label');
+      if (mesaLabel) mesaLabel.textContent = 'Mesa N° —';
+    });
+  </script>
+
+</body>
+</html>
