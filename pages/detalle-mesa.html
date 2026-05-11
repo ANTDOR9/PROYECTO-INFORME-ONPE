@@ -4,225 +4,162 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Detalle de Acta — SED 2026</title>
-  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/style-onpe.css" />
   <script src="https://kit.fontawesome.com/ff1a3f5508.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* ── HERO DETALLE ────────────────────────────────────────── */
-    .hero-detalle {
-      background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-onpe) 100%);
-      padding: 48px 40px 60px;
-      position: relative;
-      overflow: hidden;
+    .detalle-wrapper { max-width: 1280px; margin: 0 auto; padding: 28px 32px; }
+
+    /* Hero detalle */
+    .detalle-hero {
+      background: linear-gradient(180deg, #e8f0fa 0%, #fff 100%);
+      padding: 28px 32px 20px;
+      border-bottom: 1px solid var(--onpe-gris-borde);
     }
-    .hero-detalle::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 80% 50%, rgba(201,168,76,0.08) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    .hero-detalle-content {
-      max-width: 1100px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-    }
-    .hero-detalle h1 {
-      font-family: var(--fuente-titulo);
-      font-size: 2.4rem;
-      color: var(--blanco);
+    .detalle-hero-inner { max-width: 1280px; margin: 0 auto; }
+    .detalle-hero h1 {
+      font-family: var(--font-titulo);
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--onpe-azul);
       margin-bottom: 8px;
     }
-    .hero-detalle .meta {
+    .detalle-meta {
       display: flex;
       gap: 20px;
       flex-wrap: wrap;
-      margin-top: 16px;
+      font-size: 0.78rem;
+      color: var(--onpe-gris-suave);
+      margin-top: 8px;
     }
-    .meta-item {
+    .detalle-meta span {
       display: flex;
       align-items: center;
-      gap: 6px;
-      color: rgba(255,255,255,0.75);
-      font-size: 0.875rem;
+      gap: 5px;
     }
-    .meta-item i { color: var(--dorado); }
+    .detalle-meta i { color: var(--onpe-azul); }
 
-    /* ── GRID DETALLE ────────────────────────────────────────── */
+    /* Grid detalle */
     .detalle-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-top: -32px;
-      position: relative;
-      z-index: 2;
+      gap: 20px;
+      margin-bottom: 20px;
     }
 
-    /* ── CARD VOTOS ──────────────────────────────────────────── */
-    .card-votos-detalle {
-      background: var(--blanco);
-      border-radius: var(--radio-card);
-      padding: 28px;
+    .detalle-card {
+      background: var(--onpe-blanco);
+      border: 1px solid var(--onpe-gris-borde);
+      border-radius: var(--radio);
+      padding: 22px;
       box-shadow: var(--sombra-card);
-      border-top: 4px solid var(--azul-onpe);
     }
-    .card-votos-detalle h3 {
-      font-family: var(--fuente-titulo);
-      color: var(--azul-oscuro);
-      font-size: 1.1rem;
-      margin-bottom: 16px;
+    .detalle-card h3 {
+      font-family: var(--font-titulo);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--onpe-azul);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
       display: flex;
       align-items: center;
       gap: 8px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--onpe-azul-suave);
     }
 
     /* Barras de votos */
-    .barra-voto-row {
-      margin-bottom: 14px;
-    }
+    .barra-voto-row { margin-bottom: 12px; }
     .barra-voto-label {
       display: flex;
       justify-content: space-between;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       margin-bottom: 4px;
     }
-    .barra-voto-label strong { color: var(--azul-oscuro); }
-    .barra-voto-label span   { color: var(--gris-suave); font-size: 0.8rem; }
-    .barra-voto-track {
-      background: var(--gris-borde);
+    .barra-voto-label strong { color: var(--onpe-azul); }
+    .barra-voto-label span   { color: var(--onpe-gris-suave); font-size: 0.78rem; }
+    .barra-track {
+      background: var(--onpe-gris-borde);
       border-radius: 20px;
-      height: 10px;
+      height: 8px;
       overflow: hidden;
     }
-    .barra-voto-fill {
+    .barra-fill {
       height: 100%;
       border-radius: 20px;
       width: 0;
       transition: width 1s ease;
     }
-    .fill-fp     { background: linear-gradient(90deg, #002a5c, #004b8d); }
-    .fill-jp     { background: linear-gradient(90deg, #92640a, #c9a84c); }
+    .fill-fp     { background: var(--onpe-azul); }
+    .fill-jp     { background: var(--onpe-rojo); }
     .fill-blanco { background: #adb5bd; }
-    .fill-nulo   { background: linear-gradient(90deg, #b71c1c, #c62828); }
+    .fill-nulo   { background: #e0e0e0; }
 
-    /* Total row */
-    .total-detalle {
+    .total-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      padding: 14px 0 0;
-      border-top: 2px solid var(--dorado);
-      margin-top: 14px;
-    }
-    .total-detalle strong {
-      font-family: var(--fuente-titulo);
-      font-size: 1rem;
-      color: var(--azul-oscuro);
-    }
-    .total-detalle span {
-      font-family: var(--fuente-titulo);
-      font-size: 1.6rem;
-      color: var(--azul-onpe);
+      padding-top: 10px;
+      margin-top: 10px;
+      border-top: 2px solid var(--onpe-azul);
       font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--onpe-azul);
     }
 
-    /* ── CARD GRÁFICO ────────────────────────────────────────── */
-    .card-grafico {
-      background: var(--blanco);
-      border-radius: var(--radio-card);
-      padding: 28px;
-      box-shadow: var(--sombra-card);
-      border-top: 4px solid var(--dorado);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .card-grafico h3 {
-      font-family: var(--fuente-titulo);
-      color: var(--azul-oscuro);
-      font-size: 1.1rem;
-      margin-bottom: 16px;
-      align-self: flex-start;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .grafico-dona-detalle {
-      position: relative;
-      width: 200px;
-      height: 200px;
-    }
-    .dona-label-centro {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      pointer-events: none;
-    }
-    .dona-label-centro .ganador-pct {
-      font-family: var(--fuente-titulo);
-      font-size: 1.5rem;
-      color: var(--azul-oscuro);
-      font-weight: 700;
-      display: block;
-    }
-    .dona-label-centro .ganador-nombre {
-      font-size: 0.65rem;
-      color: var(--gris-suave);
-      display: block;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* Candidatos resultado -->*/
-    .candidatos-resultado {
-      width: 100%;
-      margin-top: 16px;
-    }
+    /* Candidatos resultado mini */
     .candidato-resultado-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 12px;
-      border-radius: 8px;
+      padding: 8px 10px;
+      border-radius: var(--radio-sm);
       margin-bottom: 6px;
+      font-size: 0.82rem;
     }
     .candidato-resultado-row.ganador {
-      background: rgba(0,75,141,0.06);
+      background: var(--onpe-azul-suave);
       border: 1px solid rgba(0,75,141,0.15);
     }
-    .candidato-resultado-row .nombre {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--azul-oscuro);
+    .candidato-resultado-row .c-nombre { font-weight: 700; color: var(--onpe-azul); }
+    .candidato-resultado-row .c-partido { font-size: 0.72rem; color: var(--onpe-gris-suave); }
+    .candidato-resultado-row .c-pct {
+      font-family: var(--font-titulo);
+      font-size: 1.2rem;
+      font-weight: 800;
     }
-    .candidato-resultado-row .partido {
-      font-size: 0.72rem;
-      color: var(--gris-suave);
-    }
-    .candidato-resultado-row .pct-badge {
-      font-family: var(--fuente-titulo);
-      font-size: 1.1rem;
-      font-weight: 700;
-    }
-    .pct-badge.azul   { color: var(--azul-onpe); }
-    .pct-badge.dorado { color: #92640a; }
 
-    /* ── PADRÓN DE VOTANTES ──────────────────────────────────── */
-    .card-padron {
-      background: var(--blanco);
-      border-radius: var(--radio-card);
-      padding: 28px;
-      box-shadow: var(--sombra-card);
-      border-top: 4px solid var(--verde-exito);
-      margin-top: 24px;
+    /* Alerta JNE */
+    .alerta-jne {
+      background: #fff3e0;
+      border: 1.5px solid #e65100;
+      border-radius: var(--radio);
+      padding: 16px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 20px;
     }
-    .card-padron h3 {
-      font-family: var(--fuente-titulo);
-      color: var(--azul-oscuro);
-      font-size: 1.1rem;
-      margin-bottom: 4px;
+    .alerta-jne i { color: #e65100; font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+    .alerta-jne h4 { font-family: var(--font-titulo); color: #e65100; margin-bottom: 4px; }
+    .alerta-jne p  { font-size: 0.82rem; color: #666; }
+
+    /* Padrón */
+    .padron-card {
+      background: var(--onpe-blanco);
+      border: 1px solid var(--onpe-gris-borde);
+      border-radius: var(--radio);
+      padding: 22px;
+      box-shadow: var(--sombra-card);
+    }
+    .padron-card h3 {
+      font-family: var(--font-titulo);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--onpe-azul);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -230,205 +167,163 @@
     .padron-stats {
       display: flex;
       gap: 20px;
-      margin: 12px 0;
-      font-size: 0.82rem;
-      color: var(--gris-suave);
       flex-wrap: wrap;
+      font-size: 0.78rem;
+      color: var(--onpe-gris-suave);
+      margin-bottom: 12px;
     }
-    .padron-stat strong { color: var(--azul-oscuro); }
+    .padron-stats strong { color: var(--onpe-azul); }
 
-    /* ── ESTADO OBSERVADA ────────────────────────────────────── */
-    .alerta-observada {
-      background: #fff3e0;
-      border: 1.5px solid #e65100;
-      border-radius: var(--radio-card);
-      padding: 20px 24px;
-      margin-top: 24px;
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-    }
-    .alerta-observada i {
-      color: #e65100;
-      font-size: 1.5rem;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-    .alerta-observada h4 {
-      font-family: var(--fuente-titulo);
-      color: #e65100;
-      margin-bottom: 4px;
-    }
-    .alerta-observada p {
-      font-size: 0.85rem;
-      color: #666;
-    }
-
-    /* ── PENDIENTE ───────────────────────────────────────────── */
+    /* Pendiente msg */
     .pendiente-msg {
       text-align: center;
       padding: 60px 20px;
-      color: var(--gris-suave);
+      color: var(--onpe-gris-suave);
     }
-    .pendiente-msg i {
-      font-size: 3rem;
-      color: var(--gris-borde);
-      margin-bottom: 12px;
-      display: block;
-    }
+    .pendiente-msg i { font-size: 2.5rem; color: var(--onpe-gris-borde); display: block; margin-bottom: 12px; }
 
     @media (max-width: 900px) {
       .detalle-grid { grid-template-columns: 1fr; }
-      .hero-detalle h1 { font-size: 1.8rem; }
+      .detalle-wrapper { padding: 16px; }
     }
   </style>
 </head>
 <body>
 
   <!-- NAVBAR -->
-  <header>
-    <nav id="navbar">
-      <a href="../index.html" style="text-decoration:none;">
-        <div class="logo">ONPE<span>SED-2026</span></div>
+  <header class="onpe-navbar">
+    <div class="onpe-navbar-top"></div>
+    <div class="onpe-navbar-main">
+      <a href="../index.html" class="onpe-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+        <img src="../assets/img/logos/onpe-logo.png" alt="ONPE"
+             style="height:44px;width:auto;object-fit:contain;"
+             onerror="this.style.display='none'">
+        <div class="logo-texto" style="line-height:1.1;">
+          <strong style="font-family:var(--font-titulo);font-size:0.82rem;color:var(--onpe-azul);display:block;">Elecciones Generales</strong>
+          <small style="font-size:0.65rem;color:var(--onpe-gris-suave);">12 de abril de 2026</small>
+        </div>
       </a>
-      <ul class="nav-links">
-        <li><a href="../index.html">Inicio</a></li>
-        <li><a href="estadisticas.html">Estadísticas</a></li>
-        <li><a href="resultados.html">Monitor de Mesas</a></li>
-        <li><a href="../informe/index.html" style="color:var(--dorado);">
-          <i class="fas fa-book-open"></i> Informe
-        </a></li>
-      </ul>
-    </nav>
+      <nav class="onpe-nav-links">
+        <a href="../index.html"><i class="fas fa-th-large"></i>Resumen</a>
+        <a href="estadisticas.html"><i class="fas fa-chart-bar"></i>Presidencial</a>
+        <a href="actas.html"><i class="fas fa-file-contract"></i>Actas</a>
+        <a href="resultados.html" class="activo"><i class="fas fa-search"></i>Monitor</a>
+        <a href="../informe/index.html" style="color:var(--onpe-teal);"><i class="fas fa-book-open"></i>Informe</a>
+      </nav>
+    </div>
+    <div class="onpe-navbar-bottom"></div>
   </header>
 
   <main>
+
     <!-- HERO -->
-    <div class="hero-detalle">
-      <div class="hero-detalle-content">
-        <a href="resultados.html" style="
-          color: rgba(255,255,255,0.6);
-          font-size: 0.85rem;
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          margin-bottom: 16px;
-          transition: color 0.2s;
-        " onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">
+    <div class="detalle-hero">
+      <div class="detalle-hero-inner">
+        <a href="resultados.html" style="font-size:0.82rem;color:var(--onpe-gris-suave);
+          display:inline-flex;align-items:center;gap:5px;margin-bottom:12px;
+          transition:color 0.2s;" onmouseover="this.style.color='var(--onpe-azul)'"
+          onmouseout="this.style.color='var(--onpe-gris-suave)'">
           <i class="fas fa-chevron-left"></i> Volver al Monitor
         </a>
         <h1 id="titulo-mesa">Acta de Mesa N° —</h1>
-        <div id="badge-estado" style="margin-top:8px;"></div>
-        <div class="meta" id="meta-info"></div>
+        <div style="margin-top:8px;" id="badge-estado"></div>
+        <div class="detalle-meta" id="meta-info"></div>
       </div>
     </div>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <div class="container">
+    <div class="detalle-wrapper">
 
-      <!-- ESTADO: PENDIENTE -->
+      <!-- PENDIENTE -->
       <div id="vista-pendiente" style="display:none;">
         <div class="pendiente-msg">
           <i class="fas fa-clock"></i>
-          <h3 style="font-family:var(--fuente-titulo); color:var(--azul-oscuro);">Mesa pendiente de registro</h3>
-          <p>Esta mesa aún no ha enviado su acta al sistema.</p>
-          <a href="../index.html" class="btn" style="width:auto; margin-top:20px; display:inline-flex;">
+          <h3 style="font-family:var(--font-titulo);color:var(--onpe-azul);">Mesa pendiente de registro</h3>
+          <p style="margin:8px 0 16px;">Esta mesa aún no ha enviado su acta al sistema.</p>
+          <a href="../index.html#registro" class="onpe-btn" style="display:inline-flex;width:auto;">
             <i class="fas fa-pencil-alt"></i> Registrar Acta
           </a>
         </div>
       </div>
 
-      <!-- ESTADO: CONTABILIZADA U OBSERVADA -->
+      <!-- ACTA REGISTRADA -->
       <div id="vista-acta" style="display:none;">
+
+        <!-- Alerta JNE si está observada -->
+        <div id="alerta-jne" class="alerta-jne" style="display:none;">
+          <i class="fas fa-balance-scale"></i>
+          <div>
+            <h4>Acta Observada — Enviada al JNE</h4>
+            <p>La suma de votos no coincide con el padrón de 300 votantes. Esta acta fue enviada automáticamente al JNE. El presidente de mesa fue notificado vía SMS.</p>
+          </div>
+        </div>
 
         <!-- Grid principal -->
         <div class="detalle-grid">
 
-          <!-- Card votos con barras -->
-          <div class="card-votos-detalle">
-            <h3><i class="fas fa-poll" style="color:var(--azul-onpe);"></i> Resultados de la Mesa</h3>
+          <!-- Resultados con barras -->
+          <div class="detalle-card">
+            <h3><i class="fas fa-poll"></i> Resultados de la Mesa</h3>
 
             <div class="barra-voto-row">
               <div class="barra-voto-label">
                 <strong>Fuerza Popular — Keiko Fujimori</strong>
-                <span id="votos-fp-txt">—</span>
+                <span id="txt-fp">—</span>
               </div>
-              <div class="barra-voto-track">
-                <div class="barra-voto-fill fill-fp" id="barra-fp"></div>
-              </div>
+              <div class="barra-track"><div class="barra-fill fill-fp" id="bar-fp"></div></div>
             </div>
 
             <div class="barra-voto-row">
               <div class="barra-voto-label">
                 <strong>Juntos por el Perú — Roberto Sánchez</strong>
-                <span id="votos-jp-txt">—</span>
+                <span id="txt-jp">—</span>
               </div>
-              <div class="barra-voto-track">
-                <div class="barra-voto-fill fill-jp" id="barra-jp"></div>
-              </div>
+              <div class="barra-track"><div class="barra-fill fill-jp" id="bar-jp"></div></div>
             </div>
 
             <div class="barra-voto-row">
               <div class="barra-voto-label">
                 <strong>Votos en Blanco</strong>
-                <span id="votos-blancos-txt">—</span>
+                <span id="txt-blancos">—</span>
               </div>
-              <div class="barra-voto-track">
-                <div class="barra-voto-fill fill-blanco" id="barra-blancos"></div>
-              </div>
+              <div class="barra-track"><div class="barra-fill fill-blanco" id="bar-blancos"></div></div>
             </div>
 
             <div class="barra-voto-row">
               <div class="barra-voto-label">
                 <strong>Votos Nulos</strong>
-                <span id="votos-nulos-txt">—</span>
+                <span id="txt-nulos">—</span>
               </div>
-              <div class="barra-voto-track">
-                <div class="barra-voto-fill fill-nulo" id="barra-nulos"></div>
-              </div>
+              <div class="barra-track"><div class="barra-fill fill-nulo" id="bar-nulos"></div></div>
             </div>
 
-            <div class="total-detalle">
-              <strong>TOTAL VOTOS EMITIDOS</strong>
-              <span id="votos-total-txt">—</span>
+            <div class="total-row">
+              <span>TOTAL VOTOS EMITIDOS</span>
+              <strong id="txt-total">—</strong>
             </div>
           </div>
 
-          <!-- Card gráfico dona -->
-          <div class="card-grafico">
-            <h3><i class="fas fa-chart-pie" style="color:var(--dorado);"></i> Distribución de Votos</h3>
-            <div class="grafico-dona-detalle">
-              <canvas id="dona-detalle" width="200" height="200"></canvas>
-              <div class="dona-label-centro">
-                <span class="ganador-pct" id="ganador-pct">—</span>
-                <span class="ganador-nombre" id="ganador-nombre">—</span>
+          <!-- Dona + candidatos -->
+          <div class="detalle-card">
+            <h3><i class="fas fa-chart-pie" style="color:var(--onpe-teal);"></i> Distribución de Votos</h3>
+
+            <div style="display:flex;justify-content:center;margin-bottom:16px;position:relative;">
+              <div style="position:relative;width:180px;height:180px;">
+                <canvas id="dona-detalle" width="180" height="180"></canvas>
+                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;">
+                  <span style="font-family:var(--font-titulo);font-size:1.4rem;font-weight:800;color:var(--onpe-azul);display:block;" id="dona-ganador-pct">—</span>
+                  <span style="font-size:0.65rem;color:var(--onpe-gris-suave);" id="dona-ganador-nombre">—</span>
+                </div>
               </div>
             </div>
-            <div class="candidatos-resultado" id="candidatos-resultado"></div>
+
+            <div id="candidatos-resultado-mini"></div>
           </div>
 
         </div>
 
-        <!-- Alerta JNE si está observada -->
-        <div id="alerta-jne" style="display:none;" class="alerta-observada">
-          <i class="fas fa-balance-scale"></i>
-          <div>
-            <h4>Acta Observada — Enviada al JNE</h4>
-            <p>
-              La suma de votos no coincide con el padrón de 300 votantes.
-              Esta acta fue enviada automáticamente al Jurado Nacional de
-              Elecciones para su resolución. El presidente de mesa fue
-              notificado vía SMS.
-            </p>
-          </div>
-        </div>
-
-        <!-- Padrón de votantes -->
-        <div class="card-padron">
-          <h3>
-            <i class="fas fa-users" style="color:var(--verde-exito);"></i>
-            Padrón de Votantes
-          </h3>
+        <!-- Padrón -->
+        <div class="padron-card">
+          <h3><i class="fas fa-users" style="color:#2e7d32;"></i> Padrón de Votantes</h3>
           <div class="padron-stats">
             <span>Total padrón: <strong>300</strong></span>
             <span>Votaron: <strong id="num-votaron">—</strong></span>
@@ -436,206 +331,190 @@
             <span>Participación: <strong id="pct-participacion">—</strong></span>
           </div>
           <hr class="onpe-divider">
+          <div class="onpe-leyenda" style="margin-bottom:10px;">
+            <div class="onpe-leyenda-item">
+              <div class="izq"><span style="color:#2e7d32;font-weight:700;">✅ Votó</span></div>
+            </div>
+            <div class="onpe-leyenda-item">
+              <div class="izq"><span style="color:var(--onpe-rojo);font-weight:700;">❌ Ausente (Multa)</span></div>
+            </div>
+          </div>
           <div class="lista-votantes" id="padron-dinamico"></div>
         </div>
 
       </div>
-
     </div>
   </main>
 
-  <footer class="site-footer">
-    <div class="footer-bottom">
-      <p>&copy; 2026 ONPE — Detalle de Acta &nbsp;|&nbsp; Pareja HT-02 · ISMA SENATI</p>
+  <!-- FOOTER -->
+  <footer class="onpe-footer">
+    <div class="onpe-footer-grid">
+      <div><h4>Oficina Central</h4><p>Jr. Washington 1894<br>Cercado de Lima</p></div>
+      <div><h4>Escríbenos</h4><p>informes@onpe.gob.pe</p></div>
+      <div><h4>Redes Sociales</h4>
+        <div class="onpe-social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+      <div><h4>SED-2026</h4>
+        <p>Jesús Romaldo Sulla Sacsi<br>Anthony Dorly Huilahuaña Chata</p>
+        <p style="margin-top:6px;font-size:0.72rem;opacity:0.6;">Metodologías Ágiles · ISMA SENATI</p>
+      </div>
+    </div>
+    <div class="onpe-footer-bottom">
+      <span>&copy; 2026 ONPE</span>
+      <span>Sistema de Escrutinio Digital SED-2026</span>
     </div>
   </footer>
 
   <script src="../assets/js/storage.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      const params  = new URLSearchParams(window.location.search);
+      const numMesa = params.get('mesa') || '000001';
+      const mesa    = SED.getMesaPorNumero(numMesa);
 
-      /* ── LEER NÚMERO DE MESA DESDE URL ───────────────────── */
-      const params     = new URLSearchParams(window.location.search);
-      const numMesa    = params.get('mesa') || '000001';
-      const mesa       = SED.getMesaPorNumero(numMesa);
-
-      /* ── ACTUALIZAR TÍTULO ───────────────────────────────── */
       document.title = `Acta Mesa N° ${numMesa} — SED 2026`;
-      const tituloEl = document.getElementById('titulo-mesa');
-      if (tituloEl) tituloEl.textContent = `Acta de Mesa N° ${numMesa}`;
+      document.getElementById('titulo-mesa').textContent = `Acta de Mesa N° ${numMesa}`;
 
-      /* ── SI NO EXISTE LA MESA ────────────────────────────── */
       if (!mesa) {
         document.getElementById('badge-estado').innerHTML =
-          '<span class="status-badge alert">Mesa no encontrada</span>';
+          '<span class="onpe-badge onpe-badge-rojo">Mesa no encontrada</span>';
         return;
       }
 
-      /* ── META INFO ───────────────────────────────────────── */
+      // Badge estado
+      const badgeEl = document.getElementById('badge-estado');
+      if (badgeEl) {
+        badgeEl.innerHTML = mesa.estado === 'contabilizada'
+          ? '<span class="onpe-badge onpe-badge-verde">✅ Acta Contabilizada Correctamente</span>'
+          : mesa.estado === 'observada'
+          ? '<span class="onpe-badge onpe-badge-rojo">⚠ Acta Observada — Enviada al JNE</span>'
+          : '<span class="onpe-badge onpe-badge-gris">⏳ Pendiente de Registro</span>';
+      }
+
+      // Meta info
       const metaEl = document.getElementById('meta-info');
       if (metaEl) {
         metaEl.innerHTML = `
-          <div class="meta-item">
-            <i class="fas fa-map-marker-alt"></i> ${mesa.distrito}
-          </div>
-          <div class="meta-item">
-            <i class="fas fa-calendar-alt"></i>
-            ${mesa.fechaRegistro ? SED.formatearFecha(mesa.fechaRegistro) : 'Sin registrar'}
-          </div>
-          <div class="meta-item">
-            <i class="fas fa-id-card"></i>
-            DNI Presidente: ${mesa.dnPresidente || '—'}
-          </div>
+          <span><i class="fas fa-map-marker-alt"></i> ${mesa.distrito}</span>
+          <span><i class="fas fa-calendar-alt"></i> ${mesa.fechaRegistro ? SED.formatearFecha(mesa.fechaRegistro) : 'Sin registrar'}</span>
+          <span><i class="fas fa-id-card"></i> DNI Presidente: ${mesa.dnPresidente || '—'}</span>
         `;
       }
 
-      /* ── BADGE ESTADO ────────────────────────────────────── */
-      const badgeEl = document.getElementById('badge-estado');
-      if (badgeEl) {
-        if (mesa.estado === 'contabilizada') {
-          badgeEl.innerHTML = '<span class="status-badge success">✅ Acta Contabilizada Correctamente</span>';
-        } else if (mesa.estado === 'observada') {
-          badgeEl.innerHTML = '<span class="status-badge alert">⚠ Acta Observada — Enviada al JNE</span>';
-        } else {
-          badgeEl.innerHTML = '<span class="status-badge pendiente">⏳ Pendiente de Registro</span>';
-        }
-      }
-
-      /* ── VISTA PENDIENTE ─────────────────────────────────── */
+      // Vista pendiente
       if (mesa.estado === 'pendiente') {
         document.getElementById('vista-pendiente').style.display = 'block';
         return;
       }
 
-      /* ── VISTA ACTA ──────────────────────────────────────── */
       document.getElementById('vista-acta').style.display = 'block';
 
       const v = mesa.votos;
       if (!v) return;
 
-      /* ── TEXTOS DE VOTOS ─────────────────────────────────── */
-      document.getElementById('votos-fp-txt').textContent      = `${v.fp} votos`;
-      document.getElementById('votos-jp-txt').textContent      = `${v.jp} votos`;
-      document.getElementById('votos-blancos-txt').textContent = `${v.blancos} votos`;
-      document.getElementById('votos-nulos-txt').textContent   = `${v.nulos} votos`;
-      document.getElementById('votos-total-txt').textContent   = v.total;
+      // Textos
+      document.getElementById('txt-fp').textContent      = `${v.fp} votos`;
+      document.getElementById('txt-jp').textContent      = `${v.jp} votos`;
+      document.getElementById('txt-blancos').textContent = `${v.blancos} votos`;
+      document.getElementById('txt-nulos').textContent   = `${v.nulos} votos`;
+      document.getElementById('txt-total').textContent   = v.total;
 
-      /* ── BARRAS ANIMADAS ─────────────────────────────────── */
+      // Barras animadas
       const total = v.total || 300;
       setTimeout(() => {
-        document.getElementById('barra-fp').style.width      = (v.fp      / total * 100) + '%';
-        document.getElementById('barra-jp').style.width      = (v.jp      / total * 100) + '%';
-        document.getElementById('barra-blancos').style.width = (v.blancos / total * 100) + '%';
-        document.getElementById('barra-nulos').style.width   = (v.nulos   / total * 100) + '%';
+        document.getElementById('bar-fp').style.width      = (v.fp/total*100) + '%';
+        document.getElementById('bar-jp').style.width      = (v.jp/total*100) + '%';
+        document.getElementById('bar-blancos').style.width = (v.blancos/total*100) + '%';
+        document.getElementById('bar-nulos').style.width   = (v.nulos/total*100) + '%';
       }, 300);
 
-      /* ── GRÁFICO DONA ────────────────────────────────────── */
-      const ctxDona = document.getElementById('dona-detalle')?.getContext('2d');
-      if (ctxDona) {
-        new Chart(ctxDona, {
+      // Dona
+      const ctx = document.getElementById('dona-detalle')?.getContext('2d');
+      if (ctx) {
+        new Chart(ctx, {
           type: 'doughnut',
           data: {
             labels: ['Fuerza Popular', 'Juntos por el Perú', 'Blancos', 'Nulos'],
             datasets: [{
               data: [v.fp, v.jp, v.blancos, v.nulos],
-              backgroundColor: ['#004b8d', '#c9a84c', '#adb5bd', '#c62828'],
-              borderColor:     ['#002a5c', '#92640a', '#868e96', '#b71c1c'],
-              borderWidth: 2,
-              hoverOffset: 6,
+              backgroundColor: ['#004b8d', '#cc0000', '#adb5bd', '#e0e0e0'],
+              borderWidth: 0,
+              hoverOffset: 4,
             }]
           },
           options: {
             responsive: false,
             cutout: '65%',
-            animation: { duration: 1000, easing: 'easeOutQuart' },
+            animation: { duration: 1000 },
             plugins: {
               legend: { display: false },
-              tooltip: {
-                callbacks: {
-                  label: (ctx) => ` ${ctx.label}: ${ctx.parsed} votos`
-                }
-              }
+              tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} votos` } }
             }
           }
         });
       }
 
-      /* ── GANADOR ─────────────────────────────────────────── */
-      const validos   = v.fp + v.jp;
-      const pctFP     = validos > 0 ? (v.fp / validos * 100).toFixed(2) : 0;
-      const pctJP     = validos > 0 ? (v.jp / validos * 100).toFixed(2) : 0;
-      const ganador   = v.fp >= v.jp ? 'Keiko Fujimori' : 'Roberto Sánchez';
-      const pctGanador = v.fp >= v.jp ? pctFP : pctJP;
+      // Ganador
+      const validos    = v.fp + v.jp;
+      const pctFP      = validos > 0 ? (v.fp/validos*100).toFixed(2) : 0;
+      const pctJP      = validos > 0 ? (v.jp/validos*100).toFixed(2) : 0;
+      const fpGana     = v.fp >= v.jp;
+      document.getElementById('dona-ganador-pct').textContent    = (fpGana ? pctFP : pctJP) + '%';
+      document.getElementById('dona-ganador-nombre').textContent = fpGana ? 'Keiko' : 'Sánchez';
 
-      document.getElementById('ganador-pct').textContent    = pctGanador + '%';
-      document.getElementById('ganador-nombre').textContent = ganador.split(' ')[0];
-
-      document.getElementById('candidatos-resultado').innerHTML = `
-        <div class="candidato-resultado-row ${v.fp >= v.jp ? 'ganador' : ''}">
-          <div>
-            <div class="nombre">KEIKO FUJIMORI</div>
-            <div class="partido">Fuerza Popular</div>
-          </div>
-          <span class="pct-badge azul">${pctFP}%</span>
+      document.getElementById('candidatos-resultado-mini').innerHTML = `
+        <div class="candidato-resultado-row ${fpGana ? 'ganador' : ''}">
+          <div><div class="c-nombre">KEIKO FUJIMORI</div><div class="c-partido">Fuerza Popular</div></div>
+          <span class="c-pct" style="color:var(--onpe-azul);">${pctFP}%</span>
         </div>
-        <div class="candidato-resultado-row ${v.jp > v.fp ? 'ganador' : ''}">
-          <div>
-            <div class="nombre">ROBERTO SÁNCHEZ</div>
-            <div class="partido">Juntos por el Perú</div>
-          </div>
-          <span class="pct-badge dorado">${pctJP}%</span>
+        <div class="candidato-resultado-row ${!fpGana ? 'ganador' : ''}">
+          <div><div class="c-nombre">ROBERTO SÁNCHEZ</div><div class="c-partido">Juntos por el Perú</div></div>
+          <span class="c-pct" style="color:var(--onpe-rojo);">${pctJP}%</span>
         </div>
       `;
 
-      /* ── ALERTA JNE ──────────────────────────────────────── */
+      // Alerta JNE
       if (mesa.estado === 'observada') {
         document.getElementById('alerta-jne').style.display = 'flex';
       }
 
-      /* ── PADRÓN DINÁMICO ─────────────────────────────────── */
-      const contenedor = document.getElementById('padron-dinamico');
-      const AUSENTE_PCT = 0.05;
-      let votaron = 0, ausentes = 0;
-
+      // Padrón dinámico
+      const cont = document.getElementById('padron-dinamico');
       const nombres   = ['JUAN','MARIA','CARLOS','ANA','LUIS','ROSA','JOSE','ELENA','PEDRO','LUCIA'];
       const apellidos = ['QUISPE','GARCIA','RODRIGUEZ','MAMANI','FLORES','SANCHEZ','HUAMAN','REYES','DIAZ','VILLANUEVA'];
-
-      const fragmento = document.createDocumentFragment();
+      let votaron = 0, ausentes = 0;
+      const frag = document.createDocumentFragment();
 
       for (let i = 1; i <= 300; i++) {
-        const dniAzar   = Math.floor(Math.random() * 90000000) + 10000000;
-        const dniOculto = dniAzar.toString().substring(0, 4) + 'XXXX';
-        const n  = nombres[Math.floor(Math.random() * nombres.length)];
-        const ap = apellidos[Math.floor(Math.random() * apellidos.length)];
-        const am = apellidos[Math.floor(Math.random() * apellidos.length)];
-        const nombreCompleto = `${ap} ${am}, ${n}`;
-        const esAusente = Math.random() < AUSENTE_PCT;
-
-        if (esAusente) ausentes++; else votaron++;
+        const dni   = Math.floor(Math.random()*90000000+10000000).toString().substring(0,4) + 'XXXX';
+        const n     = nombres[Math.floor(Math.random()*nombres.length)];
+        const ap    = apellidos[Math.floor(Math.random()*apellidos.length)];
+        const am    = apellidos[Math.floor(Math.random()*apellidos.length)];
+        const esAus = Math.random() < 0.05;
+        if (esAus) ausentes++; else votaron++;
 
         const item = document.createElement('div');
         item.className = 'votante-item';
         item.innerHTML = `
           <div class="info-personal">
-            <strong>${nombreCompleto}</strong>
-            <span>DNI: ${dniOculto}</span>
+            <strong>${ap} ${am}, ${n}</strong>
+            <span>DNI: ${dni}</span>
           </div>
-          ${esAusente
-            ? '<small style="color:var(--rojo-alerta);font-weight:700;">AUSENTE ❌</small>'
-            : '<small style="color:var(--verde-exito);font-weight:600;">VOTÓ ✅</small>'
-          }
+          ${esAus
+            ? '<small style="color:var(--onpe-rojo);font-weight:700;">AUSENTE ❌</small>'
+            : '<small style="color:#2e7d32;font-weight:600;">VOTÓ ✅</small>'}
         `;
-        fragmento.appendChild(item);
+        frag.appendChild(item);
       }
+      cont.appendChild(frag);
 
-      contenedor.appendChild(fragmento);
-
-      /* ── STATS PADRÓN ────────────────────────────────────── */
       document.getElementById('num-votaron').textContent      = votaron;
       document.getElementById('num-ausentes').textContent     = ausentes;
-      document.getElementById('pct-participacion').textContent =
-        (votaron / 300 * 100).toFixed(1) + '%';
-
+      document.getElementById('pct-participacion').textContent = (votaron/300*100).toFixed(1) + '%';
     });
   </script>
 

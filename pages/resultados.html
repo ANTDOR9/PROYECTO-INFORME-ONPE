@@ -4,91 +4,86 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Monitor de Mesas — SED 2026</title>
-  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/style-onpe.css" />
   <script src="https://kit.fontawesome.com/ff1a3f5508.js" crossorigin="anonymous"></script>
   <style>
-    /* ── FILTROS ─────────────────────────────────────────────── */
-    .filtros-bar {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      align-items: center;
-      margin-bottom: 24px;
-      padding: 16px 20px;
-      background: var(--blanco);
-      border-radius: var(--radio-card);
-      box-shadow: var(--sombra-card);
-    }
-    .filtro-btn {
-      padding: 7px 18px;
-      border-radius: 20px;
-      border: 1.5px solid var(--gris-borde);
-      background: var(--blanco);
-      font-family: var(--fuente-cuerpo);
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all var(--trans-rapida);
-      color: var(--gris-suave);
-    }
-    .filtro-btn:hover,
-    .filtro-btn.activo {
-      background: var(--azul-onpe);
-      border-color: var(--azul-onpe);
-      color: var(--blanco);
-    }
-    .filtro-btn.observada.activo {
-      background: var(--rojo-alerta);
-      border-color: var(--rojo-alerta);
-    }
-    .filtro-btn.pendiente.activo {
-      background: var(--gris-suave);
-      border-color: var(--gris-suave);
-    }
+    .monitor-wrapper { max-width: 1280px; margin: 0 auto; padding: 28px 32px; }
 
-    /* ── BUSCADOR ────────────────────────────────────────────── */
-    .buscador-wrapper {
+    /* Buscador */
+    .buscador-monitor {
+      background: var(--onpe-blanco);
+      border: 1px solid var(--onpe-gris-borde);
+      border-radius: var(--radio);
+      padding: 18px 22px;
+      box-shadow: var(--sombra-card);
+      margin-bottom: 20px;
       display: flex;
       gap: 10px;
-      flex: 1;
-      min-width: 260px;
+      flex-wrap: wrap;
+      align-items: center;
     }
-    .buscador-wrapper .caja {
-      margin: 0;
-      flex: 1;
-    }
-    .buscador-wrapper .btn {
-      margin: 0;
-      width: auto;
-      padding: 10px 20px;
+    .buscador-monitor h3 {
+      font-family: var(--font-titulo);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--onpe-azul);
+      text-transform: uppercase;
+      letter-spacing: 1px;
       white-space: nowrap;
     }
+    .buscador-monitor .onpe-input { flex: 1; min-width: 200px; }
+    .buscador-monitor .onpe-btn  { width: auto; }
 
-    /* ── GRID DE MESAS ───────────────────────────────────────── */
-    #contenedor-mesas {
+    /* Filtros */
+    .filtros-estado {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .filtro-est-btn {
+      padding: 7px 16px;
+      border-radius: 20px;
+      border: 1.5px solid var(--onpe-gris-borde);
+      background: var(--onpe-blanco);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--trans);
+      color: var(--onpe-gris-suave);
+      font-family: var(--font-cuerpo);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .filtro-est-btn:hover,
+    .filtro-est-btn.activo { background: var(--onpe-azul); border-color: var(--onpe-azul); color: white; }
+    .filtro-est-btn.obs.activo { background: var(--onpe-rojo); border-color: var(--onpe-rojo); }
+    .filtro-est-btn.pend.activo { background: var(--onpe-gris-suave); border-color: var(--onpe-gris-suave); }
+
+    /* Grid de cards de mesas */
+    .mesas-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
     }
 
     .mesa-card {
-      background: var(--blanco);
-      border-radius: var(--radio-card);
-      padding: 20px;
+      background: var(--onpe-blanco);
+      border: 1px solid var(--onpe-gris-borde);
+      border-left: 4px solid var(--onpe-azul);
+      border-radius: var(--radio);
+      padding: 18px 20px;
       box-shadow: var(--sombra-card);
-      border-left: 4px solid var(--azul-onpe);
-      transition: all var(--trans-media);
-      cursor: pointer;
+      transition: all var(--trans);
       text-decoration: none;
       display: block;
       color: inherit;
     }
-    .mesa-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--sombra-hover);
-    }
-    .mesa-card.observada { border-left-color: var(--rojo-alerta); }
-    .mesa-card.pendiente { border-left-color: var(--gris-borde); }
+    .mesa-card:hover { transform: translateY(-3px); box-shadow: var(--sombra-hover); }
+    .mesa-card.observada { border-left-color: var(--onpe-rojo); }
+    .mesa-card.pendiente  { border-left-color: var(--onpe-gris-borde); }
 
     .mesa-card-header {
       display: flex;
@@ -97,353 +92,385 @@
       margin-bottom: 10px;
     }
     .mesa-card-header h3 {
-      font-family: var(--fuente-titulo);
-      font-size: 1rem;
-      color: var(--azul-oscuro);
+      font-family: var(--font-titulo);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--onpe-azul);
     }
     .mesa-card-header small {
-      font-size: 0.72rem;
-      color: var(--gris-suave);
+      font-size: 0.7rem;
+      color: var(--onpe-gris-suave);
       margin-top: 2px;
       display: block;
     }
 
-    .mesa-votos {
+    /* Votos mini */
+    .mesa-votos-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      margin: 10px 0;
-      font-size: 0.82rem;
+      gap: 4px;
+      font-size: 0.78rem;
+      margin: 8px 0;
     }
-    .voto-mini {
+    .voto-mini-item {
       display: flex;
       align-items: center;
       gap: 5px;
-      color: var(--gris-texto);
+      color: var(--onpe-gris-texto);
     }
-    .voto-mini .dot {
-      width: 8px; height: 8px;
+    .voto-mini-dot {
+      width: 7px; height: 7px;
       border-radius: 50%;
       flex-shrink: 0;
     }
-    .dot-fp     { background: var(--azul-onpe); }
-    .dot-jp     { background: var(--dorado); }
-    .dot-blanco { background: #aaa; }
-    .dot-nulo   { background: var(--rojo-alerta); }
 
     .mesa-total {
-      font-family: var(--fuente-titulo);
-      font-size: 0.9rem;
-      color: var(--azul-onpe);
-      border-top: 1px solid var(--gris-borde);
-      padding-top: 8px;
-      margin-top: 8px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      padding-top: 8px;
+      margin-top: 6px;
+      border-top: 1px solid var(--onpe-gris-borde);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--onpe-azul);
     }
 
-    /* ── SIN RESULTADOS ──────────────────────────────────────── */
-    .no-resultados {
+    .mesa-fecha {
+      font-size: 0.7rem;
+      color: var(--onpe-gris-suave);
+      margin-top: 6px;
+    }
+
+    /* Sin resultados */
+    .sin-resultados {
       text-align: center;
       padding: 60px 20px;
+      color: var(--onpe-gris-suave);
       grid-column: 1 / -1;
-      color: var(--gris-suave);
     }
-    .no-resultados i {
-      font-size: 3rem;
-      color: var(--gris-borde);
-      display: block;
-      margin-bottom: 12px;
-    }
+    .sin-resultados i { font-size: 2.5rem; color: var(--onpe-gris-borde); display: block; margin-bottom: 10px; }
 
-    /* ── PAGINACIÓN ──────────────────────────────────────────── */
+    /* Paginación */
     .paginacion {
       display: flex;
       justify-content: center;
-      gap: 8px;
-      margin-top: 32px;
+      gap: 6px;
       flex-wrap: wrap;
+      margin-top: 8px;
     }
     .pag-btn {
-      padding: 8px 16px;
-      border-radius: 8px;
-      border: 1.5px solid var(--gris-borde);
-      background: var(--blanco);
-      font-family: var(--fuente-cuerpo);
-      font-size: 0.85rem;
+      padding: 7px 14px;
+      border-radius: 6px;
+      border: 1.5px solid var(--onpe-gris-borde);
+      background: var(--onpe-blanco);
+      font-size: 0.82rem;
       cursor: pointer;
-      transition: all var(--trans-rapida);
-      color: var(--gris-texto);
+      transition: all var(--trans);
+      color: var(--onpe-gris-texto);
+      font-family: var(--font-cuerpo);
     }
     .pag-btn:hover,
-    .pag-btn.activo {
-      background: var(--azul-onpe);
-      border-color: var(--azul-onpe);
-      color: var(--blanco);
+    .pag-btn.activo { background: var(--onpe-azul); border-color: var(--onpe-azul); color: white; }
+
+    /* Barra progreso hero */
+    .monitor-progress {
+      background: var(--onpe-blanco);
+      border: 1px solid var(--onpe-gris-borde);
+      border-radius: var(--radio);
+      padding: 16px 20px;
+      box-shadow: var(--sombra-card);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .monitor-progress .pct-txt {
+      font-family: var(--font-titulo);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--onpe-azul);
+      white-space: nowrap;
+    }
+    .monitor-progress .barra-wrapper { flex: 1; min-width: 200px; }
+
+    @media (max-width: 900px) {
+      .monitor-wrapper { padding: 16px; }
+      .mesas-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .mesas-grid { grid-template-columns: 1fr; }
+      .filtros-estado { gap: 6px; }
     }
   </style>
 </head>
 <body>
 
   <!-- NAVBAR -->
-  <header>
-    <nav id="navbar">
-      <a href="../index.html" style="text-decoration:none;">
-        <div class="logo">ONPE<span>SED-2026</span></div>
+  <header class="onpe-navbar">
+    <div class="onpe-navbar-top"></div>
+    <div class="onpe-navbar-main">
+      <a href="../index.html" class="onpe-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+        <img src="../assets/img/logos/onpe-logo.png" alt="ONPE"
+             style="height:44px;width:auto;object-fit:contain;"
+             onerror="this.style.display='none'">
+        <div class="logo-texto" style="line-height:1.1;">
+          <strong style="font-family:var(--font-titulo);font-size:0.82rem;color:var(--onpe-azul);display:block;">Elecciones Generales</strong>
+          <small style="font-size:0.65rem;color:var(--onpe-gris-suave);">12 de abril de 2026</small>
+        </div>
       </a>
-      <ul class="nav-links">
-        <li><a href="../index.html">Inicio</a></li>
-        <li><a href="estadisticas.html">Estadísticas</a></li>
-        <li><a href="resultados.html" class="activo">Monitor de Mesas</a></li>
-        <li><a href="../informe/index.html" style="color:var(--dorado);">
-          <i class="fas fa-book-open"></i> Informe
-        </a></li>
-      </ul>
-    </nav>
+      <nav class="onpe-nav-links">
+        <a href="../index.html"><i class="fas fa-th-large"></i>Resumen</a>
+        <a href="estadisticas.html"><i class="fas fa-chart-bar"></i>Presidencial</a>
+        <a href="actas.html"><i class="fas fa-file-contract"></i>Actas</a>
+        <a href="resultados.html" class="activo"><i class="fas fa-search"></i>Monitor</a>
+        <a href="../informe/index.html" style="color:var(--onpe-teal);"><i class="fas fa-book-open"></i>Informe</a>
+      </nav>
+    </div>
+    <div class="onpe-navbar-bottom"></div>
   </header>
 
   <main>
-    <!-- HERO -->
-    <section class="hero" style="min-height:280px;">
-      <div class="hero-content">
-        <div class="hero-text">
-          <h2>Segunda Vuelta — 07 de Junio 2026</h2>
-          <h1>Monitor de Mesas</h1>
-          <p>Consulta el estado de las actas y los votos contabilizados en tiempo real.</p>
 
-          <!-- Barra de progreso -->
-          <div style="margin-top:20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-              <span style="color:rgba(255,255,255,0.7); font-size:0.85rem;">Avance de escrutinio</span>
-              <span style="color:var(--dorado); font-weight:700; font-family:var(--fuente-titulo);" id="pct-hero">—%</span>
-            </div>
-            <div class="onpe-progress-bar">
-              <div class="progress-fill" id="barra-hero" style="width:0%;"></div>
-            </div>
+    <!-- HERO -->
+    <div style="background:linear-gradient(180deg,#e8f0fa 0%,#fff 100%);
+      padding:28px 32px 20px;border-bottom:1px solid var(--onpe-gris-borde);">
+      <div style="max-width:1280px;margin:0 auto;">
+        <div style="font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--onpe-teal);margin-bottom:6px;">
+          <i class="fas fa-circle" style="font-size:0.45rem;"></i>
+          Actualizado al 10/05/2026 a las 11:00:00 p. m.
+        </div>
+        <h1 style="font-family:var(--font-titulo);font-size:1.8rem;font-weight:800;color:var(--onpe-azul);">
+          Monitor de Mesas
+        </h1>
+        <p style="font-size:0.85rem;color:var(--onpe-gris-suave);margin-top:4px;">
+          Consulta el estado de las actas y los votos contabilizados en tiempo real.
+        </p>
+      </div>
+    </div>
+
+    <!-- FILTRO -->
+    <div class="onpe-filtro-bar">
+      <button class="onpe-filtro-btn activo"><i class="fas fa-map-marker-alt"></i> TODOS <i class="fas fa-chevron-down"></i></button>
+      <button class="onpe-filtro-btn">REGIÓN <i class="fas fa-chevron-down"></i></button>
+      <button class="onpe-filtro-btn">PROVINCIA <i class="fas fa-chevron-down"></i></button>
+      <div style="margin-left:auto;">
+        <span class="onpe-live-badge"><span class="onpe-live-dot"></span> En vivo</span>
+      </div>
+    </div>
+
+    <div class="monitor-wrapper">
+
+      <!-- Barra progreso -->
+      <div class="monitor-progress">
+        <div class="pct-txt" id="mon-pct">—%</div>
+        <div class="barra-wrapper">
+          <p style="font-size:0.72rem;color:var(--onpe-gris-suave);margin-bottom:4px;">Actas contabilizadas</p>
+          <div class="onpe-progress-bar">
+            <div class="onpe-progress-fill" id="mon-barra" style="width:0%;"></div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- MONITOR -->
-    <section class="container">
-      <h2 class="section-title">Mesas Procesadas</h2>
-
-      <!-- Filtros + Buscador -->
-      <div class="filtros-bar">
-        <div class="buscador-wrapper">
-          <input
-            type="text"
-            id="mesa-search"
-            placeholder="N° de mesa (ej: 000001)"
-            class="caja"
-          />
-          <button onclick="Monitor.buscar()" class="btn" style="width:auto;margin-top:0;">
-            <i class="fas fa-search"></i> Buscar
-          </button>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:0.78rem;">
+          <span style="display:flex;align-items:center;gap:5px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--onpe-azul);display:inline-block;"></span>
+            Contabilizadas: <strong id="mon-cont">—</strong>
+          </span>
+          <span style="display:flex;align-items:center;gap:5px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:#1a6bb5;display:inline-block;"></span>
+            Para JNE: <strong id="mon-obs">—</strong>
+          </span>
+          <span style="display:flex;align-items:center;gap:5px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:#dde3ed;border:1px solid #ccc;display:inline-block;"></span>
+            Pendientes: <strong id="mon-pend">—</strong>
+          </span>
         </div>
+      </div>
 
-        <button class="filtro-btn activo" onclick="Monitor.filtrar('todas', this)">
-          Todas
+      <!-- Buscador -->
+      <div class="buscador-monitor">
+        <h3><i class="fas fa-search"></i> Buscar Mesa:</h3>
+        <input type="text" id="mesa-search" placeholder="N° de mesa (ej: 000001)" class="onpe-input" />
+        <button onclick="Monitor.buscar()" class="onpe-btn">
+          <i class="fas fa-search"></i> Buscar
         </button>
-        <button class="filtro-btn" onclick="Monitor.filtrar('contabilizada', this)">
+        <a href="actas.html" class="onpe-btn onpe-btn-outline" style="text-decoration:none;">
+          <i class="fas fa-list"></i> Ver Actas
+        </a>
+      </div>
+
+      <!-- Filtros estado -->
+      <div class="filtros-estado">
+        <button class="filtro-est-btn activo" onclick="Monitor.filtrar('todas',this)">
+          <i class="fas fa-th"></i> Todas
+        </button>
+        <button class="filtro-est-btn" onclick="Monitor.filtrar('contabilizada',this)">
           <i class="fas fa-check-circle"></i> Contabilizadas
         </button>
-        <button class="filtro-btn observada" onclick="Monitor.filtrar('observada', this)">
+        <button class="filtro-est-btn obs" onclick="Monitor.filtrar('observada',this)">
           <i class="fas fa-exclamation-circle"></i> Observadas
         </button>
-        <button class="filtro-btn pendiente" onclick="Monitor.filtrar('pendiente', this)">
+        <button class="filtro-est-btn pend" onclick="Monitor.filtrar('pendiente',this)">
           <i class="fas fa-clock"></i> Pendientes
         </button>
       </div>
 
       <!-- Grid de mesas -->
-      <div id="contenedor-mesas"></div>
+      <div class="mesas-grid" id="contenedor-mesas"></div>
 
       <!-- Paginación -->
       <div class="paginacion" id="paginacion"></div>
 
-    </section>
+    </div>
   </main>
 
-  <footer class="site-footer">
-    <div class="footer-bottom">
-      <p>&copy; 2026 ONPE — Resultados en Tiempo Real &nbsp;|&nbsp; Pareja HT-02 · ISMA SENATI</p>
+  <!-- FOOTER -->
+  <footer class="onpe-footer">
+    <div class="onpe-footer-grid">
+      <div><h4>Oficina Central</h4><p>Jr. Washington 1894<br>Cercado de Lima</p></div>
+      <div><h4>Escríbenos</h4><p>informes@onpe.gob.pe</p></div>
+      <div><h4>Redes Sociales</h4>
+        <div class="onpe-social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+      <div><h4>SED-2026</h4>
+        <p>Jesús Romaldo Sulla Sacsi<br>Anthony Dorly Huilahuaña Chata</p>
+        <p style="margin-top:6px;font-size:0.72rem;opacity:0.6;">Metodologías Ágiles · ISMA SENATI</p>
+      </div>
+    </div>
+    <div class="onpe-footer-bottom">
+      <span>&copy; 2026 ONPE</span>
+      <span>Sistema de Escrutinio Digital SED-2026</span>
     </div>
   </footer>
 
   <script src="../assets/js/storage.js"></script>
   <script>
     const Monitor = {
-      _mesasFiltradas: [],
+      _mesas: [],
       _paginaActual: 1,
       _porPagina: 9,
 
-      /* ── INICIALIZAR ─────────────────────────────────────── */
       init() {
-        this._mesasFiltradas = SED.getMesas();
-        this._renderMesas();
+        this._mesas = SED.getMesas();
         this._actualizarHero();
+        this._renderMesas();
 
-        // Enter en buscador
         const input = document.getElementById('mesa-search');
-        if (input) {
-          input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.buscar();
-          });
-        }
+        if (input) input.addEventListener('keypress', e => { if (e.key === 'Enter') this.buscar(); });
       },
 
-      /* ── ACTUALIZAR HERO ─────────────────────────────────── */
       _actualizarHero() {
-        const pct    = SED.getPorcentajeAvance();
-        const elPct  = document.getElementById('pct-hero');
-        const elBarra = document.getElementById('barra-hero');
-        if (elPct)   elPct.textContent = pct + '%';
+        const c   = SED.getContador();
+        const pct = SED.getPorcentajeAvance();
+        document.getElementById('mon-pct').textContent  = pct + '%';
+        document.getElementById('mon-cont').textContent = c.contabilizadas;
+        document.getElementById('mon-obs').textContent  = c.observadas;
+        document.getElementById('mon-pend').textContent = c.pendientes;
         setTimeout(() => {
-          if (elBarra) elBarra.style.width = pct + '%';
+          document.getElementById('mon-barra').style.width = pct + '%';
         }, 300);
       },
 
-      /* ── BUSCAR MESA ─────────────────────────────────────── */
       buscar() {
         const query = document.getElementById('mesa-search')?.value.trim();
         if (!query) {
-          this._mesasFiltradas = SED.getMesas();
-          this._paginaActual   = 1;
+          this._mesas = SED.getMesas();
+          this._paginaActual = 1;
           this._renderMesas();
           return;
         }
-
         const numero = String(query).padStart(6, '0');
         const mesa   = SED.getMesaPorNumero(numero);
-
         if (mesa) {
-          // Ir directo al detalle
           window.location.href = `detalle-mesa.html?mesa=${numero}`;
         } else {
-          this._mostrarNoResultados(`Mesa N° ${numero} no encontrada en el sistema.`);
+          const cont = document.getElementById('contenedor-mesas');
+          if (cont) cont.innerHTML = `
+            <div class="sin-resultados" style="grid-column:1/-1;">
+              <i class="fas fa-search"></i>
+              <p>Mesa N° ${numero} no encontrada en el sistema SED-2026.</p>
+            </div>`;
+          document.getElementById('paginacion').innerHTML = '';
         }
       },
 
-      /* ── FILTRAR ─────────────────────────────────────────── */
       filtrar(estado, btn) {
-        // Actualizar botones activos
-        document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('activo'));
+        document.querySelectorAll('.filtro-est-btn').forEach(b => b.classList.remove('activo'));
         btn.classList.add('activo');
-
-        const todasMesas = SED.getMesas();
-        this._mesasFiltradas = estado === 'todas'
-          ? todasMesas
-          : todasMesas.filter(m => m.estado === estado);
-
+        const todas = SED.getMesas();
+        this._mesas = estado === 'todas' ? todas : todas.filter(m => m.estado === estado);
         this._paginaActual = 1;
         this._renderMesas();
       },
 
-      /* ── RENDER MESAS ────────────────────────────────────── */
       _renderMesas() {
-        const contenedor = document.getElementById('contenedor-mesas');
-        if (!contenedor) return;
+        const cont = document.getElementById('contenedor-mesas');
+        if (!cont) return;
 
-        if (this._mesasFiltradas.length === 0) {
-          this._mostrarNoResultados('No hay mesas con ese filtro.');
+        if (this._mesas.length === 0) {
+          cont.innerHTML = `<div class="sin-resultados"><i class="fas fa-inbox"></i><p>No hay mesas con ese filtro.</p></div>`;
+          document.getElementById('paginacion').innerHTML = '';
           return;
         }
 
-        // Paginación
-        const inicio = (this._paginaActual - 1) * this._porPagina;
-        const fin    = inicio + this._porPagina;
-        const pagina = this._mesasFiltradas.slice(inicio, fin);
+        const inicio  = (this._paginaActual - 1) * this._porPagina;
+        const pagina  = this._mesas.slice(inicio, inicio + this._porPagina);
 
-        contenedor.innerHTML = pagina.map(mesa => this._cardHTML(mesa)).join('');
+        cont.innerHTML = pagina.map(m => {
+          const v = m.votos;
+          const claseCard = m.estado === 'observada' ? 'observada' : m.estado === 'pendiente' ? 'pendiente' : '';
+          const badge = m.estado === 'contabilizada'
+            ? '<span class="onpe-badge onpe-badge-verde">✅ Contabilizada</span>'
+            : m.estado === 'observada'
+            ? '<span class="onpe-badge onpe-badge-rojo">⚠ Observada</span>'
+            : '<span class="onpe-badge onpe-badge-gris">⏳ Pendiente</span>';
+
+          const votosHTML = v ? `
+            <div class="mesa-votos-grid">
+              <div class="voto-mini-item"><span class="voto-mini-dot" style="background:#004b8d;"></span>FP: <strong>${v.fp}</strong></div>
+              <div class="voto-mini-item"><span class="voto-mini-dot" style="background:#cc0000;"></span>JP: <strong>${v.jp}</strong></div>
+              <div class="voto-mini-item"><span class="voto-mini-dot" style="background:#adb5bd;"></span>Blancos: <strong>${v.blancos}</strong></div>
+              <div class="voto-mini-item"><span class="voto-mini-dot" style="background:#e0e0e0;border:1px solid #ccc;"></span>Nulos: <strong>${v.nulos}</strong></div>
+            </div>
+            <div class="mesa-total"><span>Total votos</span><strong>${v.total}</strong></div>
+          ` : `<p style="font-size:0.82rem;color:var(--onpe-gris-suave);margin:8px 0;">Pendiente de registro.</p>`;
+
+          return `
+            <a href="detalle-mesa.html?mesa=${m.numero}" class="mesa-card ${claseCard}">
+              <div class="mesa-card-header">
+                <div>
+                  <h3>Mesa N° ${m.numero}</h3>
+                  <small><i class="fas fa-map-marker-alt"></i> ${m.distrito}</small>
+                </div>
+                ${badge}
+              </div>
+              ${votosHTML}
+              ${m.fechaRegistro ? `<div class="mesa-fecha"><i class="fas fa-clock"></i> ${SED.formatearFecha(m.fechaRegistro)}</div>` : ''}
+            </a>
+          `;
+        }).join('');
+
         this._renderPaginacion();
       },
 
-      /* ── HTML DE CARD ────────────────────────────────────── */
-      _cardHTML(mesa) {
-        const estadoClase = mesa.estado === 'contabilizada' ? '' :
-                            mesa.estado === 'observada'     ? 'observada' : 'pendiente';
-
-        const badgeHTML = mesa.estado === 'contabilizada'
-          ? '<span class="status-badge success">✅ Contabilizada</span>'
-          : mesa.estado === 'observada'
-          ? '<span class="status-badge alert">⚠ Observada — JNE</span>'
-          : '<span class="status-badge pendiente">⏳ Pendiente</span>';
-
-        const votosHTML = mesa.votos ? `
-          <div class="mesa-votos">
-            <div class="voto-mini">
-              <span class="dot dot-fp"></span> FP: <strong>${mesa.votos.fp}</strong>
-            </div>
-            <div class="voto-mini">
-              <span class="dot dot-jp"></span> JP: <strong>${mesa.votos.jp}</strong>
-            </div>
-            <div class="voto-mini">
-              <span class="dot dot-blanco"></span> Blancos: <strong>${mesa.votos.blancos}</strong>
-            </div>
-            <div class="voto-mini">
-              <span class="dot dot-nulo"></span> Nulos: <strong>${mesa.votos.nulos}</strong>
-            </div>
-          </div>
-          <div class="mesa-total">
-            <span>Total votos</span>
-            <strong>${mesa.votos.total}</strong>
-          </div>
-        ` : `
-          <p style="color:var(--gris-suave); font-size:0.85rem; margin:10px 0;">
-            Pendiente de registro.
-          </p>
-        `;
-
-        const fecha = mesa.fechaRegistro
-          ? `<small>${SED.formatearFecha(mesa.fechaRegistro)}</small>`
-          : '';
-
-        return `
-          <a href="detalle-mesa.html?mesa=${mesa.numero}"
-             class="mesa-card ${estadoClase}">
-            <div class="mesa-card-header">
-              <div>
-                <h3>Mesa N° ${mesa.numero}</h3>
-                <small><i class="fas fa-map-marker-alt"></i> ${mesa.distrito}</small>
-              </div>
-              ${badgeHTML}
-            </div>
-            ${votosHTML}
-            ${fecha}
-          </a>
-        `;
-      },
-
-      /* ── PAGINACIÓN ──────────────────────────────────────── */
       _renderPaginacion() {
-        const contenedor  = document.getElementById('paginacion');
-        if (!contenedor) return;
-
-        const totalPaginas = Math.ceil(this._mesasFiltradas.length / this._porPagina);
-        if (totalPaginas <= 1) { contenedor.innerHTML = ''; return; }
+        const cont  = document.getElementById('paginacion');
+        if (!cont) return;
+        const total = Math.ceil(this._mesas.length / this._porPagina);
+        if (total <= 1) { cont.innerHTML = ''; return; }
 
         let html = '';
-        if (this._paginaActual > 1) {
-          html += `<button class="pag-btn" onclick="Monitor._irPagina(${this._paginaActual - 1})">
-            <i class="fas fa-chevron-left"></i>
-          </button>`;
-        }
+        if (this._paginaActual > 1)
+          html += `<button class="pag-btn" onclick="Monitor._irPagina(${this._paginaActual-1})"><i class="fas fa-chevron-left"></i></button>`;
+        for (let i = 1; i <= total; i++)
+          html += `<button class="pag-btn ${i === this._paginaActual ? 'activo' : ''}" onclick="Monitor._irPagina(${i})">${i}</button>`;
+        if (this._paginaActual < total)
+          html += `<button class="pag-btn" onclick="Monitor._irPagina(${this._paginaActual+1})"><i class="fas fa-chevron-right"></i></button>`;
 
-        for (let i = 1; i <= totalPaginas; i++) {
-          html += `<button class="pag-btn ${i === this._paginaActual ? 'activo' : ''}"
-            onclick="Monitor._irPagina(${i})">${i}</button>`;
-        }
-
-        if (this._paginaActual < totalPaginas) {
-          html += `<button class="pag-btn" onclick="Monitor._irPagina(${this._paginaActual + 1})">
-            <i class="fas fa-chevron-right"></i>
-          </button>`;
-        }
-
-        contenedor.innerHTML = html;
+        cont.innerHTML = html;
       },
 
       _irPagina(n) {
@@ -451,21 +478,6 @@
         this._renderMesas();
         window.scrollTo({ top: 400, behavior: 'smooth' });
       },
-
-      /* ── SIN RESULTADOS ──────────────────────────────────── */
-      _mostrarNoResultados(msg) {
-        const contenedor = document.getElementById('contenedor-mesas');
-        if (contenedor) {
-          contenedor.innerHTML = `
-            <div class="no-resultados">
-              <i class="fas fa-search"></i>
-              <p>${msg}</p>
-            </div>
-          `;
-        }
-        document.getElementById('paginacion').innerHTML = '';
-      },
-
     };
 
     document.addEventListener('DOMContentLoaded', () => Monitor.init());

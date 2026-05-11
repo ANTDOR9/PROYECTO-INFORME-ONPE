@@ -3,399 +3,437 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Estadísticas — SED 2026</title>
-  <link rel="stylesheet" href="../assets/css/style.css" />
+  <title>Presidencial — SED 2026</title>
+  <link rel="stylesheet" href="../assets/css/style-onpe.css" />
   <script src="https://kit.fontawesome.com/ff1a3f5508.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     /* ── GRID ESTADÍSTICAS ───────────────────────────────────── */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-top: 24px;
+    .stats-wrapper {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 32px;
     }
+
+    /* Candidatos grandes — estilo ONPE real */
+    .candidatos-grandes {
+      background: var(--onpe-blanco);
+      border: 1px solid var(--onpe-gris-borde);
+      border-radius: var(--radio);
+      padding: 28px 32px;
+      box-shadow: var(--sombra-card);
+      margin-bottom: 24px;
+    }
+
+    .candidatos-grandes .sec-titulo {
+      font-family: var(--font-titulo);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--onpe-azul);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--onpe-azul-suave);
+    }
+
+    .candidatos-row {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 80px;
+      padding: 10px 0 20px;
+      flex-wrap: wrap;
+    }
+
+    .candidato-grande-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+    }
+
+    .candidato-grande-foto {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: var(--onpe-azul-suave);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0,75,141,0.15);
+    }
+
+    .candidato-grande-foto img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .candidato-grande-foto .badge-partido {
+      position: absolute;
+      bottom: 4px;
+      left: 4px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      font-weight: 900;
+      border: 2px solid white;
+      color: white;
+    }
+
+    .candidato-grande-logo {
+      height: 40px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .candidato-grande-pct {
+      font-family: var(--font-titulo);
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .candidato-grande-nombre {
+      font-family: var(--font-titulo);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--onpe-gris-texto);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .candidato-grande-partido {
+      font-size: 0.78rem;
+      color: var(--onpe-gris-suave);
+    }
+
+    /* Barra bicolor */
+    .barra-bicolor-grande {
+      display: flex;
+      height: 10px;
+      width: 100%;
+      overflow: hidden;
+      margin-top: 20px;
+      border-radius: 0;
+    }
+    .barra-bicolor-grande .seg-fp { background: var(--onpe-azul); transition: width 1.2s ease; }
+    .barra-bicolor-grande .seg-jp { background: var(--onpe-rojo); transition: width 1.2s ease; }
+
+    .barra-etiquetas {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* ── GRID DE CARDS ───────────────────────────────────────── */
     .stats-grid-3 {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-top: 24px;
+      gap: 20px;
+      margin-bottom: 24px;
     }
 
-    /* ── CARD ESTADÍSTICA ────────────────────────────────────── */
+    .stats-grid-2 {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
     .stat-card {
-      background: var(--blanco);
-      border-radius: var(--radio-card);
-      padding: 28px;
+      background: var(--onpe-blanco);
+      border: 1px solid var(--onpe-gris-borde);
+      border-radius: var(--radio);
+      padding: 22px;
       box-shadow: var(--sombra-card);
-      border-top: 4px solid var(--azul-onpe);
-      transition: box-shadow var(--trans-media);
+      transition: all var(--trans);
     }
     .stat-card:hover { box-shadow: var(--sombra-hover); }
-    .stat-card.dorado { border-top-color: var(--dorado); }
-    .stat-card.verde  { border-top-color: var(--verde-exito); }
-    .stat-card.rojo   { border-top-color: var(--rojo-alerta); }
 
     .stat-card h3 {
-      font-family: var(--fuente-titulo);
-      font-size: 1.05rem;
-      color: var(--azul-oscuro);
+      font-family: var(--font-titulo);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--onpe-azul);
+      text-transform: uppercase;
+      letter-spacing: 1px;
       margin-bottom: 16px;
       display: flex;
       align-items: center;
       gap: 8px;
-    }
-    .stat-card h3 i { color: var(--azul-onpe); }
-
-    /* ── NÚMERO GRANDE ───────────────────────────────────────── */
-    .numero-grande {
-      font-family: var(--fuente-titulo);
-      font-size: 3rem;
-      font-weight: 700;
-      color: var(--azul-onpe);
-      line-height: 1;
-      display: block;
-    }
-    .numero-grande.dorado { color: var(--dorado); }
-    .numero-grande.verde  { color: var(--verde-exito); }
-    .numero-grande.rojo   { color: var(--rojo-alerta); }
-    .numero-label {
-      font-size: 0.82rem;
-      color: var(--gris-suave);
-      margin-top: 4px;
-      display: block;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--onpe-azul-suave);
     }
 
-    /* ── CANVAS CHARTS ───────────────────────────────────────── */
-    .chart-wrapper {
-      position: relative;
-      width: 100%;
-      height: 280px;
-    }
-    .chart-wrapper-sm {
-      position: relative;
-      width: 100%;
-      height: 220px;
-    }
-
-    /* ── TABLA COMPARATIVA ───────────────────────────────────── */
-    .tabla-comparativa {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.875rem;
-      margin-top: 8px;
-    }
-    .tabla-comparativa th {
-      background: var(--azul-oscuro);
-      color: var(--blanco);
-      padding: 10px 14px;
-      text-align: left;
-      font-weight: 600;
-      font-size: 0.8rem;
-      letter-spacing: 0.5px;
-    }
-    .tabla-comparativa th:first-child { border-radius: 8px 0 0 0; }
-    .tabla-comparativa th:last-child  { border-radius: 0 8px 0 0; }
-    .tabla-comparativa td {
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--gris-borde);
-      color: var(--gris-texto);
-    }
-    .tabla-comparativa tr:hover td { background: var(--blanco-roto); }
-    .tabla-comparativa tr:last-child td { border-bottom: none; }
-    .tabla-comparativa .valor-num {
-      font-family: var(--fuente-titulo);
-      font-size: 1rem;
-      color: var(--azul-onpe);
-      font-weight: 700;
-    }
-
-    /* ── FILTROS REGIÓN ──────────────────────────────────────── */
-    .filtros-region {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-      padding: 16px 20px;
-      background: var(--blanco);
-      border-radius: var(--radio-card);
-      box-shadow: var(--sombra-card);
-      align-items: center;
-    }
-    .filtros-region span {
-      font-size: 0.82rem;
-      color: var(--gris-suave);
-      font-weight: 600;
-    }
-    .region-btn {
-      padding: 6px 16px;
-      border-radius: 20px;
-      border: 1.5px solid var(--gris-borde);
-      background: var(--blanco);
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all var(--trans-rapida);
-      color: var(--gris-suave);
-      font-family: var(--fuente-cuerpo);
-    }
-    .region-btn:hover,
-    .region-btn.activo {
-      background: var(--azul-onpe);
-      border-color: var(--azul-onpe);
-      color: var(--blanco);
-    }
-
-    /* ── RESUMEN CARDS ───────────────────────────────────────── */
-    .resumen-grid {
+    /* ── RESUMEN MINI CARDS ──────────────────────────────────── */
+    .resumen-mini {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 16px;
-      margin-bottom: 28px;
-    }
-    .resumen-card {
-      border-radius: 12px;
-      padding: 20px 16px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      box-shadow: var(--sombra-card);
-      color: var(--blanco);
-    }
-    .resumen-card.azul   { background: linear-gradient(135deg,#004b8d,#0077cc); }
-    .resumen-card.verde  { background: linear-gradient(135deg,#2e7d32,#43a047); }
-    .resumen-card.dorado { background: linear-gradient(135deg,#92640a,#c9a84c); }
-    .resumen-card.gris   { background: linear-gradient(135deg,#455a64,#78909c); }
-    .resumen-icon  { font-size: 1.8rem; }
-    .resumen-numero {
-      font-family: var(--fuente-titulo);
-      font-size: 1.5rem;
-      font-weight: 700;
-      display: block;
-      line-height: 1;
-    }
-    .resumen-label {
-      font-size: 0.72rem;
-      opacity: 0.85;
-      margin-top: 3px;
-      display: block;
+      margin-bottom: 24px;
     }
 
-    /* ── CANDIDATO HERO ──────────────────────────────────────── */
-    .candidatos-hero {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 20px;
-      align-items: center;
-      margin: 20px 0;
-    }
-    .candidato-col {
+    .resumen-mini-card {
+      background: var(--onpe-blanco);
+      border: 1px solid var(--onpe-gris-borde);
+      border-radius: var(--radio);
+      padding: 18px 14px;
       text-align: center;
-      padding: 20px;
-      border-radius: 12px;
-      background: var(--blanco-roto);
+      box-shadow: var(--sombra-card);
+      transition: all var(--trans);
     }
-    .candidato-col.ganando {
-      background: rgba(0,75,141,0.06);
-      border: 2px solid rgba(0,75,141,0.2);
-    }
-    .candidato-pct-grande {
-      font-family: var(--fuente-titulo);
-      font-size: 3rem;
-      font-weight: 700;
+    .resumen-mini-card:hover { transform: translateY(-2px); box-shadow: var(--sombra-hover); }
+    .resumen-mini-card .num {
+      font-family: var(--font-titulo);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--onpe-azul);
       display: block;
       line-height: 1;
     }
-    .pct-azul   { color: var(--azul-onpe); }
-    .pct-dorado { color: #92640a; }
-    .candidato-nombre {
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--azul-oscuro);
-      margin-top: 6px;
-      display: block;
+    .resumen-mini-card .lbl {
+      font-size: 0.68rem;
+      color: var(--onpe-gris-suave);
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-    }
-    .candidato-partido {
-      font-size: 0.72rem;
-      color: var(--gris-suave);
+      margin-top: 4px;
       display: block;
     }
-    .vs-divider {
-      font-family: var(--fuente-titulo);
-      font-size: 1.5rem;
-      color: var(--gris-borde);
-      font-weight: 700;
-    }
+    .resumen-mini-card.verde .num { color: #2e7d32; }
+    .resumen-mini-card.rojo  .num { color: var(--onpe-rojo); }
+    .resumen-mini-card.teal  .num { color: var(--onpe-teal); }
 
-    /* ── ACTUALIZACIÓN ───────────────────────────────────────── */
-    .auto-update-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(46,125,50,0.1);
-      color: var(--verde-exito);
-      border-radius: 20px;
-      padding: 4px 12px;
+    /* ── TABLA COMPARATIVA ───────────────────────────────────── */
+    .tabla-comp { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    .tabla-comp th {
+      background: var(--onpe-azul);
+      color: white;
+      padding: 10px 14px;
+      text-align: left;
       font-size: 0.75rem;
       font-weight: 600;
+      letter-spacing: 0.5px;
     }
-    .dot-live {
+    .tabla-comp td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--onpe-gris-borde);
+      vertical-align: middle;
+    }
+    .tabla-comp tr:hover td { background: var(--onpe-azul-suave); }
+    .tabla-comp tr:last-child td { border-bottom: none; font-weight: 700; background: var(--onpe-gris-bg); }
+    .tabla-comp .val { font-family: var(--font-titulo); font-size: 1rem; font-weight: 700; color: var(--onpe-azul); }
+
+    /* ── DATOS GENERALES ─────────────────────────────────────── */
+    .datos-gen-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .dato-gen-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--onpe-gris-borde);
+      font-size: 0.875rem;
+    }
+    .dato-gen-item:last-child { border-bottom: none; }
+    .dato-gen-item .dato-lbl { color: var(--onpe-gris-suave); }
+    .dato-gen-item .dato-val { font-family: var(--font-titulo); font-weight: 700; color: var(--onpe-azul); font-size: 1rem; }
+
+    /* Chart wrappers */
+    .chart-wrapper { position: relative; width: 100%; height: 260px; }
+
+    /* Live badge */
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #2e7d32;
+      background: #e8f5e9;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .live-dot {
       width: 7px; height: 7px;
-      background: var(--verde-exito);
       border-radius: 50%;
+      background: #2e7d32;
       animation: pulso 1.5s infinite;
     }
     @keyframes pulso {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%       { opacity: 0.4; transform: scale(0.8); }
+      0%,100% { opacity:1; transform:scale(1); }
+      50%      { opacity:0.4; transform:scale(0.8); }
     }
 
+    /* Responsive */
     @media (max-width: 900px) {
-      .stats-grid    { grid-template-columns: 1fr; }
-      .stats-grid-3  { grid-template-columns: 1fr; }
-      .resumen-grid  { grid-template-columns: 1fr 1fr; }
-      .candidatos-hero { grid-template-columns: 1fr; }
-      .vs-divider { display: none; }
+      .stats-grid-3 { grid-template-columns: 1fr 1fr; }
+      .stats-grid-2 { grid-template-columns: 1fr; }
+      .resumen-mini { grid-template-columns: 1fr 1fr; }
+      .candidatos-row { gap: 32px; }
+      .stats-wrapper { padding: 16px; }
     }
     @media (max-width: 600px) {
-      .resumen-grid { grid-template-columns: 1fr; }
+      .stats-grid-3 { grid-template-columns: 1fr; }
+      .resumen-mini { grid-template-columns: 1fr 1fr; }
+      .candidato-grande-pct { font-size: 2.4rem; }
+      .candidato-grande-foto { width: 90px; height: 90px; }
     }
   </style>
 </head>
 <body>
 
   <!-- NAVBAR -->
-  <header>
-    <nav id="navbar">
-      <a href="../index.html" style="text-decoration:none;">
-        <div class="logo">ONPE<span>SED-2026</span></div>
+  <header class="onpe-navbar">
+    <div class="onpe-navbar-top"></div>
+    <div class="onpe-navbar-main">
+      <a href="../index.html" class="onpe-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+        <img src="../assets/img/logos/onpe-logo.png" alt="ONPE"
+             style="height:44px;width:auto;object-fit:contain;"
+             onerror="this.style.display='none'">
+        <div class="logo-texto" style="line-height:1.1;">
+          <strong style="font-family:var(--font-titulo);font-size:0.82rem;color:var(--onpe-azul);display:block;">Elecciones Generales</strong>
+          <small style="font-size:0.65rem;color:var(--onpe-gris-suave);">12 de abril de 2026</small>
+        </div>
       </a>
-      <ul class="nav-links">
-        <li><a href="../index.html">Inicio</a></li>
-        <li><a href="estadisticas.html" class="activo">Estadísticas</a></li>
-        <li><a href="resultados.html">Monitor de Mesas</a></li>
-        <li><a href="../informe/index.html" style="color:var(--dorado);">
-          <i class="fas fa-book-open"></i> Informe
-        </a></li>
-      </ul>
-    </nav>
+      <nav class="onpe-nav-links">
+        <a href="../index.html"><i class="fas fa-th-large"></i>Resumen</a>
+        <a href="estadisticas.html" class="activo"><i class="fas fa-chart-bar"></i>Presidencial</a>
+        <a href="actas.html"><i class="fas fa-file-contract"></i>Actas</a>
+        <a href="resultados.html"><i class="fas fa-search"></i>Monitor</a>
+        <a href="../informe/index.html" style="color:var(--onpe-teal);"><i class="fas fa-book-open"></i>Informe</a>
+      </nav>
+    </div>
+    <div class="onpe-navbar-bottom"></div>
   </header>
 
   <main>
+
     <!-- HERO -->
-    <section class="hero" style="min-height:260px;">
-      <div class="hero-content">
-        <div class="hero-text">
-          <h2>Segunda Vuelta — 07 de Junio 2026</h2>
-          <h1>Presentación de Resultados</h1>
-          <div style="display:flex; align-items:center; gap:16px; margin-top:16px; flex-wrap:wrap;">
-            <span class="auto-update-badge">
-              <span class="dot-live"></span>
-              Actualización automática cada 5 min
-            </span>
-            <span style="color:rgba(255,255,255,0.6); font-size:0.82rem;" id="hora-update">
-              Cargando...
-            </span>
+    <div style="background:linear-gradient(180deg,#e8f0fa 0%,#fff 100%);
+      padding:28px 32px 20px;border-bottom:1px solid var(--onpe-gris-borde);">
+      <div style="max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;">
+        <div>
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--onpe-teal);margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+            <i class="fas fa-circle" style="font-size:0.45rem;"></i>
+            Actualizado al 10/05/2026 a las 11:00:00 p. m.
           </div>
+          <h1 style="font-family:var(--font-titulo);font-size:1.8rem;font-weight:800;color:var(--onpe-azul);">
+            Elección de Fórmula Presidencial
+          </h1>
+          <p style="font-size:0.85rem;color:var(--onpe-gris-suave);margin-top:4px;">
+            Segunda Vuelta 2026 — Resultados en tiempo real
+          </p>
         </div>
+        <span class="live-badge"><span class="live-dot"></span> En vivo · actualización cada 5 min</span>
       </div>
-    </section>
+    </div>
 
-    <div class="container">
+    <!-- FILTRO -->
+    <div class="onpe-filtro-bar">
+      <button class="onpe-filtro-btn activo"><i class="fas fa-map-marker-alt"></i> TODOS <i class="fas fa-chevron-down"></i></button>
+      <button class="onpe-filtro-btn">REGIÓN <i class="fas fa-chevron-down"></i></button>
+      <button class="onpe-filtro-btn">PROVINCIA <i class="fas fa-chevron-down"></i></button>
+      <button class="onpe-filtro-btn">DISTRITO <i class="fas fa-chevron-down"></i></button>
+    </div>
 
-      <!-- FILTROS REGIÓN -->
-      <div class="filtros-region">
-        <span><i class="fas fa-filter"></i> Filtrar:</span>
-        <button class="region-btn activo" onclick="Stats.filtrarRegion('peru', this)">
-          <i class="fas fa-map-marker-alt"></i> PERÚ
-        </button>
-        <button class="region-btn" onclick="Stats.filtrarRegion('lima', this)">Lima</button>
-        <button class="region-btn" onclick="Stats.filtrarRegion('arequipa', this)">Arequipa</button>
-        <button class="region-btn" onclick="Stats.filtrarRegion('cusco', this)">Cusco</button>
-        <button class="region-btn" onclick="Stats.filtrarRegion('exterior', this)">
-          <i class="fas fa-globe-americas"></i> Exterior
-        </button>
-      </div>
+    <div class="stats-wrapper">
 
-      <!-- RESUMEN TOP -->
-      <div class="resumen-grid" id="resumen-top"></div>
-
-      <!-- CANDIDATOS HERO -->
-      <div class="stat-card" style="margin-bottom:24px;">
-        <h3>
-          <i class="fas fa-vote-yea" style="color:var(--azul-onpe);"></i>
-          Resultado de Votos Válidos
-        </h3>
-        <div class="candidatos-hero" id="candidatos-hero"></div>
-
-        <!-- Barra comparativa -->
-        <div style="margin-top:16px;">
-          <div style="display:flex; border-radius:8px; overflow:hidden; height:16px;">
-            <div id="barra-comp-fp" style="background:var(--azul-onpe); width:50%; transition:width 1s ease;"></div>
-            <div id="barra-comp-jp" style="background:var(--dorado); width:50%; transition:width 1s ease;"></div>
-          </div>
-          <div style="display:flex; justify-content:space-between; margin-top:4px;">
-            <span style="font-size:0.75rem; color:var(--azul-onpe); font-weight:600;">Fuerza Popular</span>
-            <span style="font-size:0.75rem; color:#92640a; font-weight:600;">Juntos por el Perú</span>
-          </div>
+      <!-- RESUMEN MINI CARDS -->
+      <div class="resumen-mini">
+        <div class="resumen-mini-card verde">
+          <span class="num" id="rs-cont">—</span>
+          <span class="lbl">Contabilizadas</span>
+        </div>
+        <div class="resumen-mini-card rojo">
+          <span class="num" id="rs-obs">—</span>
+          <span class="lbl">Para JNE</span>
+        </div>
+        <div class="resumen-mini-card">
+          <span class="num" id="rs-pend">—</span>
+          <span class="lbl">Pendientes</span>
+        </div>
+        <div class="resumen-mini-card teal">
+          <span class="num" id="rs-pct">—</span>
+          <span class="lbl">% Avance</span>
         </div>
       </div>
 
-      <!-- GRÁFICOS PRINCIPALES -->
-      <div class="stats-grid">
+      <!-- CANDIDATOS GRANDES -->
+      <div class="candidatos-grandes">
+        <div class="sec-titulo">
+          <i class="fas fa-vote-yea"></i>
+          Resultado de Votos Válidos — Segunda Vuelta Presidencial
+        </div>
 
-        <!-- Barras Chart.js -->
+        <div class="candidatos-row" id="candidatos-grandes-grid">
+          <!-- JS -->
+        </div>
+
+        <!-- Barra bicolor -->
+        <div class="barra-bicolor-grande">
+          <div class="seg-fp" id="barra-g-fp" style="width:50%;"></div>
+          <div class="seg-jp" id="barra-g-jp" style="width:50%;"></div>
+        </div>
+        <div class="barra-etiquetas">
+          <span style="color:var(--onpe-azul);">Fuerza Popular — K. Fujimori</span>
+          <span style="color:var(--onpe-rojo);">Juntos por el Perú — R. Sánchez</span>
+        </div>
+      </div>
+
+      <!-- GRÁFICOS + TABLA -->
+      <div class="stats-grid-2">
+
+        <!-- Gráfico barras -->
         <div class="stat-card">
-          <h3>
-            <i class="fas fa-chart-bar"></i>
-            Votos por Candidato
-          </h3>
+          <h3><i class="fas fa-chart-bar"></i> Votos por Candidato</h3>
           <div class="chart-wrapper">
             <canvas id="grafico-barras"></canvas>
           </div>
         </div>
 
-        <!-- Dona Chart.js -->
-        <div class="stat-card dorado">
-          <h3>
-            <i class="fas fa-chart-pie" style="color:var(--dorado);"></i>
-            Distribución de Actas
-          </h3>
-          <div style="display:flex; justify-content:center;">
-            <div style="position:relative; width:240px; height:240px;">
-              <canvas id="grafico-dona" width="240" height="240"></canvas>
-              <div style="
-                position:absolute; top:50%; left:50%;
-                transform:translate(-50%,-50%);
-                text-align:center; pointer-events:none;
-              ">
-                <span style="
-                  font-family:var(--fuente-titulo);
-                  font-size:1.6rem;
-                  color:var(--azul-oscuro);
-                  font-weight:700;
-                  display:block;
-                " id="dona-pct-centro">—</span>
-                <span style="font-size:0.7rem; color:var(--gris-suave);">procesadas</span>
+        <!-- Dona avance -->
+        <div class="stat-card">
+          <h3><i class="fas fa-chart-pie" style="color:var(--onpe-teal);"></i> Avance de Actas</h3>
+          <div style="display:flex;justify-content:center;position:relative;margin-bottom:12px;">
+            <div style="position:relative;width:180px;height:180px;">
+              <canvas id="grafico-dona" width="180" height="180"></canvas>
+              <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;">
+                <span style="font-family:var(--font-titulo);font-size:1.6rem;font-weight:800;color:var(--onpe-azul);display:block;" id="dona-pct-centro">—</span>
+                <span style="font-size:0.68rem;color:var(--onpe-gris-suave);">procesadas</span>
               </div>
             </div>
           </div>
+          <div id="dona-leyenda" style="display:flex;flex-direction:column;gap:6px;"></div>
         </div>
 
       </div>
 
-      <!-- SEGUNDA FILA -->
-      <div class="stats-grid-3" style="margin-top:0;">
+      <!-- TABLA + DATOS GENERALES -->
+      <div class="stats-grid-2">
 
         <!-- Tabla comparativa -->
-        <div class="stat-card" style="grid-column: span 2;">
-          <h3>
-            <i class="fas fa-table"></i>
-            Comparativa de Resultados
-          </h3>
-          <table class="tabla-comparativa">
+        <div class="stat-card">
+          <h3><i class="fas fa-table"></i> Comparativa de Resultados</h3>
+          <table class="tabla-comp">
             <thead>
               <tr>
                 <th>Candidato / Partido</th>
@@ -404,177 +442,135 @@
                 <th>% Total</th>
               </tr>
             </thead>
-            <tbody id="tabla-comparativa-body"></tbody>
+            <tbody id="tabla-comp-body"></tbody>
           </table>
         </div>
 
         <!-- Datos generales -->
-        <div class="stat-card verde">
-          <h3>
-            <i class="fas fa-info-circle" style="color:var(--verde-exito);"></i>
-            Datos Generales
-          </h3>
-          <div style="display:flex; flex-direction:column; gap:14px; margin-top:8px;">
-            <div>
-              <span class="numero-grande verde" style="font-size:2rem;">27M</span>
-              <span class="numero-label">Electores habilitados</span>
+        <div class="stat-card">
+          <h3><i class="fas fa-info-circle" style="color:var(--onpe-teal);"></i> Datos Generales</h3>
+          <div class="datos-gen-grid">
+            <div class="dato-gen-item">
+              <span class="dato-lbl">Electores habilitados</span>
+              <span class="dato-val">27,000,000</span>
             </div>
-            <div>
-              <span class="numero-grande verde" style="font-size:2rem;">86,488</span>
-              <span class="numero-label">Mesas de sufragio</span>
+            <div class="dato-gen-item">
+              <span class="dato-lbl">Mesas de sufragio</span>
+              <span class="dato-val">86,488</span>
             </div>
-            <div>
-              <span class="numero-grande verde" style="font-size:2rem;">126</span>
-              <span class="numero-label">Centros de cómputo</span>
+            <div class="dato-gen-item">
+              <span class="dato-lbl">Centros de cómputo</span>
+              <span class="dato-val">126</span>
             </div>
-            <div>
-              <span class="numero-grande verde" style="font-size:2rem;">900K</span>
-              <span class="numero-label">Votos en el exterior</span>
+            <div class="dato-gen-item">
+              <span class="dato-lbl">Voto en el exterior</span>
+              <span class="dato-val">900,000</span>
             </div>
+            <div class="dato-gen-item">
+              <span class="dato-lbl">Total actas</span>
+              <span class="dato-val" id="dato-total-actas">—</span>
+            </div>
+            <div class="dato-gen-item">
+              <span class="dato-lbl">Última actualización</span>
+              <span class="dato-val" style="font-size:0.78rem;" id="dato-hora">—</span>
+            </div>
+          </div>
+          <div style="margin-top:16px;">
+            <a href="actas.html" class="onpe-btn" style="width:100%;text-decoration:none;display:flex;justify-content:center;">
+              <i class="fas fa-file-contract"></i> Ver Actas Detalladas
+            </a>
           </div>
         </div>
 
       </div>
-
-      <!-- BOTÓN VER ACTAS -->
-      <div style="text-align:center; margin-top:32px;">
-        <a href="resultados.html" class="btn btn-onpe-actas" style="
-          width:auto; text-decoration:none; display:inline-flex;
-          padding:14px 36px; font-size:1rem;
-        ">
-          <i class="fas fa-file-contract"></i> Ver Actas Detalladas
-        </a>
-      </div>
-
     </div>
   </main>
 
-  <footer class="site-footer">
-    <div class="footer-bottom">
-      <p>&copy; 2026 ONPE — Estadísticas Oficiales &nbsp;|&nbsp; Pareja HT-02 · ISMA SENATI</p>
+  <!-- FOOTER -->
+  <footer class="onpe-footer">
+    <div class="onpe-footer-grid">
+      <div><h4>Oficina Central</h4><p>Jr. Washington 1894<br>Cercado de Lima</p></div>
+      <div><h4>Escríbenos</h4><p>informes@onpe.gob.pe</p><p>Fono: (01) 417-0630</p></div>
+      <div><h4>Redes Sociales</h4>
+        <div class="onpe-social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+      <div><h4>SED-2026</h4>
+        <p>Jesús Romaldo Sulla Sacsi<br>Anthony Dorly Huilahuaña Chata</p>
+        <p style="margin-top:6px;font-size:0.72rem;opacity:0.6;">Metodologías Ágiles · ISMA SENATI</p>
+      </div>
+    </div>
+    <div class="onpe-footer-bottom">
+      <span>&copy; 2026 ONPE</span>
+      <span>Sistema de Escrutinio Digital SED-2026</span>
     </div>
   </footer>
 
   <script src="../assets/js/storage.js"></script>
-  <script src="../assets/js/estadisticas.js"></script>
   <script>
-    const Stats = {
-      _graficos: {},
+    document.addEventListener('DOMContentLoaded', () => {
+      const c    = SED.getContador();
+      const pct  = SED.getPorcentajeAvance();
+      const pcts = SED.getPorcentajesVotos();
+      const total = c.fp + c.jp + c.blancos + c.nulos || 1;
 
-      init() {
-        this._renderResumenTop();
-        this._renderCandidatosHero();
-        this._renderGraficoBarras();
-        this._renderGraficoDonaAvance();
-        this._renderTablaComparativa();
-        this._actualizarHora();
+      // Mini cards
+      document.getElementById('rs-cont').textContent = c.contabilizadas;
+      document.getElementById('rs-obs').textContent  = c.observadas;
+      document.getElementById('rs-pend').textContent = c.pendientes;
+      document.getElementById('rs-pct').textContent  = pct + '%';
+      document.getElementById('dato-total-actas').textContent = c.totalMesas;
+      document.getElementById('dato-hora').textContent = SED.formatearFecha(c.ultimaActualizacion);
 
-        // Auto-actualizar cada 5 minutos (Regla #6)
-        setInterval(() => {
-          this._renderResumenTop();
-          this._renderCandidatosHero();
-          this._renderGraficoBarras();
-          this._renderGraficoDonaAvance();
-          this._renderTablaComparativa();
-          this._actualizarHora();
-        }, 5 * 60 * 1000);
-      },
-
-      /* ── RESUMEN TOP ───────────────────────────────────────── */
-      _renderResumenTop() {
-        const c   = SED.getContador();
-        const pct = SED.getPorcentajeAvance();
-        const el  = document.getElementById('resumen-top');
-        if (!el) return;
-
-        el.innerHTML = `
-          <div class="resumen-card azul">
-            <div class="resumen-icon">📊</div>
-            <div>
-              <span class="resumen-numero">${pct}%</span>
-              <span class="resumen-label">Actas procesadas</span>
+      // Candidatos grandes
+      const grid = document.getElementById('candidatos-grandes-grid');
+      if (grid) {
+        grid.innerHTML = `
+          <div class="candidato-grande-col">
+            <div class="candidato-grande-foto" style="border:3px solid var(--onpe-azul);">
+              <img src="../assets/img/candidatos/keiko.png" alt="Keiko" onerror="this.style.display='none'">
+              <div class="badge-partido" style="background:var(--onpe-azul);">K</div>
             </div>
+            <img src="../assets/img/logos/logo-fp.png" class="candidato-grande-logo" alt="FP" onerror="this.style.display='none'">
+            <div class="candidato-grande-pct" style="color:var(--onpe-azul);">${pcts.fp}%</div>
+            <div class="candidato-grande-nombre">KEIKO FUJIMORI</div>
+            <div class="candidato-grande-partido">Fuerza Popular</div>
           </div>
-          <div class="resumen-card verde">
-            <div class="resumen-icon">✅</div>
-            <div>
-              <span class="resumen-numero">${c.contabilizadas}</span>
-              <span class="resumen-label">Contabilizadas</span>
+          <div class="candidato-grande-col">
+            <div class="candidato-grande-foto" style="border:3px solid var(--onpe-rojo);">
+              <img src="../assets/img/candidatos/sanchez.png" alt="Sánchez" onerror="this.style.display='none'">
+              <div class="badge-partido" style="background:var(--onpe-rojo);">JP</div>
             </div>
-          </div>
-          <div class="resumen-card dorado">
-            <div class="resumen-icon">⚖️</div>
-            <div>
-              <span class="resumen-numero">${c.observadas}</span>
-              <span class="resumen-label">Para JNE</span>
-            </div>
-          </div>
-          <div class="resumen-card gris">
-            <div class="resumen-icon">⏳</div>
-            <div>
-              <span class="resumen-numero">${c.pendientes}</span>
-              <span class="resumen-label">Pendientes</span>
-            </div>
+            <img src="../assets/img/logos/logo-jp.png" class="candidato-grande-logo" alt="JP" onerror="this.style.display='none'">
+            <div class="candidato-grande-pct" style="color:var(--onpe-rojo);">${pcts.jp}%</div>
+            <div class="candidato-grande-nombre">ROBERTO SÁNCHEZ</div>
+            <div class="candidato-grande-partido">Juntos por el Perú</div>
           </div>
         `;
-      },
+      }
 
-      /* ── CANDIDATOS HERO ───────────────────────────────────── */
-      _renderCandidatosHero() {
-        const pcts = SED.getPorcentajesVotos();
-        const el   = document.getElementById('candidatos-hero');
-        if (!el) return;
+      // Barra bicolor
+      setTimeout(() => {
+        document.getElementById('barra-g-fp').style.width = pcts.fp + '%';
+        document.getElementById('barra-g-jp').style.width = pcts.jp + '%';
+      }, 400);
 
-        const fpGana = parseFloat(pcts.fp) >= parseFloat(pcts.jp);
-
-        el.innerHTML = `
-          <div class="candidato-col ${fpGana ? 'ganando' : ''}">
-            <span class="candidato-pct-grande pct-azul">${pcts.fp}%</span>
-            <span class="candidato-nombre">Keiko Fujimori</span>
-            <span class="candidato-partido">Fuerza Popular</span>
-            ${fpGana ? '<span class="status-badge success" style="margin-top:8px;">▲ Va ganando</span>' : ''}
-          </div>
-          <div class="vs-divider">VS</div>
-          <div class="candidato-col ${!fpGana ? 'ganando' : ''}">
-            <span class="candidato-pct-grande pct-dorado">${pcts.jp}%</span>
-            <span class="candidato-nombre">Roberto Sánchez</span>
-            <span class="candidato-partido">Juntos por el Perú</span>
-            ${!fpGana ? '<span class="status-badge success" style="margin-top:8px;">▲ Va ganando</span>' : ''}
-          </div>
-        `;
-
-        // Barra comparativa
-        setTimeout(() => {
-          const barraFP = document.getElementById('barra-comp-fp');
-          const barraJP = document.getElementById('barra-comp-jp');
-          if (barraFP) barraFP.style.width = pcts.fp + '%';
-          if (barraJP) barraJP.style.width = pcts.jp + '%';
-        }, 300);
-      },
-
-      /* ── GRÁFICO BARRAS ────────────────────────────────────── */
-      _renderGraficoBarras() {
-        const ctx = document.getElementById('grafico-barras')?.getContext('2d');
-        if (!ctx) return;
-        if (this._graficos.barras) this._graficos.barras.destroy();
-
-        const c    = SED.getContador();
-        const pcts = SED.getPorcentajesVotos();
-
-        this._graficos.barras = new Chart(ctx, {
+      // Gráfico barras
+      const ctxBar = document.getElementById('grafico-barras')?.getContext('2d');
+      if (ctxBar) {
+        new Chart(ctxBar, {
           type: 'bar',
           data: {
             labels: ['Keiko Fujimori\nFuerza Popular', 'Roberto Sánchez\nJuntos por el Perú'],
             datasets: [{
-              label: '% Votos válidos',
               data: [parseFloat(pcts.fp), parseFloat(pcts.jp)],
-              backgroundColor: [
-                'rgba(0,75,141,0.85)',
-                'rgba(201,168,76,0.85)',
-              ],
-              borderColor: ['#002a5c', '#92640a'],
+              backgroundColor: ['rgba(0,75,141,0.85)', 'rgba(204,0,0,0.85)'],
+              borderColor: ['#003570', '#aa0000'],
               borderWidth: 2,
-              borderRadius: 10,
+              borderRadius: 6,
               borderSkipped: false,
             }]
           },
@@ -586,52 +582,31 @@
               legend: { display: false },
               tooltip: {
                 callbacks: {
-                  label: (ctx) => ` ${ctx.parsed.y.toFixed(2)}%`,
-                  afterLabel: (ctx) => {
-                    const v = ctx.dataIndex === 0 ? c.fp : c.jp;
-                    return ` ${v.toLocaleString('es-PE')} votos`;
-                  }
+                  label: ctx => ` ${ctx.parsed.y.toFixed(2)}%`,
+                  afterLabel: ctx => ` ${(ctx.dataIndex === 0 ? c.fp : c.jp).toLocaleString('es-PE')} votos`
                 }
               }
             },
             scales: {
-              y: {
-                beginAtZero: true,
-                max: 100,
-                ticks: {
-                  callback: v => v + '%',
-                  font: { family: 'Inter', size: 11 },
-                },
-                grid: { color: 'rgba(0,0,0,0.05)' },
-              },
-              x: {
-                ticks: { font: { family: 'Inter', size: 11, weight: '600' } },
-                grid: { display: false },
-              }
+              y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%', font: { family: 'Inter', size: 11 } }, grid: { color: 'rgba(0,0,0,0.04)' } },
+              x: { ticks: { font: { family: 'Inter', size: 11, weight: '600' } }, grid: { display: false } }
             }
           }
         });
-      },
+      }
 
-      /* ── GRÁFICO DONA ──────────────────────────────────────── */
-      _renderGraficoDonaAvance() {
-        const ctx = document.getElementById('grafico-dona')?.getContext('2d');
-        if (!ctx) return;
-        if (this._graficos.dona) this._graficos.dona.destroy();
-
-        const c   = SED.getContador();
-        const pct = SED.getPorcentajeAvance();
-
-        this._graficos.dona = new Chart(ctx, {
+      // Dona
+      const ctxDona = document.getElementById('grafico-dona')?.getContext('2d');
+      if (ctxDona) {
+        new Chart(ctxDona, {
           type: 'doughnut',
           data: {
-            labels: ['Contabilizadas', 'Observadas (JNE)', 'Pendientes'],
+            labels: ['Contabilizadas', 'Para JNE', 'Pendientes'],
             datasets: [{
-              data: [c.contabilizadas, c.observadas, c.pendientes],
-              backgroundColor: ['#004b8d', '#c9a84c', '#e2e8f0'],
-              borderColor:     ['#002a5c', '#92640a', '#cbd5e1'],
-              borderWidth: 2,
-              hoverOffset: 8,
+              data: [c.contabilizadas, c.observadas, Math.max(c.pendientes,0)],
+              backgroundColor: ['#004b8d', '#1a6bb5', '#dde3ed'],
+              borderWidth: 0,
+              hoverOffset: 6,
             }]
           },
           options: {
@@ -639,121 +614,60 @@
             cutout: '68%',
             animation: { duration: 1000 },
             plugins: {
-              legend: {
-                position: 'bottom',
-                labels: {
-                  font: { family: 'Inter', size: 10 },
-                  padding: 12,
-                  usePointStyle: true,
-                }
-              },
-              tooltip: {
-                callbacks: {
-                  label: ctx => ` ${ctx.label}: ${ctx.parsed} mesas`
-                }
-              }
+              legend: { display: false },
+              tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} mesas` } }
             }
           }
         });
+        document.getElementById('dona-pct-centro').textContent = pct + '%';
 
-        const centroEl = document.getElementById('dona-pct-centro');
-        if (centroEl) centroEl.textContent = pct + '%';
-      },
+        // Leyenda dona
+        const leyenda = document.getElementById('dona-leyenda');
+        if (leyenda) {
+          const items = [
+            { label: 'Contabilizadas', val: c.contabilizadas, color: '#004b8d' },
+            { label: 'Para envío al JNE', val: c.observadas, color: '#1a6bb5' },
+            { label: 'Pendientes', val: c.pendientes, color: '#dde3ed' },
+          ];
+          leyenda.innerHTML = items.map(it => `
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.78rem;padding:5px 0;border-bottom:1px solid var(--onpe-gris-borde);">
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="width:10px;height:10px;border-radius:50%;background:${it.color};flex-shrink:0;display:inline-block;"></span>
+                <span style="color:var(--onpe-gris-texto);">${it.label}</span>
+              </div>
+              <strong style="color:var(--onpe-azul);">${it.val.toLocaleString('es-PE')}</strong>
+            </div>
+          `).join('');
+        }
+      }
 
-      /* ── TABLA COMPARATIVA ─────────────────────────────────── */
-      _renderTablaComparativa() {
-        const c    = SED.getContador();
-        const pcts = SED.getPorcentajesVotos();
-        const total = c.fp + c.jp + c.blancos + c.nulos || 1;
-        const el    = document.getElementById('tabla-comparativa-body');
-        if (!el) return;
-
+      // Tabla comparativa
+      const tbody = document.getElementById('tabla-comp-body');
+      if (tbody) {
         const filas = [
-          {
-            nombre: 'Keiko Fujimori',
-            partido: 'Fuerza Popular',
-            votos: c.fp,
-            pctValidos: pcts.fp,
-            pctTotal: (c.fp / total * 100).toFixed(2),
-            color: '#004b8d',
-          },
-          {
-            nombre: 'Roberto Sánchez',
-            partido: 'Juntos por el Perú',
-            votos: c.jp,
-            pctValidos: pcts.jp,
-            pctTotal: (c.jp / total * 100).toFixed(2),
-            color: '#c9a84c',
-          },
-          {
-            nombre: 'Votos en Blanco',
-            partido: '—',
-            votos: c.blancos,
-            pctValidos: '—',
-            pctTotal: (c.blancos / total * 100).toFixed(2),
-            color: '#adb5bd',
-          },
-          {
-            nombre: 'Votos Nulos',
-            partido: '—',
-            votos: c.nulos,
-            pctValidos: '—',
-            pctTotal: (c.nulos / total * 100).toFixed(2),
-            color: '#c62828',
-          },
-          {
-            nombre: 'TOTAL',
-            partido: '—',
-            votos: total,
-            pctValidos: '100%',
-            pctTotal: '100%',
-            color: '#002a5c',
-            esTotal: true,
-          },
+          { nombre: 'Keiko Fujimori', partido: 'Fuerza Popular', votos: c.fp, pctV: pcts.fp, pctT: (c.fp/total*100).toFixed(2), color: '#004b8d' },
+          { nombre: 'Roberto Sánchez', partido: 'Juntos por el Perú', votos: c.jp, pctV: pcts.jp, pctT: (c.jp/total*100).toFixed(2), color: '#cc0000' },
+          { nombre: 'Votos en Blanco', partido: '—', votos: c.blancos, pctV: '—', pctT: (c.blancos/total*100).toFixed(2), color: '#adb5bd' },
+          { nombre: 'Votos Nulos', partido: '—', votos: c.nulos, pctV: '—', pctT: (c.nulos/total*100).toFixed(2), color: '#e0e0e0' },
+          { nombre: 'TOTAL', partido: '', votos: total, pctV: '100', pctT: '100', color: '#003570' },
         ];
-
-        el.innerHTML = filas.map(f => `
-          <tr style="${f.esTotal ? 'background:var(--blanco-roto); font-weight:700;' : ''}">
+        tbody.innerHTML = filas.map(f => `
+          <tr>
             <td>
-              <span style="
-                display:inline-block;
-                width:10px; height:10px;
-                background:${f.color};
-                border-radius:50%;
-                margin-right:8px;
-                vertical-align:middle;
-              "></span>
+              <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${f.color};margin-right:6px;vertical-align:middle;"></span>
               <strong>${f.nombre}</strong>
-              ${f.partido !== '—' ? `<br><small style="color:var(--gris-suave); margin-left:18px;">${f.partido}</small>` : ''}
+              ${f.partido && f.partido !== '—' ? `<br><small style="color:var(--onpe-gris-suave);margin-left:14px;">${f.partido}</small>` : ''}
             </td>
-            <td class="valor-num">${f.votos.toLocaleString('es-PE')}</td>
-            <td class="valor-num">${f.pctValidos}${f.pctValidos !== '—' && f.pctValidos !== '100%' ? '%' : ''}</td>
-            <td class="valor-num">${f.pctTotal}${f.pctTotal !== '100%' ? '%' : ''}</td>
+            <td class="val">${f.votos.toLocaleString('es-PE')}</td>
+            <td class="val">${f.pctV}${f.pctV !== '—' ? '%' : ''}</td>
+            <td class="val">${f.pctT}%</td>
           </tr>
         `).join('');
-      },
+      }
 
-      /* ── FILTRO REGIÓN (simulado) ──────────────────────────── */
-      filtrarRegion(region, btn) {
-        document.querySelectorAll('.region-btn').forEach(b => b.classList.remove('activo'));
-        btn.classList.add('activo');
-        // En una implementación real filtrarías por región
-        // Por ahora recarga los mismos datos globales
-        console.log(`[SED-2026] Filtro región: ${region}`);
-        this._renderGraficoBarras();
-        this._renderCandidatosHero();
-      },
-
-      /* ── HORA ACTUALIZACIÓN ────────────────────────────────── */
-      _actualizarHora() {
-        const el = document.getElementById('hora-update');
-        if (el) el.textContent =
-          'Actualizado: ' + SED.formatearFecha(SED.getContador().ultimaActualizacion);
-      },
-
-    };
-
-    document.addEventListener('DOMContentLoaded', () => Stats.init());
+      // Auto-actualizar cada 5 minutos
+      setInterval(() => location.reload(), 5 * 60 * 1000);
+    });
   </script>
 
 </body>
