@@ -8,12 +8,13 @@
   <script src="https://kit.fontawesome.com/ff1a3f5508.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
+    /* ── HERO ──────────────────────────────────────────────── */
     .onpe-hero-principal {
       background: linear-gradient(180deg, #e8f0fa 0%, #ffffff 100%);
-      padding: 48px 32px 32px;
+      padding: 40px 32px 32px;
       border-bottom: 1px solid var(--onpe-gris-borde);
     }
-    .onpe-hero-principal-inner {
+    .onpe-hero-inner {
       max-width: 1280px;
       margin: 0 auto;
       display: grid;
@@ -34,11 +35,11 @@
     }
     .onpe-hero-h1 {
       font-family: var(--font-titulo);
-      font-size: 3rem;
+      font-size: 2.8rem;
       font-weight: 800;
       color: var(--onpe-azul);
       line-height: 1.05;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     .onpe-hero-h1 span { color: var(--onpe-rojo); }
     .onpe-hero-desc {
@@ -46,52 +47,340 @@
       color: var(--onpe-gris-suave);
       line-height: 1.7;
       max-width: 480px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
-    .onpe-hero-btns {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .onpe-avance-hero {
+    .onpe-hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* ── CARD AVANCE ───────────────────────────────────────── */
+    .onpe-avance-card {
       background: var(--onpe-blanco);
       border: 1px solid var(--onpe-gris-borde);
       border-radius: var(--radio);
-      padding: 24px;
+      padding: 22px;
       box-shadow: var(--sombra-card);
     }
-    .onpe-avance-hero h3 {
+    .onpe-avance-card h3 {
       font-family: var(--font-titulo);
-      font-size: 0.9rem;
+      font-size: 0.82rem;
       font-weight: 700;
       color: var(--onpe-azul);
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
     .onpe-avance-pct {
       font-family: var(--font-titulo);
-      font-size: 4rem;
+      font-size: 3.6rem;
       font-weight: 800;
       color: var(--onpe-azul);
       line-height: 1;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: baseline;
-      gap: 4px;
+      margin-bottom: 2px;
     }
-    .onpe-avance-pct span { font-size: 1.8rem; font-weight: 600; }
-    .onpe-avance-label {
-      font-size: 0.75rem;
+    .onpe-avance-pct span { font-size: 1.6rem; font-weight: 600; }
+    .onpe-actas-label {
+      font-size: 0.68rem;
       color: var(--onpe-teal);
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
+
+    /* ── MINI CARDS ────────────────────────────────────────── */
+    .onpe-mini-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .onpe-mini-card {
+      background: var(--onpe-blanco);
+      border: 1px solid var(--onpe-gris-borde);
+      border-radius: var(--radio);
+      padding: 14px 10px;
+      text-align: center;
+      box-shadow: var(--sombra-card);
+      transition: all var(--trans);
+    }
+    .onpe-mini-card:hover { transform: translateY(-2px); box-shadow: var(--sombra-hover); }
+    .onpe-mini-card .mn { font-family: var(--font-titulo); font-size: 1.6rem; font-weight: 800; color: var(--onpe-azul); line-height: 1; display: block; }
+    .onpe-mini-card .ml { font-size: 0.65rem; color: var(--onpe-gris-suave); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 3px; display: block; }
+    .onpe-mini-card.verde .mn { color: #2e7d32; }
+    .onpe-mini-card.rojo  .mn { color: var(--onpe-rojo); }
+    .onpe-mini-card.teal  .mn { color: var(--onpe-teal); }
+
+    /* ── CANDIDATOS RESULTADO ──────────────────────────────── */
+    .candidatos-resultado-section {
+      background: var(--onpe-blanco);
+      border: 1px solid var(--onpe-gris-borde);
+      border-radius: var(--radio);
+      padding: 24px 28px;
+      box-shadow: var(--sombra-card);
+      margin-bottom: 24px;
+    }
+    .candidatos-resultado-section .sec-titulo {
+      font-family: var(--font-titulo);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--onpe-azul);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--onpe-azul-suave);
+    }
+
+    /* Grid candidatos — igual a ONPE real */
+    .candidatos-onpe-grid {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 60px;
+      padding: 10px 0 16px;
+    }
+
+    .candidato-onpe-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+
+    /* Foto circular con borde azul */
+    .candidato-foto-circulo {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 3px solid var(--onpe-azul);
+      overflow: hidden;
+      background: var(--onpe-azul-suave);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 4px 16px rgba(0,75,141,0.15);
+    }
+
+    .candidato-foto-circulo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    /* Badge letra partido en esquina */
+    .candidato-badge {
+      position: absolute;
+      bottom: 4px;
+      left: 4px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      font-weight: 900;
+      border: 2px solid white;
+      color: white;
+    }
+
+    /* Logo partido */
+    .candidato-logo-partido {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    /* Porcentaje grande */
+    .candidato-pct-onpe {
+      font-family: var(--font-titulo);
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .candidato-nombre-onpe {
+      font-family: var(--font-titulo);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--onpe-gris-titulo, #1a1a2e);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .candidato-partido-onpe {
+      font-size: 0.72rem;
+      color: var(--onpe-gris-suave);
+    }
+
+    /* Barra comparativa bicolor — igual ONPE real */
+    .barra-bicolor {
+      display: flex;
+      border-radius: 0;
+      height: 8px;
+      width: 100%;
+      overflow: hidden;
+      margin-top: 16px;
+    }
+    .barra-bicolor .seg-fp {
+      background: var(--onpe-azul);
+      transition: width 1.2s ease;
+    }
+    .barra-bicolor .seg-jp {
+      background: var(--onpe-rojo);
+      transition: width 1.2s ease;
+    }
+    .barra-etiquetas {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    /* ── ILUSTRACIONES 1-5 (como ONPE real) ───────────────── */
+    .onpe-ilus-section {
+      background: var(--onpe-gris-bg);
+      padding: 48px 32px;
+      border-top: 1px solid var(--onpe-gris-borde);
+    }
+    .onpe-ilus-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    .onpe-ilus-titulo {
+      font-family: var(--font-titulo);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--onpe-azul);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .onpe-ilus-subtitulo {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--onpe-gris-suave);
+      margin-bottom: 32px;
+    }
+    .onpe-ilus-grid {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .onpe-ilus-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+    .onpe-ilus-circulo {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      border: 3px solid var(--onpe-azul);
+      overflow: hidden;
+      background: var(--onpe-azul-suave);
+      transition: transform var(--trans), box-shadow var(--trans);
+    }
+    .onpe-ilus-circulo:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,75,141,0.2);
+    }
+    .onpe-ilus-circulo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .onpe-ilus-numero {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-titulo);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--onpe-azul);
+    }
+    .onpe-ilus-etiqueta {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--onpe-gris-texto);
+    }
+    /* Indicador de color debajo del número — como ONPE real */
+    .onpe-ilus-dot {
+      width: 28px;
+      height: 5px;
+      border-radius: 3px;
+      margin-top: -4px;
+    }
+
+    /* ── SECCIÓN ACERCA DE — como ONPE real ────────────────── */
+    .onpe-acerca-section {
+      background: var(--onpe-blanco);
+      padding: 0 32px;
+      border-top: 1px solid var(--onpe-gris-borde);
+    }
+    .onpe-acerca-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--onpe-gris-borde);
+      border-radius: var(--radio);
+      overflow: hidden;
+      margin: 32px auto;
+    }
+    .onpe-acerca-col {
+      padding: 40px 48px;
+    }
+    .onpe-acerca-col:first-child {
+      border-right: 1px solid var(--onpe-gris-borde);
+    }
+    .onpe-acerca-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--onpe-gris-suave);
+      margin-bottom: 12px;
+    }
+    .onpe-acerca-titulo {
+      font-family: var(--font-titulo);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--onpe-azul);
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+    .onpe-acerca-texto {
+      font-size: 0.875rem;
+      color: var(--onpe-gris-suave);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+    .onpe-acerca-link {
+      color: var(--onpe-teal);
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: gap var(--trans);
+    }
+    .onpe-acerca-link:hover { gap: 10px; }
+
+    /* ── REGISTRO DE ACTA ──────────────────────────────────── */
     .onpe-registro-section {
       background: var(--onpe-gris-bg);
       padding: 40px 32px;
@@ -107,7 +396,7 @@
     }
     .onpe-registro-titulo {
       font-family: var(--font-titulo);
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-weight: 800;
       color: var(--onpe-azul);
       text-transform: uppercase;
@@ -117,82 +406,58 @@
       align-items: center;
       gap: 8px;
     }
-    .onpe-registro-sub {
-      font-size: 0.85rem;
-      color: var(--onpe-gris-suave);
-      margin-bottom: 20px;
-    }
-    #onpe-contador-suma {
-      font-size: 0.85rem;
-      min-height: 22px;
-      margin: 8px 0;
-      font-weight: 600;
-    }
-    .onpe-mini-cards {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-top: 24px;
-    }
-    .onpe-mini-card {
-      background: var(--onpe-blanco);
-      border: 1px solid var(--onpe-gris-borde);
-      border-radius: var(--radio);
-      padding: 16px;
-      text-align: center;
-      box-shadow: var(--sombra-card);
-      transition: all var(--trans);
-    }
-    .onpe-mini-card:hover { transform: translateY(-2px); box-shadow: var(--sombra-hover); }
-    .onpe-mini-card .mini-num {
-      font-family: var(--font-titulo);
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--onpe-azul);
-      line-height: 1;
-      display: block;
-    }
-    .onpe-mini-card .mini-label {
-      font-size: 0.68rem;
-      color: var(--onpe-gris-suave);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-top: 4px;
-      display: block;
-    }
-    .onpe-mini-card.verde .mini-num { color: #2e7d32; }
-    .onpe-mini-card.rojo  .mini-num { color: var(--onpe-rojo); }
-    .onpe-mini-card.teal  .mini-num { color: var(--onpe-teal); }
 
+    /* ── RESPONSIVE ────────────────────────────────────────── */
     @media (max-width: 900px) {
-      .onpe-hero-principal-inner { grid-template-columns: 1fr; }
-      .onpe-registro-inner { grid-template-columns: 1fr; }
-      .onpe-mini-cards { grid-template-columns: repeat(2,1fr); }
-      .onpe-hero-h1 { font-size: 2rem; }
+      .onpe-hero-inner      { grid-template-columns: 1fr; }
+      .onpe-registro-inner  { grid-template-columns: 1fr; }
+      .onpe-acerca-inner    { grid-template-columns: 1fr; }
+      .onpe-acerca-col:first-child { border-right: none; border-bottom: 1px solid var(--onpe-gris-borde); }
+      .onpe-mini-cards      { grid-template-columns: repeat(2,1fr); }
+      .onpe-hero-h1         { font-size: 2rem; }
+      .candidatos-onpe-grid { gap: 24px; }
+      .candidato-foto-circulo { width: 80px; height: 80px; }
+      .candidato-pct-onpe   { font-size: 2rem; }
+      .onpe-ilus-circulo    { width: 90px; height: 90px; }
     }
     @media (max-width: 480px) {
-      .onpe-hero-principal { padding: 24px 16px; }
-      .onpe-registro-section { padding: 24px 16px; }
-      .onpe-mini-cards { grid-template-columns: 1fr 1fr; }
+      .onpe-hero-principal  { padding: 24px 16px; }
+      .onpe-ilus-section    { padding: 32px 16px; }
+      .onpe-registro-section{ padding: 24px 16px; }
+      .onpe-acerca-section  { padding: 0 16px; }
+      .onpe-acerca-col      { padding: 28px 24px; }
+      .onpe-mini-cards      { grid-template-columns: 1fr 1fr; }
+      .onpe-ilus-grid       { gap: 12px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAVBAR -->
+  <!-- ══ NAVBAR ══ -->
   <header class="onpe-navbar">
     <div class="onpe-navbar-top"></div>
     <div class="onpe-navbar-main">
-      <a href="index.html" class="onpe-logo">
-        <div class="onpe-logo-placeholder">
+
+      <!-- Logo ONPE con imagen real -->
+      <a href="index.html" class="onpe-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+        <img src="assets/img/logos/onpe-logo.png"
+             alt="ONPE"
+             style="height:44px;width:auto;object-fit:contain;"
+             onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='flex'">
+        <div id="logo-fallback" style="display:none;" class="onpe-logo-placeholder">
           <div class="logo-icono">ONPE</div>
           <div class="logo-texto">
             <strong>Elecciones Generales</strong>
             <small>12 de abril de 2026</small>
           </div>
         </div>
+        <div class="logo-texto" style="line-height:1.1;">
+          <strong style="font-family:var(--font-titulo);font-size:0.82rem;color:var(--onpe-azul);display:block;letter-spacing:0.5px;">Elecciones Generales</strong>
+          <small style="font-size:0.65rem;color:var(--onpe-gris-suave);letter-spacing:0.3px;">12 de abril de 2026</small>
+        </div>
       </a>
+
+      <!-- Nav links con iconos -->
       <nav class="onpe-nav-links">
         <a href="index.html" class="activo">
           <i class="fas fa-th-large"></i>Resumen
@@ -216,15 +481,17 @@
 
   <main>
 
-    <!-- HERO -->
+    <!-- ══ HERO ══ -->
     <section class="onpe-hero-principal">
-      <div class="onpe-hero-principal-inner">
+      <div class="onpe-hero-inner">
         <div>
           <div class="onpe-hero-tag">
-            <i class="fas fa-circle" style="color:var(--onpe-teal);font-size:0.5rem;"></i>
+            <i class="fas fa-circle" style="color:var(--onpe-teal);font-size:0.45rem;"></i>
             Actualizado al 10/05/2026 a las 11:00:00 p. m.
           </div>
-          <h1 class="onpe-hero-h1">Segunda Vuelta<br><span>2026</span></h1>
+          <h1 class="onpe-hero-h1">
+            Segunda Vuelta<br><span>2026</span>
+          </h1>
           <p class="onpe-hero-desc">
             Sistema de Escrutinio Digital para el procesamiento de
             <strong>86,488 mesas de sufragio</strong>. Resultados en
@@ -243,38 +510,38 @@
           </div>
           <div class="onpe-mini-cards">
             <div class="onpe-mini-card verde">
-              <span class="mini-num" id="mini-contabilizadas">—</span>
-              <span class="mini-label">Contabilizadas</span>
+              <span class="mn" id="mini-cont">—</span>
+              <span class="ml">Contabilizadas</span>
             </div>
             <div class="onpe-mini-card rojo">
-              <span class="mini-num" id="mini-observadas">—</span>
-              <span class="mini-label">Para JNE</span>
+              <span class="mn" id="mini-obs">—</span>
+              <span class="ml">Para JNE</span>
             </div>
             <div class="onpe-mini-card">
-              <span class="mini-num" id="mini-pendientes">—</span>
-              <span class="mini-label">Pendientes</span>
+              <span class="mn" id="mini-pend">—</span>
+              <span class="ml">Pendientes</span>
             </div>
             <div class="onpe-mini-card teal">
-              <span class="mini-num">126</span>
-              <span class="mini-label">Centros Cómputo</span>
+              <span class="mn">126</span>
+              <span class="ml">Centros Cómputo</span>
             </div>
           </div>
         </div>
 
-        <!-- Card avance -->
-        <div class="onpe-avance-hero">
+        <!-- Card avance con dona -->
+        <div class="onpe-avance-card">
           <h3>
             <i class="fas fa-chart-pie" style="color:var(--onpe-teal);"></i>
             Elección de Fórmula Presidencial
           </h3>
-          <div class="onpe-avance-label">Actas contabilizadas</div>
+          <div class="onpe-actas-label">Actas contabilizadas</div>
           <div class="onpe-avance-pct" id="hero-pct">—<span>%</span></div>
-          <div class="onpe-progress-bar" style="margin-bottom:16px;">
+          <div class="onpe-progress-bar" style="margin-bottom:14px;">
             <div class="onpe-progress-fill" id="hero-barra" style="width:0%;"></div>
           </div>
-          <div style="display:flex;align-items:center;gap:20px;">
-            <div style="position:relative;width:110px;height:110px;flex-shrink:0;">
-              <canvas id="dona-hero" width="110" height="110"></canvas>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="position:relative;width:100px;height:100px;flex-shrink:0;">
+              <canvas id="dona-hero" width="100" height="100"></canvas>
             </div>
             <div class="onpe-leyenda" id="hero-leyenda"></div>
           </div>
@@ -300,106 +567,161 @@
       </div>
     </div>
 
-    <!-- CANDIDATOS -->
+    <!-- ══ CANDIDATOS — RESULTADO SEGUNDA VUELTA ══ -->
     <div class="onpe-container">
-      <div class="onpe-candidatos-section">
-        <div class="onpe-section-titulo">
+      <div class="candidatos-resultado-section">
+        <div class="sec-titulo">
           <i class="fas fa-vote-yea"></i>
           Resultado — Segunda Vuelta Presidencial
         </div>
-        <div class="onpe-candidatos-grid" id="candidatos-grid"></div>
-        <div class="onpe-barra-comparativa" style="margin-top:20px;">
-          <div class="onpe-barra-seg1" id="barra-fp" style="width:50%;"></div>
-          <div class="onpe-barra-seg2" id="barra-jp" style="width:50%;"></div>
+
+        <div class="candidatos-onpe-grid" id="candidatos-grid">
+          <!-- JS lo genera -->
         </div>
-        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:0.75rem;">
-          <span style="color:var(--onpe-azul);font-weight:700;">Fuerza Popular — K. Fujimori</span>
-          <span style="color:var(--onpe-rojo);font-weight:700;">Juntos por el Perú — R. Sánchez</span>
+
+        <!-- Barra bicolor igual a ONPE real -->
+        <div class="barra-bicolor">
+          <div class="seg-fp" id="barra-fp" style="width:50%;"></div>
+          <div class="seg-jp" id="barra-jp" style="width:50%;"></div>
+        </div>
+        <div class="barra-etiquetas">
+          <span style="color:var(--onpe-azul);">Fuerza Popular — K. Fujimori</span>
+          <span style="color:var(--onpe-rojo);">Juntos por el Perú — R. Sánchez</span>
         </div>
       </div>
     </div>
 
-    <!-- ILUSTRACIONES -->
-    <section class="onpe-ilustraciones-section">
-      <div style="max-width:1280px;margin:0 auto;">
-        <h2 class="onpe-ilustraciones-titulo">¿Qué elegiremos en la Segunda Vuelta 2026?</h2>
-        <p class="onpe-ilustraciones-subtitulo">
+    <!-- ══ ILUSTRACIONES 1-5 — como ONPE real ══ -->
+    <section class="onpe-ilus-section">
+      <div class="onpe-ilus-inner">
+        <h2 class="onpe-ilus-titulo">¿Qué elegiremos en la Segunda Vuelta 2026?</h2>
+        <p class="onpe-ilus-subtitulo">
           Estas son las autoridades por las cuales votaremos el 7 de junio de 2026.
         </p>
+
         <div class="onpe-ilus-grid">
+
+          <!-- 1 - Presidente -->
           <div class="onpe-ilus-item">
             <div class="onpe-ilus-circulo">
-              <!--
-                IMAGEN KEIKO: 200x200px PNG fondo transparente
-                Ruta: assets/img/candidatos/keiko.png
-                Reemplaza el emoji por:
-                <img src="assets/img/candidatos/keiko.png" alt="Keiko Fujimori">
-              -->
-              <span class="ilus-emoji">👩‍💼</span>
+              <img src="assets/img/onpe/5.png" alt="Presidente">
             </div>
             <div class="onpe-ilus-numero">
-              <!--
-                LOGO FP: 60x60px PNG fondo transparente
-                Ruta: assets/img/logos/logo-fp.png
-              -->
-              <img src="assets/img/logos/logo-fp.png" alt="FP"
-                   style="height:24px;width:auto;" onerror="this.replaceWith('🔵')">
+              1
+              <div class="onpe-ilus-dot" style="background:#cc0000;"></div>
             </div>
-            <span class="onpe-ilus-etiqueta">KEIKO FUJIMORI</span>
-            <span style="font-size:0.7rem;color:var(--onpe-gris-suave);">Fuerza Popular</span>
+            <span class="onpe-ilus-etiqueta">Presidente</span>
           </div>
 
-          <div style="display:flex;align-items:center;padding-bottom:40px;
-            font-family:var(--font-titulo);font-size:2rem;
-            font-weight:800;color:var(--onpe-gris-borde);">VS</div>
-
+          <!-- 2 - Vicepresidentes -->
           <div class="onpe-ilus-item">
             <div class="onpe-ilus-circulo">
-              <!--
-                IMAGEN SÁNCHEZ: 200x200px PNG fondo transparente
-                Ruta: assets/img/candidatos/sanchez.png
-                Reemplaza el emoji por:
-                <img src="assets/img/candidatos/sanchez.png" alt="Roberto Sánchez">
-              -->
-              <span class="ilus-emoji">👨‍💼</span>
+              <img src="assets/img/onpe/2.png" alt="Vicepresidentes">
             </div>
             <div class="onpe-ilus-numero">
-              <!--
-                LOGO JP: 60x60px PNG fondo transparente
-                Ruta: assets/img/logos/logo-jp.png
-              -->
-              <img src="assets/img/logos/logo-jp.png" alt="JP"
-                   style="height:24px;width:auto;" onerror="this.replaceWith('🔴')">
+              2
+              <div class="onpe-ilus-dot" style="background:#e65100;"></div>
             </div>
-            <span class="onpe-ilus-etiqueta">ROBERTO SÁNCHEZ</span>
-            <span style="font-size:0.7rem;color:var(--onpe-gris-suave);">Juntos por el Perú</span>
+            <span class="onpe-ilus-etiqueta">Vicepresidentes</span>
           </div>
+
+          <!-- 60 - Senadores -->
+          <div class="onpe-ilus-item">
+            <div class="onpe-ilus-circulo">
+              <img src="assets/img/onpe/3.png" alt="Senadores">
+            </div>
+            <div class="onpe-ilus-numero">
+              60
+              <div class="onpe-ilus-dot" style="background:#009ba8;"></div>
+            </div>
+            <span class="onpe-ilus-etiqueta">Senadores</span>
+          </div>
+
+          <!-- 130 - Diputados -->
+          <div class="onpe-ilus-item">
+            <div class="onpe-ilus-circulo">
+              <img src="assets/img/onpe/4.png" alt="Diputados">
+            </div>
+            <div class="onpe-ilus-numero">
+              130
+              <div class="onpe-ilus-dot" style="background:#2e7d32;"></div>
+            </div>
+            <span class="onpe-ilus-etiqueta">Diputados</span>
+          </div>
+
+          <!-- 5 - Parlamento Andino -->
+          <div class="onpe-ilus-item">
+            <div class="onpe-ilus-circulo">
+              <img src="assets/img/onpe/1.png" alt="Parlamento Andino">
+            </div>
+            <div class="onpe-ilus-numero">
+              5
+              <div class="onpe-ilus-dot" style="background:#004b8d;"></div>
+            </div>
+            <span class="onpe-ilus-etiqueta">Parlamento Andino</span>
+          </div>
+
         </div>
 
-        <!-- Datos numéricos -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);
-          gap:20px;margin-top:48px;max-width:800px;margin-left:auto;margin-right:auto;">
+        <!-- Datos electorales -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+          margin-top:40px;max-width:800px;margin-left:auto;margin-right:auto;">
           <div class="onpe-mini-card" style="text-align:center;">
-            <span class="mini-num" style="font-size:1.8rem;">27M</span>
-            <span class="mini-label">Electores</span>
+            <span class="mn" style="font-size:1.6rem;">27M</span>
+            <span class="ml">Electores</span>
           </div>
           <div class="onpe-mini-card" style="text-align:center;">
-            <span class="mini-num" style="font-size:1.4rem;">86,488</span>
-            <span class="mini-label">Mesas</span>
+            <span class="mn" style="font-size:1.3rem;">86,488</span>
+            <span class="ml">Mesas</span>
           </div>
           <div class="onpe-mini-card" style="text-align:center;">
-            <span class="mini-num" style="font-size:1.8rem;">126</span>
-            <span class="mini-label">Centros</span>
+            <span class="mn" style="font-size:1.6rem;">126</span>
+            <span class="ml">Centros</span>
           </div>
           <div class="onpe-mini-card" style="text-align:center;">
-            <span class="mini-num" style="font-size:1.8rem;">900K</span>
-            <span class="mini-label">Exterior</span>
+            <span class="mn" style="font-size:1.6rem;">900K</span>
+            <span class="ml">Exterior</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- REGISTRO DE ACTA -->
+    <!-- ══ ACERCA DE — como ONPE real ══ -->
+    <section class="onpe-acerca-section">
+      <div class="onpe-acerca-inner">
+        <div class="onpe-acerca-col">
+          <div class="onpe-acerca-tag">ACERCA DE</div>
+          <h2 class="onpe-acerca-titulo">
+            Conoce más sobre el proceso electoral 2026
+          </h2>
+          <p class="onpe-acerca-texto">
+            Estar informados es fundamental para una democracia saludable.
+            ¿Quieres conocer más sobre este importante proceso electoral
+            y cómo funciona el sistema de escrutinio digital?
+          </p>
+          <a href="informe/index.html" class="onpe-acerca-link">
+            Saber más <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+        <div class="onpe-acerca-col">
+          <div class="onpe-acerca-tag">LO QUE DEBES SABER</div>
+          <h2 class="onpe-acerca-titulo">
+            Algunos puntos importantes sobre estas elecciones 2026
+          </h2>
+          <p class="onpe-acerca-texto">
+            La Segunda Vuelta se realizará el <strong>Domingo 7 de junio de 2026</strong>
+            de 7 a. m. a 6 p. m. Donde más de 27 millones de peruanos elegirán
+            al Presidente y Vicepresidentes de la República.
+          </p>
+          <p class="onpe-acerca-texto" style="margin-bottom:0;">
+            <strong>Candidatos:</strong> Keiko Fujimori (Fuerza Popular)
+            y Roberto Sánchez (Juntos por el Perú).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ REGISTRO DE ACTA ══ -->
     <section class="onpe-registro-section" id="registro">
       <div class="onpe-registro-inner">
         <div>
@@ -407,74 +729,54 @@
             <i class="fas fa-file-signature" style="color:var(--onpe-teal);"></i>
             Registro de Acta Digital
           </h2>
-          <p class="onpe-registro-sub">
+          <p style="font-size:0.85rem;color:var(--onpe-gris-suave);margin-bottom:16px;">
             Presidente: <strong id="onpe-nombre-presidente">—</strong>
           </p>
           <input type="hidden" id="num-mesa-form" />
           <div class="onpe-form-grid">
             <div class="onpe-form-item">
-              <label>
-                <span class="color-dot" style="background:var(--onpe-azul);"></span>
-                Fuerza Popular (K. Fujimori)
-              </label>
+              <label><span class="color-dot" style="background:var(--onpe-azul);"></span>Fuerza Popular (K. Fujimori)</label>
               <input type="number" id="votos-fp" placeholder="0" min="0" max="300" class="onpe-input" />
             </div>
             <div class="onpe-form-item">
-              <label>
-                <span class="color-dot" style="background:var(--onpe-rojo);"></span>
-                Juntos por el Perú (R. Sánchez)
-              </label>
+              <label><span class="color-dot" style="background:var(--onpe-rojo);"></span>Juntos por el Perú (R. Sánchez)</label>
               <input type="number" id="votos-jp" placeholder="0" min="0" max="300" class="onpe-input" />
             </div>
             <div class="onpe-form-item">
-              <label>
-                <span class="color-dot" style="background:#adb5bd;"></span>
-                Votos en Blanco
-              </label>
+              <label><span class="color-dot" style="background:#adb5bd;"></span>Votos en Blanco</label>
               <input type="number" id="votos-blancos" placeholder="0" min="0" max="300" class="onpe-input" />
             </div>
             <div class="onpe-form-item">
-              <label>
-                <span class="color-dot" style="background:#e0e0e0;border:1px solid #ccc;"></span>
-                Votos Nulos
-              </label>
+              <label><span class="color-dot" style="background:#e0e0e0;border:1px solid #ccc;"></span>Votos Nulos</label>
               <input type="number" id="votos-nulos" placeholder="0" min="0" max="300" class="onpe-input" />
             </div>
           </div>
-          <div id="onpe-contador-suma"></div>
-          <p style="font-size:0.78rem;color:var(--onpe-gris-suave);margin-bottom:16px;">
+          <div id="onpe-contador-suma" style="font-size:0.85rem;min-height:22px;margin:8px 0;font-weight:600;"></div>
+          <p style="font-size:0.78rem;color:var(--onpe-gris-suave);margin-bottom:14px;">
             * La suma debe ser exactamente <strong>300</strong> votos (padrón de mesa).
           </p>
           <button id="btn-enviar-acta" onclick="Actas.procesarActa()" class="onpe-btn" style="width:100%;">
             <i class="fas fa-paper-plane"></i> Firmar y Enviar Acta
           </button>
-          <div id="resumen-post-registro" style="display:none;margin-top:16px;"></div>
+          <div id="resumen-post-registro" style="display:none;margin-top:14px;"></div>
         </div>
 
-        <!-- Auth lateral -->
+        <!-- Auth box -->
         <div>
           <div class="onpe-auth-box">
-            <h3>
-              <i class="fas fa-id-card" style="color:var(--onpe-teal);margin-right:8px;"></i>
-              Acceso Presidente de Mesa
-            </h3>
+            <h3><i class="fas fa-id-card" style="color:var(--onpe-teal);margin-right:8px;"></i>Acceso Presidente de Mesa</h3>
             <p>Ingrese su DNI para validación con RENIEC:</p>
-            <input type="text" id="dni-input" placeholder="DNI de 8 dígitos"
-              maxlength="8" class="onpe-input" />
-            <button id="btn-auth" onclick="Auth.validarIdentidad()"
-              class="onpe-btn" style="width:100%;margin-top:12px;">
+            <input type="text" id="dni-input" placeholder="DNI de 8 dígitos" maxlength="8" class="onpe-input" />
+            <button id="btn-auth" onclick="Auth.validarIdentidad()" class="onpe-btn" style="width:100%;margin-top:10px;">
               <i class="fas fa-shield-alt"></i> Autenticar Identidad
             </button>
             <div id="onpe-mesa-asignada" style="display:none;margin-top:10px;
               background:var(--onpe-azul);color:white;padding:8px 14px;
-              border-radius:var(--radio-sm);font-weight:700;font-size:0.9rem;">
-            </div>
-            <p id="auth-msg" style="font-size:0.82rem;margin-top:10px;
-              min-height:20px;font-weight:600;"></p>
+              border-radius:var(--radio-sm);font-weight:700;font-size:0.9rem;"></div>
+            <p id="auth-msg" style="font-size:0.82rem;margin-top:10px;min-height:20px;font-weight:600;"></p>
           </div>
 
-          <!-- DNIs prueba -->
-          <div style="margin-top:16px;background:var(--onpe-blanco);
+          <div style="margin-top:14px;background:var(--onpe-blanco);
             border:1px solid var(--onpe-gris-borde);border-radius:var(--radio);
             padding:16px;font-size:0.78rem;">
             <p style="font-weight:700;color:var(--onpe-azul);margin-bottom:8px;">
@@ -499,22 +801,16 @@
       <h3>¡Acta Enviada!</h3>
       <p>Los datos han sido validados y registrados correctamente.</p>
       <div class="modal-detalle"></div>
-      <button onclick="Actas.cerrarModal('modal-exito')" class="onpe-btn" style="width:100%;">
-        Siguiente Mesa
-      </button>
+      <button onclick="Actas.cerrarModal('modal-exito')" class="onpe-btn" style="width:100%;">Siguiente Mesa</button>
     </div>
   </div>
-
   <div class="onpe-modal" id="modal-observada">
     <div class="onpe-modal-contenido">
       <i class="fas fa-balance-scale" style="color:var(--onpe-rojo);"></i>
       <h3>Acta Observada</h3>
       <p>La suma no cuadra con el padrón. El acta fue enviada al JNE.</p>
       <div class="modal-detalle"></div>
-      <button onclick="Actas.cerrarModal('modal-observada')"
-        class="onpe-btn onpe-btn-rojo" style="width:100%;">
-        Entendido
-      </button>
+      <button onclick="Actas.cerrarModal('modal-observada')" class="onpe-btn onpe-btn-rojo" style="width:100%;">Entendido</button>
     </div>
   </div>
 
@@ -536,19 +832,15 @@
         <div class="onpe-social-links">
           <a href="#"><i class="fab fa-facebook-f"></i></a>
           <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-tiktok"></i></a>
           <a href="#"><i class="fab fa-instagram"></i></a>
           <a href="#"><i class="fab fa-twitter"></i></a>
         </div>
       </div>
       <div>
         <h4>SED-2026</h4>
-        <p>Integrantes:<br>
-          Jesús Romaldo Sulla Sacsi<br>
-          Anthony Dorly Huilahuaña Chata
-        </p>
-        <p style="margin-top:6px;font-size:0.72rem;opacity:0.6;">
-          Metodologías Ágiles · ISMA SENATI · HT-02
-        </p>
+        <p>Jesús Romaldo Sulla Sacsi<br>Anthony Dorly Huilahuaña Chata</p>
+        <p style="margin-top:6px;font-size:0.72rem;opacity:0.6;">Metodologías Ágiles · ISMA SENATI · HT-02</p>
       </div>
     </div>
     <div class="onpe-footer-bottom">
@@ -568,9 +860,9 @@
       const pcts = SED.getPorcentajesVotos();
 
       // Mini cards
-      document.getElementById('mini-contabilizadas').textContent = c.contabilizadas;
-      document.getElementById('mini-observadas').textContent     = c.observadas;
-      document.getElementById('mini-pendientes').textContent     = c.pendientes;
+      document.getElementById('mini-cont').textContent = c.contabilizadas;
+      document.getElementById('mini-obs').textContent  = c.observadas;
+      document.getElementById('mini-pend').textContent = c.pendientes;
 
       // Hero pct
       document.getElementById('hero-pct').innerHTML = pct + '<span>%</span>';
@@ -593,8 +885,7 @@
           <div class="der"><span class="pct">0%</span><span class="num">${c.pendientes}</span></div>
         </div>
       `;
-      document.getElementById('hero-total').innerHTML =
-        `<span>TOTAL</span><span>${c.totalMesas}</span>`;
+      document.getElementById('hero-total').innerHTML = `<span>TOTAL</span><span>${c.totalMesas}</span>`;
 
       // Dona hero
       const ctx = document.getElementById('dona-hero')?.getContext('2d');
@@ -617,50 +908,45 @@
         });
       }
 
-      // Candidatos grid
+      // Candidatos grid — igual a ONPE real
       const grid = document.getElementById('candidatos-grid');
       if (grid) {
         grid.innerHTML = `
-          <div class="onpe-candidato-item">
-            <div class="onpe-candidato-foto">
+          <div class="candidato-onpe-col">
+            <div class="candidato-foto-circulo">
               <img src="assets/img/candidatos/keiko.png" alt="Keiko Fujimori"
-                onerror="this.style.display='none';document.getElementById('ph-keiko').style.display='flex'">
-              <div id="ph-keiko" class="foto-placeholder" style="display:none;">👩</div>
-              <div class="onpe-candidato-numero" style="background:var(--onpe-azul);">K</div>
+                onerror="this.style.display='none'">
+              <div class="candidato-badge" style="background:var(--onpe-azul);">K</div>
             </div>
-            <img src="assets/img/logos/logo-fp.png" class="onpe-candidato-logo"
-              alt="FP" onerror="this.style.display='none'">
-            <div class="onpe-candidato-pct" style="color:var(--onpe-azul);">${pcts.fp}%</div>
-            <div class="onpe-candidato-nombre">KEIKO FUJIMORI</div>
-            <div class="onpe-candidato-partido">Fuerza Popular</div>
+            <img src="assets/img/logos/logo-fp.png" class="candidato-logo-partido"
+              alt="Fuerza Popular" onerror="this.style.display='none'">
+            <div class="candidato-pct-onpe" style="color:var(--onpe-azul);">${pcts.fp}%</div>
+            <div class="candidato-nombre-onpe">KEIKO FUJIMORI</div>
+            <div class="candidato-partido-onpe">Fuerza Popular</div>
           </div>
-          <div class="onpe-candidato-item">
-            <div class="onpe-candidato-foto">
+
+          <div class="candidato-onpe-col">
+            <div class="candidato-foto-circulo" style="border-color:var(--onpe-rojo);">
               <img src="assets/img/candidatos/sanchez.png" alt="Roberto Sánchez"
-                onerror="this.style.display='none';document.getElementById('ph-sanchez').style.display='flex'">
-              <div id="ph-sanchez" class="foto-placeholder" style="display:none;">👨</div>
-              <div class="onpe-candidato-numero" style="background:var(--onpe-rojo);">JP</div>
+                onerror="this.style.display='none'">
+              <div class="candidato-badge" style="background:var(--onpe-rojo);">JP</div>
             </div>
-            <img src="assets/img/logos/logo-jp.png" class="onpe-candidato-logo"
-              alt="JP" onerror="this.style.display='none'">
-            <div class="onpe-candidato-pct" style="color:var(--onpe-rojo);">${pcts.jp}%</div>
-            <div class="onpe-candidato-nombre">ROBERTO SÁNCHEZ</div>
-            <div class="onpe-candidato-partido">Juntos por el Perú</div>
+            <img src="assets/img/logos/logo-jp.png" class="candidato-logo-partido"
+              alt="Juntos por el Perú" onerror="this.style.display='none'">
+            <div class="candidato-pct-onpe" style="color:var(--onpe-rojo);">${pcts.jp}%</div>
+            <div class="candidato-nombre-onpe">ROBERTO SÁNCHEZ</div>
+            <div class="candidato-partido-onpe">Juntos por el Perú</div>
           </div>
         `;
       }
 
-      // Barra comparativa
+      // Barra bicolor
       setTimeout(() => {
         const bFP = document.getElementById('barra-fp');
         const bJP = document.getElementById('barra-jp');
         if (bFP) bFP.style.width = pcts.fp + '%';
         if (bJP) bJP.style.width = pcts.jp + '%';
       }, 400);
-
-      // Nombre presidente en form
-      const np = document.getElementById('onpe-nombre-presidente');
-      if (np && Auth._sesion) np.textContent = Auth._sesion.persona.nombre;
     });
   </script>
 
