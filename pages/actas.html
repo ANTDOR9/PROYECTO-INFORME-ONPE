@@ -411,22 +411,41 @@
 
   <main>
 
-    <!-- HERO -->
-    <div style="background:linear-gradient(180deg,#e8f0fa 0%,#fff 100%);
-      padding:32px 32px 20px;border-bottom:1px solid var(--onpe-gris-borde);">
-      <div style="max-width:1280px;margin:0 auto;">
-        <div class="onpe-hero-tag" style="margin-bottom:6px;">
-          <i class="fas fa-circle" style="color:var(--onpe-teal);font-size:0.5rem;"></i>
-          Actualizado al 10/05/2026 a las 11:00:00 p. m.
-        </div>
-        <h1 style="font-family:var(--font-titulo);font-size:2rem;
-          font-weight:800;color:var(--onpe-azul);">
-          Avance de Actas Contabilizadas
-        </h1>
-        <p style="font-size:0.85rem;color:var(--onpe-gris-suave);margin-top:4px;">
-          Estado de procesamiento por tipo de elección — Segunda Vuelta 2026
-        </p>
-      </div>
+<!-- HERO CON VIDEO -->
+<div style="position:relative;overflow:hidden;
+  border-bottom:1px solid var(--onpe-gris-borde);
+  min-height:140px;display:flex;align-items:center;">
+
+  <video autoplay muted loop playsinline
+    style="position:absolute;inset:0;width:100%;height:100%;
+           object-fit:cover;object-position:center;
+           filter:blur(1px) brightness(0.45);
+           transform:scale(1.04);z-index:0;">
+    <source src="../assets/video/hero-bg.mp4" type="video/mp4">
+  </video>
+
+  <div style="position:absolute;inset:0;z-index:1;
+    background:linear-gradient(135deg,
+      rgba(0,18,40,0.70) 0%,
+      rgba(0,75,141,0.50) 100%);"></div>
+
+  <div style="position:relative;z-index:2;max-width:1280px;
+    margin:0 auto;padding:32px 32px 28px;width:100%;">
+    <div style="font-size:0.7rem;font-weight:700;letter-spacing:2px;
+      text-transform:uppercase;color:var(--onpe-teal);
+      margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+      <i class="fas fa-circle" style="font-size:0.45rem;"></i>
+      Actualizado al 10/05/2026 a las 11:00:00 p. m.
+    </div>
+    <h1 style="font-family:var(--font-titulo);font-size:1.8rem;
+      font-weight:800;color:#ffffff;">
+      Monitor de Mesas
+    </h1>
+    <p style="font-size:0.85rem;color:rgba(255,255,255,0.7);margin-top:4px;">
+      Consulta el estado de las actas y los votos contabilizados en tiempo real.
+    </p>
+  </div>
+</div>
     </div>
 
     <!-- FILTRO REGIÓN -->
