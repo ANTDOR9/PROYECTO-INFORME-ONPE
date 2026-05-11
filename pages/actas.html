@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Actas — SED 2026</title>
+  <link rel="stylesheet" href="../assets/css/style-onpe.css" />
+  <script src="https://kit.fontawesome.com/ff1a3f5508.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* ── GRID ACTAS ──────────────────────────────────────────── */
+    .actas-section {
+      padding: 28px 32px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .actas-titulo-seccion {
+      font-family: var(--font-titulo);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--onpe-azul);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--onpe-azul-suave);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Grid 3 columnas para elecciones */
+    .actas-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .actas-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    /* ── CARD ACTA ELECCIÓN ──────────────────────────────────── */
+    .acta-card {
+      background: var(--onpe-blanco);
+      border: 1px solid var(--onpe-gris-borde);
+      border-radius: var(--radio);
+      padding: 20px 22px;
+      box-shadow: var(--sombra-card);
+      transition: all var(--trans);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .acta-card:hover {
+      box-shadow: var(--sombra-hover);
+      transform: translateY(-2px);
+    }
+
+    /* Watermark fondo */
+    .acta-card::after {
+      content: '';
+      position: absolute;
+      right: -30px;
+      bottom: -30px;
+      width: 130px;
+      height: 130px;
+      background: var(--onpe-azul-suave);
+      border-radius: 50%;
+      opacity: 0.4;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .acta-card > * { position: relative; z-index: 1; }
+
+    .acta-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--onpe-azul-suave);
+    }
+
+    .acta-card-header .icono-eleccion {
+      width: 32px;
+      height: 32px;
+      background: var(--onpe-azul-suave);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .acta-card-header h3 {
+      font-family: var(--font-titulo);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--onpe-azul);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1.2;
+    }
+
+    /* Porcentaje + dona inline */
+    .acta-card-body {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .acta-pct-wrapper {
+      flex: 1;
+    }
+
+    .acta-pct-label {
+      font-size: 0.68rem;
+      color: var(--onpe-teal);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .acta-pct-num {
+      font-family: var(--font-titulo);
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--onpe-azul);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .acta-pct-num span {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    /* Mini leyenda */
+    .acta-mini-leyenda {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .acta-leyenda-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--onpe-gris-texto);
+      gap: 8px;
+    }
+
+    .acta-leyenda-row .izq {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .acta-leyenda-row .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .acta-leyenda-row .vals {
+      display: flex;
+      gap: 10px;
+      font-size: 0.7rem;
+    }
+
+    .acta-leyenda-row .pct {
+      color: var(--onpe-azul);
+      font-weight: 700;
+      min-width: 52px;
+      text-align: right;
+    }
+
+    .acta-leyenda-row .num {
+      color: var(--onpe-gris-suave);
+      min-width: 44px;
+      text-align: right;
+    }
+
+    /* Total row */
+    .acta-total {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 8px;
+      margin-top: 8px;
+      border-top: 1px solid var(--onpe-gris-borde);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--onpe-azul-oscuro);
+    }
+
+    /* Dona pequeña */
+    .acta-dona-wrapper {
+      flex-shrink: 0;
+      width: 90px;
+      height: 90px;
+      position: relative;
+    }
+
+    .acta-dona-wrapper canvas {
+      width: 90px !important;
+      height: 90px !important;
+    }
+
+    /* ── BUSCADOR DE ACTAS ───────────────────────────────────── */
+    .buscador-actas {
+      background: var(--onpe-blanco);
+      border: 1px solid var(--onpe-gris-borde);
+      border-radius: var(--radio);
+      padding: 20px 24px;
+      box-shadow: var(--sombra-card);
+      margin-bottom: 28px;
+    }
+
+    .buscador-actas h3 {
+      font-family: var(--font-titulo);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--onpe-azul);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+    }
+
+    .buscador-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .buscador-row .onpe-input { flex: 1; min-width: 200px; }
+    .buscador-row .onpe-btn  { width: auto; }
+
+    /* ── TABLA DE MESAS ──────────────────────────────────────── */
+    .tabla-mesas-wrapper {
+      background: var(--onpe-blanco);
+      border: 1px solid var(--onpe-gris-borde);
+      border-radius: var(--radio);
+      box-shadow: var(--sombra-card);
+      overflow: hidden;
+    }
+
+    .tabla-mesas-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--onpe-gris-borde);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tabla-mesas-header h3 {
+      font-family: var(--font-titulo);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--onpe-azul);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .filtros-estado {
+      display: flex;
+      gap: 8px;
+    }
+
+    .filtro-estado-btn {
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1.5px solid var(--onpe-gris-borde);
+      background: var(--onpe-blanco);
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--trans);
+      color: var(--onpe-gris-suave);
+      font-family: var(--font-cuerpo);
+    }
+
+    .filtro-estado-btn:hover,
+    .filtro-estado-btn.activo {
+      background: var(--onpe-azul);
+      border-color: var(--onpe-azul);
+      color: white;
+    }
+
+    .filtro-estado-btn.obs.activo {
+      background: var(--onpe-rojo);
+      border-color: var(--onpe-rojo);
+    }
+
+    /* Tabla */
+    .onpe-tabla th:first-child { border-radius: 0; }
+    .onpe-tabla th:last-child  { border-radius: 0; }
+
+    .mesa-link {
+      color: var(--onpe-azul);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color var(--trans);
+    }
+    .mesa-link:hover { color: var(--onpe-teal); text-decoration: underline; }
+
+    /* No resultados */
+    .sin-resultados {
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--onpe-gris-suave);
+      font-size: 0.875rem;
+    }
+    .sin-resultados i {
+      font-size: 2.5rem;
+      color: var(--onpe-gris-borde);
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    /* Paginación */
+    .paginacion-actas {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 16px;
+      border-top: 1px solid var(--onpe-gris-borde);
+      flex-wrap: wrap;
+    }
+
+    .pag-btn-acta {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1.5px solid var(--onpe-gris-borde);
+      background: var(--onpe-blanco);
+      font-family: var(--font-cuerpo);
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all var(--trans);
+      color: var(--onpe-gris-texto);
+    }
+
+    .pag-btn-acta:hover,
+    .pag-btn-acta.activo {
+      background: var(--onpe-azul);
+      border-color: var(--onpe-azul);
+      color: white;
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .actas-grid-3 { grid-template-columns: 1fr 1fr; }
+      .actas-grid-2 { grid-template-columns: 1fr; }
+      .actas-section { padding: 20px 16px; }
+    }
+
+    @media (max-width: 600px) {
+      .actas-grid-3 { grid-template-columns: 1fr; }
+      .acta-pct-num { font-size: 1.8rem; }
+      .filtros-estado { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="onpe-navbar">
+    <div class="onpe-navbar-top"></div>
+    <div class="onpe-navbar-main">
+      <a href="../index.html" class="onpe-logo">
+        <div class="onpe-logo-placeholder">
+          <div class="logo-icono">ONPE</div>
+          <div class="logo-texto">
+            <strong>Elecciones Generales</strong>
+            <small>12 de abril de 2026</small>
+          </div>
+        </div>
+      </a>
+      <nav class="onpe-nav-links">
+        <a href="../index.html">
+          <i class="fas fa-th-large"></i>Resumen
+        </a>
+        <a href="estadisticas.html">
+          <i class="fas fa-chart-bar"></i>Presidencial
+        </a>
+        <a href="actas.html" class="activo">
+          <i class="fas fa-file-contract"></i>Actas
+        </a>
+        <a href="resultados.html">
+          <i class="fas fa-search"></i>Monitor
+        </a>
+        <a href="../informe/index.html" style="color:var(--onpe-teal);">
+          <i class="fas fa-book-open"></i>Informe
+        </a>
+      </nav>
+    </div>
+    <div class="onpe-navbar-bottom"></div>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <div style="background:linear-gradient(180deg,#e8f0fa 0%,#fff 100%);
+      padding:32px 32px 20px;border-bottom:1px solid var(--onpe-gris-borde);">
+      <div style="max-width:1280px;margin:0 auto;">
+        <div class="onpe-hero-tag" style="margin-bottom:6px;">
+          <i class="fas fa-circle" style="color:var(--onpe-teal);font-size:0.5rem;"></i>
+          Actualizado al 10/05/2026 a las 11:00:00 p. m.
+        </div>
+        <h1 style="font-family:var(--font-titulo);font-size:2rem;
+          font-weight:800;color:var(--onpe-azul);">
+          Avance de Actas Contabilizadas
+        </h1>
+        <p style="font-size:0.85rem;color:var(--onpe-gris-suave);margin-top:4px;">
+          Estado de procesamiento por tipo de elección — Segunda Vuelta 2026
+        </p>
+      </div>
+    </div>
+
+    <!-- FILTRO REGIÓN -->
+    <div class="onpe-filtro-bar">
+      <button class="onpe-filtro-btn activo">
+        <i class="fas fa-map-marker-alt"></i> TODOS <i class="fas fa-chevron-down"></i>
+      </button>
+      <button class="onpe-filtro-btn">REGIÓN <i class="fas fa-chevron-down"></i></button>
+      <button class="onpe-filtro-btn">PROVINCIA <i class="fas fa-chevron-down"></i></button>
+      <div style="margin-left:auto;">
+        <span class="onpe-live-badge">
+          <span class="onpe-live-dot"></span> En vivo
+        </span>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         CARDS DE ELECCIONES (estilo ONPE real)
+    ════════════════════════════════════════════════════════ -->
+    <div class="actas-section">
+
+      <div class="actas-titulo-seccion">
+        <i class="fas fa-chart-pie"></i>
+        Estado por Tipo de Elección
+      </div>
+
+      <!-- Fila 1: 3 elecciones -->
+      <div class="actas-grid-3" id="grid-elecciones-1"></div>
+
+      <!-- Fila 2: 2 elecciones -->
+      <div class="actas-grid-2" id="grid-elecciones-2"></div>
+
+      <!-- ════════════════════════════════════════════════════
+           BUSCADOR DE MESAS
+      ════════════════════════════════════════════════════ -->
+      <div class="buscador-actas">
+        <h3><i class="fas fa-search"></i> Buscador de Actas por Mesa</h3>
+        <div class="buscador-row">
+          <input type="text" id="mesa-search"
+            placeholder="N° de mesa (ej: 000001)"
+            class="onpe-input" />
+          <button onclick="ActasPage.buscar()" class="onpe-btn">
+            <i class="fas fa-search"></i> Buscar
+          </button>
+          <a href="resultados.html" class="onpe-btn onpe-btn-outline">
+            <i class="fas fa-list"></i> Ver todas las mesas
+          </a>
+        </div>
+        <div id="resultado-busqueda" style="margin-top:14px;"></div>
+      </div>
+
+      <!-- ════════════════════════════════════════════════════
+           TABLA DE MESAS
+      ════════════════════════════════════════════════════ -->
+      <div class="tabla-mesas-wrapper">
+        <div class="tabla-mesas-header">
+          <h3><i class="fas fa-table"></i> Mesas Procesadas</h3>
+          <div class="filtros-estado">
+            <button class="filtro-estado-btn activo"
+              onclick="ActasPage.filtrarEstado('todas', this)">Todas</button>
+            <button class="filtro-estado-btn"
+              onclick="ActasPage.filtrarEstado('contabilizada', this)">
+              ✅ Contabilizadas
+            </button>
+            <button class="filtro-estado-btn obs"
+              onclick="ActasPage.filtrarEstado('observada', this)">
+              ⚠ Observadas
+            </button>
+            <button class="filtro-estado-btn"
+              onclick="ActasPage.filtrarEstado('pendiente', this)">
+              ⏳ Pendientes
+            </button>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="onpe-tabla" style="min-width:600px;">
+            <thead>
+              <tr>
+                <th>N° Mesa</th>
+                <th>Distrito</th>
+                <th>FP</th>
+                <th>JP</th>
+                <th>Blancos</th>
+                <th>Nulos</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-mesas-body"></tbody>
+          </table>
+        </div>
+
+        <div class="paginacion-actas" id="paginacion-actas"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="onpe-footer">
+    <div class="onpe-footer-grid">
+      <div>
+        <h4>Oficina Central</h4>
+        <p>Jr. Washington 1894<br>Cercado de Lima</p>
+      </div>
+      <div>
+        <h4>Escríbenos</h4>
+        <p>informes@onpe.gob.pe</p>
+        <p>Fono: (01) 417-0630</p>
+      </div>
+      <div>
+        <h4>Redes Sociales</h4>
+        <div class="onpe-social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+      <div>
+        <h4>SED-2026</h4>
+        <p>Jesús Romaldo Sulla Sacsi<br>
+           Anthony Dorly Huilahuaña Chata</p>
+        <p style="margin-top:6px;font-size:0.72rem;opacity:0.6;">
+          Metodologías Ágiles · ISMA SENATI
+        </p>
+      </div>
+    </div>
+    <div class="onpe-footer-bottom">
+      <span>&copy; 2026 ONPE — Todos los derechos reservados</span>
+      <span>Sistema de Escrutinio Digital SED-2026</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/storage.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    /* ══════════════════════════════════════════════════════════
+       DATOS DE ELECCIONES (simulados para segunda vuelta)
+    ══════════════════════════════════════════════════════════ */
+    const ELECCIONES = [
+      {
+        id: 'presidencial',
+        nombre: 'PRESIDENCIAL',
+        icono: '🏛️',
+        contabilizadas: 92425,
+        jne: 341,
+        pendientes: 0,
+        total: 92766,
+      },
+      {
+        id: 'senadores-unico',
+        nombre: 'SENADORES — DISTRITO ELECTORAL ÚNICO',
+        icono: '⚖️',
+        contabilizadas: 77579,
+        jne: 15184,
+        pendientes: 3,
+        total: 92766,
+      },
+      {
+        id: 'senadores-multiple',
+        nombre: 'SENADORES — DISTRITO ELECTORAL MÚLTIPLE',
+        icono: '📋',
+        contabilizadas: 81531,
+        jne: 11233,
+        pendientes: 2,
+        total: 92766,
+      },
+      {
+        id: 'diputados',
+        nombre: 'DIPUTADOS',
+        icono: '🏢',
+        contabilizadas: 79711,
+        jne: 13053,
+        pendientes: 2,
+        total: 92766,
+      },
+      {
+        id: 'parlamento',
+        nombre: 'PARLAMENTO ANDINO',
+        icono: '🌎',
+        contabilizadas: 81351,
+        jne: 11415,
+        pendientes: 0,
+        total: 92766,
+      },
+    ];
+
+    /* ══════════════════════════════════════════════════════════
+       RENDERIZAR CARDS DE ELECCIONES
+    ══════════════════════════════════════════════════════════ */
+    function renderEleccionCard(el, canvasId) {
+      const pct = ((el.contabilizadas + el.jne) / el.total * 100).toFixed(3);
+      const pctCont = (el.contabilizadas / el.total * 100).toFixed(3);
+      const pctJNE  = (el.jne  / el.total * 100).toFixed(3);
+      const pctPend = (el.pendientes / el.total * 100).toFixed(3);
+
+      return `
+        <div class="acta-card">
+          <div class="acta-card-header">
+            <div class="icono-eleccion">${el.icono}</div>
+            <h3>${el.nombre}</h3>
+          </div>
+          <div class="acta-card-body">
+            <div class="acta-pct-wrapper">
+              <div class="acta-pct-label">Actas contabilizadas</div>
+              <div class="acta-pct-num">${pct}<span> %</span></div>
+              <div class="acta-mini-leyenda">
+                <div class="acta-leyenda-row">
+                  <div class="izq">
+                    <span class="dot" style="background:#004b8d;"></span>
+                    <span>Contabilizadas</span>
+                  </div>
+                  <div class="vals">
+                    <span class="pct">${pctCont} %</span>
+                    <span class="num">${el.contabilizadas.toLocaleString('es-PE')}</span>
+                  </div>
+                </div>
+                <div class="acta-leyenda-row">
+                  <div class="izq">
+                    <span class="dot" style="background:#1a6bb5;"></span>
+                    <span>Para envío al JNE</span>
+                  </div>
+                  <div class="vals">
+                    <span class="pct">${pctJNE} %</span>
+                    <span class="num">${el.jne.toLocaleString('es-PE')}</span>
+                  </div>
+                </div>
+                <div class="acta-leyenda-row">
+                  <div class="izq">
+                    <span class="dot" style="background:#dde3ed;border:1px solid #ccc;"></span>
+                    <span>Pendientes</span>
+                  </div>
+                  <div class="vals">
+                    <span class="pct">${pctPend} %</span>
+                    <span class="num">${el.pendientes}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="acta-total">
+                <span>TOTAL</span>
+                <span>${el.total.toLocaleString('es-PE')}</span>
+              </div>
+            </div>
+            <div class="acta-dona-wrapper">
+              <canvas id="${canvasId}" width="90" height="90"></canvas>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       MÓDULO DE LA PÁGINA
+    ══════════════════════════════════════════════════════════ */
+    const ActasPage = {
+      _mesasFiltradas: [],
+      _paginaActual: 1,
+      _porPagina: 10,
+
+      init() {
+        this._renderElecciones();
+        this._renderDonas();
+        this._cargarMesas();
+
+        // Enter en buscador
+        const input = document.getElementById('mesa-search');
+        if (input) {
+          input.addEventListener('keypress', e => {
+            if (e.key === 'Enter') this.buscar();
+          });
+        }
+      },
+
+      /* ── Elecciones ──────────────────────────────────────── */
+      _renderElecciones() {
+        const grid1 = document.getElementById('grid-elecciones-1');
+        const grid2 = document.getElementById('grid-elecciones-2');
+        if (!grid1 || !grid2) return;
+
+        // Primera fila: 3 cards
+        grid1.innerHTML = ELECCIONES.slice(0, 3)
+          .map((el, i) => renderEleccionCard(el, `dona-el-${i}`))
+          .join('');
+
+        // Segunda fila: 2 cards
+        grid2.innerHTML = ELECCIONES.slice(3)
+          .map((el, i) => renderEleccionCard(el, `dona-el-${i+3}`))
+          .join('');
+      },
+
+      _renderDonas() {
+        ELECCIONES.forEach((el, i) => {
+          const canvas = document.getElementById(`dona-el-${i}`);
+          if (!canvas) return;
+          const ctx = canvas.getContext('2d');
+          new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+              datasets: [{
+                data: [el.contabilizadas, el.jne, Math.max(el.pendientes, 0)],
+                backgroundColor: ['#004b8d', '#1a6bb5', '#dde3ed'],
+                borderWidth: 0,
+                hoverOffset: 4,
+              }]
+            },
+            options: {
+              responsive: false,
+              cutout: '70%',
+              animation: { duration: 800, delay: i * 100 },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: ctx => {
+                      const labels = ['Contabilizadas','Para JNE','Pendientes'];
+                      return ` ${labels[ctx.dataIndex]}: ${ctx.parsed.toLocaleString('es-PE')}`;
+                    }
+                  }
+                }
+              }
+            }
+          });
+        });
+      },
+
+      /* ── Tabla de mesas ──────────────────────────────────── */
+      _cargarMesas() {
+        this._mesasFiltradas = SED.getMesas();
+        this._renderTabla();
+      },
+
+      filtrarEstado(estado, btn) {
+        document.querySelectorAll('.filtro-estado-btn')
+          .forEach(b => b.classList.remove('activo'));
+        btn.classList.add('activo');
+        const todas = SED.getMesas();
+        this._mesasFiltradas = estado === 'todas'
+          ? todas
+          : todas.filter(m => m.estado === estado);
+        this._paginaActual = 1;
+        this._renderTabla();
+      },
+
+      _renderTabla() {
+        const tbody = document.getElementById('tabla-mesas-body');
+        if (!tbody) return;
+
+        if (this._mesasFiltradas.length === 0) {
+          tbody.innerHTML = `
+            <tr><td colspan="9">
+              <div class="sin-resultados">
+                <i class="fas fa-inbox"></i>
+                <p>No hay mesas con ese filtro.</p>
+              </div>
+            </td></tr>`;
+          document.getElementById('paginacion-actas').innerHTML = '';
+          return;
+        }
+
+        const inicio = (this._paginaActual - 1) * this._porPagina;
+        const pagina = this._mesasFiltradas.slice(inicio, inicio + this._porPagina);
+
+        tbody.innerHTML = pagina.map(m => {
+          const v = m.votos;
+          const badge = m.estado === 'contabilizada'
+            ? '<span class="onpe-badge onpe-badge-verde">✅ Contabilizada</span>'
+            : m.estado === 'observada'
+            ? '<span class="onpe-badge onpe-badge-rojo">⚠ Observada</span>'
+            : '<span class="onpe-badge onpe-badge-gris">⏳ Pendiente</span>';
+
+          return `
+            <tr>
+              <td>
+                <a href="detalle-mesa.html?mesa=${m.numero}"
+                   class="mesa-link">Mesa N° ${m.numero}</a>
+              </td>
+              <td style="font-size:0.82rem;">${m.distrito}</td>
+              <td style="font-weight:700;color:var(--onpe-azul);">
+                ${v ? v.fp : '—'}
+              </td>
+              <td style="font-weight:700;color:var(--onpe-rojo);">
+                ${v ? v.jp : '—'}
+              </td>
+              <td style="color:var(--onpe-gris-suave);">${v ? v.blancos : '—'}</td>
+              <td style="color:var(--onpe-gris-suave);">${v ? v.nulos : '—'}</td>
+              <td style="font-weight:700;">${v ? v.total : '—'}</td>
+              <td>${badge}</td>
+              <td style="font-size:0.72rem;color:var(--onpe-gris-suave);">
+                ${SED.formatearFecha(m.fechaRegistro)}
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        this._renderPaginacion();
+      },
+
+      _renderPaginacion() {
+        const contenedor = document.getElementById('paginacion-actas');
+        if (!contenedor) return;
+
+        const total = Math.ceil(this._mesasFiltradas.length / this._porPagina);
+        if (total <= 1) { contenedor.innerHTML = ''; return; }
+
+        let html = '';
+        if (this._paginaActual > 1) {
+          html += `<button class="pag-btn-acta"
+            onclick="ActasPage._irPagina(${this._paginaActual - 1})">
+            <i class="fas fa-chevron-left"></i>
+          </button>`;
+        }
+
+        for (let i = 1; i <= total; i++) {
+          html += `<button class="pag-btn-acta ${i === this._paginaActual ? 'activo' : ''}"
+            onclick="ActasPage._irPagina(${i})">${i}</button>`;
+        }
+
+        if (this._paginaActual < total) {
+          html += `<button class="pag-btn-acta"
+            onclick="ActasPage._irPagina(${this._paginaActual + 1})">
+            <i class="fas fa-chevron-right"></i>
+          </button>`;
+        }
+
+        contenedor.innerHTML = html;
+      },
+
+      _irPagina(n) {
+        this._paginaActual = n;
+        this._renderTabla();
+        window.scrollTo({ top: 600, behavior: 'smooth' });
+      },
+
+      /* ── Buscador ────────────────────────────────────────── */
+      buscar() {
+        const query = document.getElementById('mesa-search')?.value.trim();
+        const result = document.getElementById('resultado-busqueda');
+        if (!result) return;
+
+        if (!query) {
+          result.innerHTML = '';
+          return;
+        }
+
+        const numero = String(query).padStart(6, '0');
+        const mesa   = SED.getMesaPorNumero(numero);
+
+        if (mesa) {
+          const v = mesa.votos;
+          result.innerHTML = `
+            <div style="background:var(--onpe-azul-suave);border:1px solid var(--onpe-gris-borde);
+              border-radius:var(--radio);padding:16px 20px;display:flex;
+              justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+              <div>
+                <strong style="color:var(--onpe-azul);font-family:var(--font-titulo);">
+                  Mesa N° ${mesa.numero}
+                </strong>
+                <span style="margin-left:12px;font-size:0.78rem;color:var(--onpe-gris-suave);">
+                  ${mesa.distrito}
+                </span>
+                ${v
+                  ? `<span style="margin-left:12px;font-size:0.78rem;">
+                      FP: <strong>${v.fp}</strong> |
+                      JP: <strong>${v.jp}</strong> |
+                      Total: <strong>${v.total}</strong>
+                    </span>`
+                  : '<span style="color:var(--onpe-gris-suave);font-size:0.78rem;margin-left:12px;">Sin votos registrados</span>'
+                }
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;">
+                ${mesa.estado === 'contabilizada'
+                  ? '<span class="onpe-badge onpe-badge-verde">✅ Contabilizada</span>'
+                  : mesa.estado === 'observada'
+                  ? '<span class="onpe-badge onpe-badge-rojo">⚠ Observada</span>'
+                  : '<span class="onpe-badge onpe-badge-gris">⏳ Pendiente</span>'}
+                <a href="detalle-mesa.html?mesa=${mesa.numero}"
+                   class="onpe-btn" style="padding:7px 16px;font-size:0.78rem;">
+                  Ver detalle →
+                </a>
+              </div>
+            </div>
+          `;
+        } else {
+          result.innerHTML = `
+            <div style="background:#fff0f0;border:1px solid #ffcccc;
+              border-radius:var(--radio);padding:14px 18px;font-size:0.82rem;
+              color:var(--onpe-rojo);">
+              <i class="fas fa-exclamation-circle"></i>
+              Mesa N° ${numero} no encontrada en el sistema SED-2026.
+            </div>
+          `;
+        }
+      },
+
+    };
+
+    document.addEventListener('DOMContentLoaded', () => ActasPage.init());
+  </script>
+
+</body>
+</html>

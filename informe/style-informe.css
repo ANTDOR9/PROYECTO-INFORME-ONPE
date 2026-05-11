@@ -1,0 +1,848 @@
+/* ═══════════════════════════════════════════════════════════════
+   PROYECTO-INFORME-ONPE · SED-2026
+   style-informe.css — Estilos Informe Interactivo
+   Inspirado en IMK Avocats — Minimalista · Corporativo · Blanco
+   Integrantes: Jesús Romaldo Sulla Sacsi · Anthony Dorly Huilahuaña Chata
+   Curso: Metodologías Ágiles · ISMA SENATI · 2026
+═══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+
+/* ── VARIABLES INFORME ───────────────────────────────────────── */
+:root {
+  /* Paleta IMK — blanco y negro con un solo acento */
+  --inf-blanco:       #fafafa;
+  --inf-blanco-puro:  #ffffff;
+  --inf-negro:        #111111;
+  --inf-gris-titulo:  #1a1a2e;
+  --inf-gris-texto:   #444444;
+  --inf-gris-suave:   #888888;
+  --inf-gris-borde:   #e8e8e8;
+  --inf-gris-bg:      #f5f5f5;
+
+  /* Acento único — teal como IMK */
+  --inf-acento:       #009ba8;
+  --inf-acento-suave: #e0f5f7;
+
+  /* Tipografía */
+  --inf-font-titulo:  'DM Serif Display', Georgia, serif;
+  --inf-font-cuerpo:  'DM Sans', system-ui, sans-serif;
+
+  /* Espaciados */
+  --inf-radio:        8px;
+  --inf-sombra:       0 2px 16px rgba(0,0,0,0.06);
+  --inf-sombra-hover: 0 8px 32px rgba(0,0,0,0.12);
+  --inf-trans:        0.25s ease;
+}
+
+/* ── RESET BASE ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--inf-font-cuerpo);
+  background: var(--inf-blanco);
+  color: var(--inf-gris-texto);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+a { color: var(--inf-acento); text-decoration: none; transition: color var(--inf-trans); }
+a:hover { color: #007a85; }
+ul { list-style: none; }
+
+/* ══════════════════════════════════════════════════════════════
+   NAVBAR INFORME — minimalista sin sombra
+══════════════════════════════════════════════════════════════ */
+.inf-navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  height: 62px;
+  background: var(--inf-blanco-puro);
+  border-bottom: 1px solid var(--inf-gris-borde);
+}
+
+.inf-logo {
+  font-family: var(--inf-font-cuerpo);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--inf-negro);
+  letter-spacing: -0.3px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.inf-logo .punto-acento {
+  color: var(--inf-acento);
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+/* Nav links estilo IMK */
+.inf-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+}
+
+.inf-nav-links a {
+  color: var(--inf-gris-suave);
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 4px;
+  transition: all var(--inf-trans);
+  text-decoration: none;
+  position: relative;
+}
+
+.inf-nav-links a:hover { color: var(--inf-negro); }
+
+.inf-nav-links a.activa {
+  color: var(--inf-negro);
+  font-weight: 600;
+}
+
+/* Subrayado activo estilo IMK */
+.inf-nav-links a.activa::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 14px;
+  right: 14px;
+  height: 1.5px;
+  background: var(--inf-acento);
+  border-radius: 2px;
+}
+
+/* Botón volver al sistema */
+.inf-btn-sistema {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: var(--inf-negro);
+  color: var(--inf-blanco-puro);
+  border-radius: var(--inf-radio);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--inf-trans);
+  letter-spacing: 0.2px;
+}
+.inf-btn-sistema:hover {
+  background: var(--inf-acento);
+  color: var(--inf-blanco-puro);
+  transform: translateY(-1px);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   NAVEGACIÓN LATERAL — puntos estilo IMK
+══════════════════════════════════════════════════════════════ */
+.inf-nav-lateral {
+  position: fixed;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inf-punto {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--inf-gris-borde);
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--inf-trans);
+  position: relative;
+}
+
+.inf-punto:hover { border-color: var(--inf-gris-suave); }
+
+.inf-punto:hover::before,
+.inf-punto.activo::before {
+  content: attr(data-label);
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--inf-negro);
+  color: var(--inf-blanco-puro);
+  font-size: 0.68rem;
+  font-family: var(--inf-font-cuerpo);
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.inf-punto.activo {
+  background: var(--inf-acento);
+  border-color: var(--inf-acento);
+  transform: scale(1.4);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SECCIONES — scroll snap
+══════════════════════════════════════════════════════════════ */
+html {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+}
+
+.inf-seccion {
+  min-height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 80px 48px 48px;
+  overflow: hidden;
+}
+
+.inf-contenido {
+  max-width: 1100px;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+/* Fondos por sección */
+.sec-caratula      { background: var(--inf-blanco); }
+.sec-intro         { background: var(--inf-gris-bg); }
+.sec-stakeholders  { background: var(--inf-blanco); }
+.sec-cu            { background: var(--inf-gris-bg); }
+.sec-secuencia     { background: var(--inf-blanco); }
+.sec-actividades   { background: var(--inf-gris-bg); }
+.sec-componentes   { background: var(--inf-blanco); }
+.sec-despliegue    { background: var(--inf-gris-bg); }
+.sec-trazabilidad  { background: var(--inf-blanco); }
+.sec-reflexion     { background: var(--inf-negro); }
+
+/* ══════════════════════════════════════════════════════════════
+   TIPOGRAFÍA INFORME
+══════════════════════════════════════════════════════════════ */
+.inf-tag {
+  font-size: 0.68rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--inf-acento);
+  font-weight: 600;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inf-tag::before {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--inf-acento);
+}
+
+/* Título estilo IMK — muy grande, sin serif */
+.inf-titulo-grande {
+  font-family: var(--inf-font-titulo);
+  font-size: 4rem;
+  line-height: 1.05;
+  color: var(--inf-gris-titulo);
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+}
+
+.inf-titulo-grande .acento { color: var(--inf-acento); }
+.inf-titulo-grande em      { font-style: italic; }
+
+.inf-titulo-medio {
+  font-family: var(--inf-font-titulo);
+  font-size: 2.4rem;
+  line-height: 1.1;
+  color: var(--inf-gris-titulo);
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.inf-titulo-medio .acento { color: var(--inf-acento); }
+
+.inf-subtitulo {
+  font-size: 1rem;
+  color: var(--inf-gris-suave);
+  line-height: 1.7;
+  max-width: 560px;
+  font-weight: 400;
+}
+
+/* Separador horizontal estilo IMK */
+.inf-separador {
+  border: none;
+  border-top: 1px solid var(--inf-gris-borde);
+  margin: 20px 0;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CARÁTULA
+══════════════════════════════════════════════════════════════ */
+.inf-caratula-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.inf-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 28px;
+  padding-top: 28px;
+  border-top: 1px solid var(--inf-gris-borde);
+}
+
+.inf-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.875rem;
+  color: var(--inf-gris-suave);
+}
+
+.inf-meta-item i { color: var(--inf-acento); width: 14px; }
+.inf-meta-item strong { color: var(--inf-gris-titulo); }
+
+/* Imagen de fondo hero carátula */
+.inf-hero-img-wrapper {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  height: 380px;
+  background: var(--inf-gris-bg);
+}
+
+.inf-hero-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(20%);
+}
+
+/*
+  INSTRUCCIÓN — IMAGEN CARÁTULA (fondo hero):
+  Tipo: Foto de arquitectura institucional, edificio gobierno, urnas electorales
+        o imagen abstracta de datos/tecnología electoral.
+  Formato: JPG o PNG horizontal (landscape)
+  Tamaño ideal: 800×380px mínimo, mayor resolución mejor
+  Fondo: Cualquier color (se aplica filtro gris suave encima)
+  Ruta: informe/assets/caratula-bg.jpg
+  Si no tienes imagen, el fondo gris funciona de placeholder.
+*/
+
+.inf-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0,155,168,0.08) 0%,
+    rgba(17,17,17,0.04) 100%
+  );
+  display: flex;
+  align-items: flex-end;
+  padding: 24px;
+}
+
+.inf-hero-caption {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.7);
+  font-style: italic;
+  background: rgba(0,0,0,0.4);
+  padding: 4px 10px;
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+}
+
+/* Botones carátula */
+.inf-btns {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.inf-btn-primario {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 24px;
+  background: var(--inf-negro);
+  color: var(--inf-blanco-puro);
+  border-radius: var(--inf-radio);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--inf-trans);
+}
+.inf-btn-primario:hover {
+  background: var(--inf-acento);
+  color: var(--inf-blanco-puro);
+  transform: translateY(-2px);
+}
+
+.inf-btn-secundario {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 12px 24px;
+  background: transparent;
+  color: var(--inf-gris-titulo);
+  border: 1.5px solid var(--inf-gris-borde);
+  border-radius: var(--inf-radio);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--inf-trans);
+}
+.inf-btn-secundario:hover {
+  border-color: var(--inf-negro);
+  color: var(--inf-negro);
+  transform: translateY(-2px);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CARDS INFORME — estilo minimalista
+══════════════════════════════════════════════════════════════ */
+.inf-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 32px;
+}
+
+.inf-cards-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 32px;
+}
+
+.inf-card {
+  background: var(--inf-blanco-puro);
+  border: 1px solid var(--inf-gris-borde);
+  border-radius: var(--inf-radio);
+  padding: 24px;
+  box-shadow: var(--inf-sombra);
+  transition: all var(--inf-trans);
+}
+
+.inf-card:hover {
+  box-shadow: var(--inf-sombra-hover);
+  transform: translateY(-2px);
+  border-color: var(--inf-acento);
+}
+
+.inf-card h4 {
+  font-family: var(--inf-font-cuerpo);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--inf-gris-titulo);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.inf-card h4 .punto-card {
+  color: var(--inf-acento);
+  font-size: 1.2rem;
+}
+
+.inf-card p,
+.inf-card li {
+  font-size: 0.875rem;
+  color: var(--inf-gris-texto);
+  line-height: 1.65;
+}
+
+.inf-card ul { padding-left: 0; }
+.inf-card li {
+  padding: 4px 0;
+  border-bottom: 1px solid var(--inf-gris-bg);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.inf-card li:last-child { border-bottom: none; }
+.inf-card li::before {
+  content: '→';
+  color: var(--inf-acento);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TABLA STAKEHOLDERS — estilo IMK limpio
+══════════════════════════════════════════════════════════════ */
+.inf-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  margin-top: 20px;
+}
+
+.inf-tabla th {
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--inf-gris-suave);
+  border-bottom: 2px solid var(--inf-gris-borde);
+}
+
+.inf-tabla td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--inf-gris-borde);
+  color: var(--inf-gris-texto);
+  vertical-align: middle;
+}
+
+.inf-tabla tr:hover td { background: var(--inf-gris-bg); }
+.inf-tabla tr:last-child td { border-bottom: none; }
+
+/* Badges stakeholders */
+.inf-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.inf-badge-interno { background: #e0f5f7; color: #007a85; }
+.inf-badge-externo { background: #fff0f0; color: #cc0000; }
+.inf-badge-stake   { background: var(--inf-gris-bg); color: var(--inf-gris-suave); }
+
+/* Trazabilidad checks */
+.inf-check { color: var(--inf-acento); font-weight: 700; }
+.inf-dash  { color: var(--inf-gris-borde); }
+
+/* ══════════════════════════════════════════════════════════════
+   DIAGRAMA VIEWER — estilo editor código minimalista
+══════════════════════════════════════════════════════════════ */
+.inf-diagrama-viewer {
+  background: var(--inf-blanco-puro);
+  border: 1px solid var(--inf-gris-borde);
+  border-radius: var(--inf-radio);
+  overflow: hidden;
+  box-shadow: var(--inf-sombra);
+  transition: box-shadow var(--inf-trans);
+}
+
+.inf-diagrama-viewer:hover { box-shadow: var(--inf-sombra-hover); }
+
+/* Barra superior estilo macOS */
+.inf-diagrama-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--inf-gris-bg);
+  border-bottom: 1px solid var(--inf-gris-borde);
+}
+
+.inf-diagrama-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.inf-diagrama-dots span {
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  display: block;
+}
+
+.dot-rojo    { background: #ff5f57; }
+.dot-amarillo{ background: #febc2e; }
+.dot-verde   { background: #28c840; }
+
+.inf-diagrama-bar .titulo-bar {
+  font-size: 0.72rem;
+  color: var(--inf-gris-suave);
+  font-weight: 500;
+}
+
+.inf-diagrama-bar .acciones-bar {
+  display: flex;
+  gap: 8px;
+}
+
+/* Botón pantalla completa */
+.inf-btn-fullscreen {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px solid var(--inf-gris-borde);
+  border-radius: 4px;
+  font-size: 0.68rem;
+  color: var(--inf-gris-suave);
+  cursor: pointer;
+  transition: all var(--inf-trans);
+  font-family: var(--inf-font-cuerpo);
+}
+
+.inf-btn-fullscreen:hover {
+  background: var(--inf-negro);
+  color: var(--inf-blanco-puro);
+  border-color: var(--inf-negro);
+}
+
+/* Área de imagen */
+.inf-diagrama-img-wrapper {
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  background: var(--inf-blanco-puro);
+}
+
+.inf-diagrama-img {
+  width: 100%;
+  max-height: 340px;
+  object-fit: contain;
+  display: none;
+  cursor: zoom-in;
+  transition: transform var(--inf-trans);
+}
+
+.inf-diagrama-img:hover { transform: scale(1.01); }
+
+/* Placeholder cuando no hay imagen */
+.inf-diagrama-placeholder {
+  text-align: center;
+  color: var(--inf-gris-suave);
+  font-size: 0.82rem;
+}
+
+.inf-diagrama-placeholder .ph-icon { font-size: 2.5rem; margin-bottom: 10px; opacity: 0.3; }
+
+.inf-diagrama-placeholder p {
+  max-width: 320px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.inf-diagrama-placeholder code {
+  background: var(--inf-gris-bg);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.78rem;
+  color: var(--inf-acento);
+}
+
+/*
+  INSTRUCCIONES GENERALES PARA IMÁGENES DE DIAGRAMAS:
+  ─────────────────────────────────────────────────────
+  Exporta cada diagrama desde draw.io de la siguiente manera:
+  1. Abrir el diagrama en draw.io
+  2. Ir a Archivo → Exportar como → PNG
+  3. Configurar: Escala 2x, Borde 20px, Fondo blanco
+  4. Guardar con el nombre indicado abajo
+
+  casos-uso.png    → 1200×800px mínimo, fondo blanco, todos los actores visibles
+  secuencia.png    → 1400×600px mínimo, fondo blanco, todos los objetos y mensajes
+  actividades.png  → 900×1200px mínimo (vertical), fondo blanco, todos los swimlanes
+  componentes.png  → 1200×900px mínimo, fondo blanco, frontera del sistema visible
+  despliegue.png   → 1200×800px mínimo, fondo blanco, todos los nodos y protocolos
+
+  Ruta de destino: assets/img/diagramas/[nombre].png
+*/
+
+/* ══════════════════════════════════════════════════════════════
+   LIGHTBOX — pantalla completa para diagramas
+══════════════════════════════════════════════════════════════ */
+.inf-lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 99999;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  animation: fadeIn 0.2s ease;
+}
+
+.inf-lightbox.activo { display: flex; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.inf-lightbox img {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.inf-lightbox-cerrar {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+  backdrop-filter: blur(4px);
+}
+
+.inf-lightbox-cerrar:hover {
+  background: rgba(255,255,255,0.2);
+  transform: scale(1.1);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SCROLL INDICATOR
+══════════════════════════════════════════════════════════════ */
+.inf-scroll-ind {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  color: var(--inf-gris-borde);
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  animation: bounce-down 2s ease-in-out infinite;
+  z-index: 3;
+}
+
+@keyframes bounce-down {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(6px); }
+}
+
+/* Línea de scroll */
+.inf-scroll-line {
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(to bottom, var(--inf-acento), transparent);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SECCIÓN REFLEXIÓN — fondo negro
+══════════════════════════════════════════════════════════════ */
+.sec-reflexion .inf-titulo-medio { color: var(--inf-blanco-puro); }
+.sec-reflexion .inf-tag          { color: var(--inf-acento); }
+.sec-reflexion .inf-tag::before  { background: var(--inf-acento); }
+.sec-reflexion .inf-subtitulo    { color: rgba(255,255,255,0.6); }
+
+.inf-reflexion-quote {
+  border-left: 2px solid var(--inf-acento);
+  padding: 20px 28px;
+  margin: 24px 0;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.7;
+  background: rgba(255,255,255,0.03);
+  border-radius: 0 8px 8px 0;
+}
+
+.inf-cards-oscuras .inf-card {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.75);
+}
+
+.inf-cards-oscuras .inf-card:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: var(--inf-acento);
+}
+
+.inf-cards-oscuras .inf-card h4 { color: var(--inf-blanco-puro); }
+.inf-cards-oscuras .inf-card p  { color: rgba(255,255,255,0.65); }
+.inf-cards-oscuras .inf-card li { color: rgba(255,255,255,0.65); border-color: rgba(255,255,255,0.06); }
+
+/* ══════════════════════════════════════════════════════════════
+   GSAP — estados iniciales para animaciones
+══════════════════════════════════════════════════════════════ */
+.gsap-fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.gsap-fade-left {
+  opacity: 0;
+  transform: translateX(-24px);
+}
+
+.gsap-fade-right {
+  opacity: 0;
+  transform: translateX(24px);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .inf-navbar      { padding: 0 24px; }
+  .inf-seccion     { padding: 80px 24px 40px; }
+  .inf-nav-links   { display: none; }
+}
+
+@media (max-width: 768px) {
+  .inf-titulo-grande { font-size: 2.6rem; }
+  .inf-titulo-medio  { font-size: 1.8rem; }
+  .inf-caratula-grid { grid-template-columns: 1fr; }
+  .inf-hero-img-wrapper { height: 200px; }
+  .inf-cards-grid    { grid-template-columns: 1fr; }
+  .inf-cards-grid-2  { grid-template-columns: 1fr; }
+  .inf-nav-lateral   { display: none; }
+  .inf-seccion       { padding: 80px 20px 36px; scroll-snap-align: start; }
+}
+
+@media (max-width: 480px) {
+  .inf-titulo-grande { font-size: 2rem; letter-spacing: -0.5px; }
+  .inf-titulo-medio  { font-size: 1.5rem; }
+  .inf-navbar        { padding: 0 16px; }
+  .inf-btn-sistema   { padding: 7px 12px; font-size: 0.72rem; }
+}
