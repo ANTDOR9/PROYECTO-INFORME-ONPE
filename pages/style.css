@@ -1,0 +1,1236 @@
+ /* ══════════════════════════════════════════════════════════
+       HERO CON VIDEO DE FONDO
+    ══════════════════════════════════════════════════════════ */
+    .onpe-hero-video {
+      position: relative;
+      min-height: 520px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--onpe-gris-borde);
+    }
+
+    /* Video de fondo */
+    .hero-video-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      z-index: 0;
+      filter: blur(1.5px) brightness(0.55);
+      transform: scale(1.04); /* evita bordes blancos del blur */
+    }
+
+    /* Overlay degradado sobre el video */
+    .hero-video-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(0, 18, 40, 0.72) 0%,
+        rgba(0, 75, 141, 0.45) 60%,
+        rgba(0, 18, 40, 0.65) 100%
+      );
+      z-index: 1;
+    }
+
+    /* Contenido encima del video */
+    .hero-video-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 60px 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      width: 100%;
+    }
+
+    /* Textos del hero — ahora en blanco */
+    .hero-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--onpe-teal);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-h1 {
+      font-family: var(--font-titulo);
+      font-size: 3rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.05;
+      margin-bottom: 10px;
+    }
+
+    .hero-h1 span { color: #ff6b6b; }
+
+    .hero-desc {
+      font-size: 0.925rem;
+      color: rgba(255, 255, 255, 0.82);
+      line-height: 1.75;
+      max-width: 480px;
+      margin-bottom: 24px;
+    }
+
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* Botón blanco outline para el hero oscuro */
+    .btn-hero-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 22px;
+      background: transparent;
+      color: #ffffff;
+      border: 1.5px solid rgba(255,255,255,0.5);
+      border-radius: var(--radio-sm);
+      font-family: var(--font-cuerpo);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--trans);
+      text-decoration: none;
+    }
+    .btn-hero-outline:hover {
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.8);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* Botón teal para informe */
+    .btn-hero-teal {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 22px;
+      background: var(--onpe-teal);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radio-sm);
+      font-family: var(--font-cuerpo);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--trans);
+      text-decoration: none;
+      position: relative;
+    }
+    .btn-hero-teal:hover {
+      background: #007a85;
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* ── TOOLTIP INFORME ─────────────────────────────────────── */
+    .tooltip-informe {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%) translateY(6px);
+      background: var(--onpe-azul);
+      color: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 10px 14px;
+      border-radius: 8px;
+      width: 220px;
+      text-align: center;
+      line-height: 1.4;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      z-index: 100;
+    }
+    .tooltip-informe::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: var(--onpe-azul);
+    }
+    .tooltip-informe.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ── CARD AVANCE (sobre video — fondo blanco con sombra) ── */
+    .onpe-avance-card {
+      background: rgba(255, 255, 255, 0.97);
+      border: 1px solid var(--onpe-gris-borde);
+      border-radius: var(--radio);
+      padding: 24px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.22);
+      backdrop-filter: blur(8px);
+    }
+    .onpe-avance-card h3 {
+      font-family: var(--font-titulo);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--onpe-azul);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .onpe-avance-pct {
+      font-family: var(--font-titulo);
+      font-size: 3.6rem;
+      font-weight: 800;
+      color: var(--onpe-azul);
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+    .onpe-avance-pct span { font-size: 1.6rem; font-weight: 600; }
+    .onpe-actas-label {
+      font-size: 0.68rem;
+      color: var(--onpe-teal);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    /* ── MINI CARDS ──────────────────────────────────────────── */
+    .onpe-mini-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .onpe-mini-card {
+      background: var(--onpe-blanco);
+      border: 1px solid var(--onpe-gris-borde);
+      border-radius: var(--radio);
+      padding: 14px 10px;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,75,141,0.08);
+      transition: all var(--trans);
+    }
+    .onpe-mini-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(0,75,141,0.16);
+    }
+    .onpe-mini-card .mn {
+      font-family: var(--font-titulo);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--onpe-azul);
+      line-height: 1;
+      display: block;
+    }
+    .onpe-mini-card .ml {
+      font-size: 0.65rem;
+      color: var(--onpe-gris-suave);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 3px;
+      display: block;
+    }
+    .onpe-mini-card.verde .mn { color: #2e7d32; }
+    .onpe-mini-card.rojo  .mn { color: var(--onpe-rojo); }
+    .onpe-mini-card.teal  .mn { color: var(--onpe-teal); }
+
+    /* ══════════════════════════════════════════════════════════
+       CANDIDATOS
+    ══════════════════════════════════════════════════════════ */
+    .candidatos-section {
+      background: var(--onpe-blanco);
+      border: 1px solid var(--onpe-gris-borde);
+      border-radius: var(--radio);
+      padding: 24px 28px;
+      box-shadow: 0 4px 24px rgba(0,75,141,0.10);
+      margin-bottom: 24px;
+    }
+    .sec-titulo {
+      font-family: var(--font-titulo);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--onpe-azul);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--onpe-azul-suave);
+    }
+    .candidatos-onpe-grid {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 60px;
+      padding: 10px 0 16px;
+      flex-wrap: wrap;
+    }
+    .candidato-onpe-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+    .candidato-foto-circulo {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: var(--onpe-azul-suave);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 6px 20px rgba(0,75,141,0.18);
+      transition: transform var(--trans), box-shadow var(--trans);
+    }
+    .candidato-foto-circulo:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0,75,141,0.25);
+    }
+    .candidato-foto-circulo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+    .candidato-badge {
+      position: absolute;
+      bottom: 4px;
+      left: 4px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      font-weight: 900;
+      border: 2px solid white;
+      color: white;
+    }
+    .candidato-logo-partido { height: 36px; width: auto; object-fit: contain; }
+    .candidato-pct-onpe { font-family: var(--font-titulo); font-size: 2.8rem; font-weight: 800; line-height: 1; }
+    .candidato-nombre-onpe { font-family: var(--font-titulo); font-size: 0.85rem; font-weight: 700; color: var(--onpe-gris-texto); text-transform: uppercase; letter-spacing: 0.5px; }
+    .candidato-partido-onpe { font-size: 0.72rem; color: var(--onpe-gris-suave); }
+
+    .barra-bicolor { display: flex; height: 8px; width: 100%; overflow: hidden; margin-top: 16px; }
+    .barra-bicolor .seg-fp { background: var(--onpe-azul); transition: width 1.2s ease; }
+    .barra-bicolor .seg-jp { background: var(--onpe-rojo); transition: width 1.2s ease; }
+    .barra-etiquetas { display: flex; justify-content: space-between; margin-top: 6px; font-size: 0.72rem; font-weight: 600; }
+
+    /* ══════════════════════════════════════════════════════════
+       REGISTRO DE ACTA — sube antes de "Acerca De"
+    ══════════════════════════════════════════════════════════ */
+    .onpe-registro-section {
+      background: var(--onpe-gris-bg);
+      padding: 40px 32px;
+      border-top: 1px solid var(--onpe-gris-borde);
+    }
+    .onpe-registro-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+    .onpe-registro-titulo {
+      font-family: var(--font-titulo);
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--onpe-azul);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       ACERCA DE
+    ══════════════════════════════════════════════════════════ */
+    .onpe-acerca-section {
+      background: var(--onpe-blanco);
+      padding: 0 32px;
+      border-top: 1px solid var(--onpe-gris-borde);
+    }
+    .onpe-acerca-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--onpe-gris-borde);
+      border-radius: var(--radio);
+      overflow: hidden;
+      margin: 32px auto;
+      box-shadow: 0 2px 16px rgba(0,75,141,0.07);
+    }
+    .onpe-acerca-col { padding: 40px 48px; }
+    .onpe-acerca-col:first-child { border-right: 1px solid var(--onpe-gris-borde); }
+    .onpe-acerca-tag { font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--onpe-gris-suave); margin-bottom: 12px; }
+    .onpe-acerca-titulo { font-family: var(--font-titulo); font-size: 1.4rem; font-weight: 800; color: var(--onpe-azul); margin-bottom: 12px; line-height: 1.2; }
+    .onpe-acerca-texto { font-size: 0.875rem; color: var(--onpe-gris-suave); line-height: 1.7; margin-bottom: 16px; }
+    .onpe-acerca-link { color: var(--onpe-teal); font-weight: 600; font-size: 0.875rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: gap var(--trans); }
+    .onpe-acerca-link:hover { gap: 10px; }
+
+    /* ══════════════════════════════════════════════════════════
+       ILUSTRACIONES 1-5 — al final
+    ══════════════════════════════════════════════════════════ */
+    .onpe-ilus-section {
+      background: var(--onpe-gris-bg);
+      padding: 48px 32px;
+      border-top: 1px solid var(--onpe-gris-borde);
+    }
+    .onpe-ilus-inner { max-width: 1280px; margin: 0 auto; }
+    .onpe-ilus-titulo { font-family: var(--font-titulo); font-size: 1.6rem; font-weight: 800; color: var(--onpe-azul); text-align: center; margin-bottom: 6px; }
+    .onpe-ilus-subtitulo { text-align: center; font-size: 0.85rem; color: var(--onpe-gris-suave); margin-bottom: 32px; }
+    .onpe-ilus-grid { display: flex; justify-content: center; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+    .onpe-ilus-item { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+    .onpe-ilus-circulo {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      border: 3px solid var(--onpe-azul);
+      overflow: hidden;
+      background: var(--onpe-azul-suave);
+      transition: transform var(--trans), box-shadow var(--trans);
+      box-shadow: 0 4px 16px rgba(0,75,141,0.12);
+    }
+    .onpe-ilus-circulo:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 28px rgba(0,75,141,0.22);
+    }
+    .onpe-ilus-circulo img { width: 100%; height: 100%; object-fit: cover; }
+    .onpe-ilus-numero { display: flex; align-items: center; gap: 6px; font-family: var(--font-titulo); font-size: 1.5rem; font-weight: 800; color: var(--onpe-azul); }
+    .onpe-ilus-etiqueta { font-size: 0.8rem; font-weight: 600; color: var(--onpe-gris-texto); }
+    .onpe-ilus-dot { width: 28px; height: 5px; border-radius: 3px; margin-top: -4px; }
+
+    /* ══════════════════════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .hero-video-content   { grid-template-columns: 1fr; padding: 40px 20px; }
+      .onpe-avance-card     { background: rgba(255,255,255,0.96); }
+      .onpe-registro-inner  { grid-template-columns: 1fr; }
+      .onpe-acerca-inner    { grid-template-columns: 1fr; }
+      .onpe-acerca-col:first-child { border-right: none; border-bottom: 1px solid var(--onpe-gris-borde); }
+      .onpe-mini-cards      { grid-template-columns: repeat(2,1fr); }
+      .hero-h1              { font-size: 2.2rem; }
+      .candidatos-onpe-grid { gap: 24px; }
+      .candidato-foto-circulo { width: 80px; height: 80px; }
+      .candidato-pct-onpe   { font-size: 2rem; }
+    }
+    @media (max-width: 480px) {
+      .hero-video-content   { padding: 32px 16px; }
+      .onpe-ilus-section    { padding: 32px 16px; }
+      .onpe-registro-section{ padding: 24px 16px; }
+      .onpe-acerca-section  { padding: 0 16px; }
+      .onpe-acerca-col      { padding: 28px 20px; }
+      .onpe-mini-cards      { grid-template-columns: 1fr 1fr; }
+      .onpe-ilus-circulo    { width: 90px; height: 90px; }
+      .hero-h1              { font-size: 1.8rem; }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+   SECCIÓN: ESCRUTINIO GENERAL (Basado en image_d9fae0.png)
+   ══════════════════════════════════════════════════════════ */
+.onpe-escrutinio-container {
+    background: var(--onpe-blanco);
+    border: 1px solid var(--onpe-gris-borde);
+    border-radius: var(--radio);
+    padding: 32px;
+    box-shadow: 0 4px 24px rgba(0, 75, 141, 0.08);
+    max-width: 1280px;
+    margin: 40px auto;
+}
+
+/* Encabezados de Escrutinio */
+.escrutinio-header h2 {
+    font-family: var(--font-titulo);
+    font-size: 1.8rem;
+    color: var(--onpe-azul);
+    margin-bottom: 8px;
+}
+
+.escrutinio-header h3 {
+    font-size: 1.1rem;
+    color: var(--onpe-azul);
+    font-weight: 700;
+}
+
+.escrutinio-update {
+    font-size: 0.85rem;
+    color: var(--onpe-gris-suave);
+    margin-bottom: 20px;
+}
+
+/* Gran Porcentaje y Barra (image_d9fae0.png) */
+.escrutinio-pct-grande {
+    font-family: var(--font-titulo);
+    font-size: 3.2rem;
+    font-weight: 800;
+    color: var(--onpe-azul);
+    margin: 15px 0;
+}
+
+.escrutinio-progress-wrapper {
+    background: #e9ecef;
+    height: 14px;
+    border-radius: 20px;
+    margin: 15px 0 25px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.escrutinio-progress-fill {
+    background: var(--onpe-azul);
+    height: 100%;
+    border-radius: 20px;
+    transition: width 1s ease-in-out;
+}
+
+/* Listado de Actas */
+.escrutinio-details {
+    margin-bottom: 30px;
+    border-top: 1px solid var(--onpe-gris-borde);
+    padding-top: 20px;
+}
+
+.escrutinio-item {
+    font-size: 1rem;
+    color: var(--onpe-gris-texto);
+    margin-bottom: 8px;
+}
+
+.escrutinio-item strong {
+    color: var(--onpe-azul);
+    font-weight: 700;
+}
+
+/* Botones de Acción (image_d9fae0.png) */
+.escrutinio-actions {
+    display: flex;
+    gap: 16px;
+    margin: 30px 0;
+}
+
+.btn-onpe-outline {
+    border: 2px solid var(--onpe-azul);
+    color: var(--onpe-azul);
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-onpe-outline:hover {
+    background: var(--onpe-azul-suave);
+}
+
+.btn-onpe-full {
+    background: var(--onpe-azul);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Tarjetas Inferiores (Voto Exterior y Sedes) */
+.escrutinio-footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 40px;
+    border-top: 1px dotted var(--onpe-gris-borde);
+    padding-top: 30px;
+}
+
+.footer-info-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.footer-info-card i {
+    font-size: 1.5rem;
+    color: var(--onpe-teal);
+    margin-bottom: 8px;
+}
+
+.footer-info-card h4 {
+    font-size: 1.1rem;
+    color: var(--onpe-azul);
+}
+
+.footer-info-card p {
+    font-size: 0.9rem;
+    color: var(--onpe-gris-suave);
+}
+
+/* Ajustes Responsive para la captura */
+@media (max-width: 768px) {
+    .escrutinio-footer-grid { grid-template-columns: 1fr; }
+    .escrutinio-actions { flex-direction: column; }
+    .escrutinio-pct-grande { font-size: 2.5rem; }
+}
+/* ══════════════════════════════════════════════════════════
+   ESTILOS ESPECÍFICOS PARA EL PANEL DE ESCRUTINIO
+   ══════════════════════════════════════════════════════════ */
+
+.panel-onpe-container {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr; /* Proporción para destacar la tarjeta principal */
+    gap: 32px;
+    max-width: 1280px;
+    margin: 0 auto;
+    align-items: start;
+}
+
+/* Tarjeta Principal de Avance */
+.monitor-actas-card {
+    background: #ffffff;
+    border: 1px solid var(--onpe-gris-borde);
+    border-radius: var(--radio);
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(0, 75, 141, 0.08);
+}
+
+.card-header-onpe h3 {
+    font-family: var(--font-titulo);
+    font-size: 1.4rem;
+    color: var(--onpe-azul);
+    margin-bottom: 4px;
+}
+
+.update-time {
+    font-size: 0.85rem;
+    color: var(--onpe-gris-suave);
+    margin-bottom: 16px;
+}
+
+/* Porcentaje y Barra (Estilo image_d9f6fb.png) */
+.porcentaje-grande {
+    display: block;
+    font-family: var(--font-titulo);
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: var(--onpe-azul);
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+.onpe-progress-bar {
+    background: #eef2f7;
+    height: 12px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.progress-fill {
+    background: var(--onpe-azul);
+    height: 100%;
+    transition: width 1.5s ease-in-out;
+}
+
+.total-actas-info {
+    font-size: 1.1rem;
+    color: var(--onpe-gris-texto);
+    margin-bottom: 20px;
+}
+
+/* Leyenda Minimalista */
+.leyenda-onpe {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.leyenda-item {
+    font-size: 1rem;
+    color: var(--onpe-gris-texto);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Botones con estilo exacto a la captura */
+.onpe-btn-outline {
+    border: 1.5px solid var(--onpe-azul);
+    color: var(--onpe-azul);
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.onpe-btn {
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 51, 102, 0.2);
+}
+
+/* Tarjeta Secundaria (Voto Exterior y Sedes) */
+.monitor-secundario-card .benefit-card {
+    background: #ffffff;
+    border: 1px solid var(--onpe-gris-borde);
+    padding: 24px;
+    border-radius: var(--radio);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: transform 0.3s ease;
+}
+
+.monitor-secundario-card .benefit-card:hover {
+    transform: translateX(5px);
+    border-left: 4px solid var(--onpe-teal);
+}
+
+.monitor-secundario-card .icon {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+/* Adaptación para móviles */
+@media (max-width: 992px) {
+    .panel-onpe-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .botones-contenedor {
+        flex-direction: column;
+    }
+}
+/* Contenedor de Resultados */
+.onpe-results-preview {
+    padding: 2rem 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.results-card {
+    background: #ffffff;
+    border: 1px solid #e0e4e8;
+    border-radius: 12px;
+    padding: 25px;
+    width: 100%;
+    max-width: 800px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Badge EN VIVO */
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.pulse-icon {
+    width: 10px;
+    height: 10px;
+    background-color: #d32f2f;
+    border-radius: 50%;
+    box-shadow: 0 0 0 rgba(211, 47, 47, 0.4);
+    animation: pulse-red 2s infinite;
+}
+
+.status-text {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #d32f2f;
+    letter-spacing: 0.5px;
+}
+
+/* Tipografía */
+.results-info h2 {
+    color: #5ff043; /* Azul ONPE */
+    font-size: 1.6rem;
+    margin: 0 0 10px 0;
+    font-family: var(--font-titulo, sans-serif);
+}
+
+.results-info p {
+    color: #546e7a;
+    font-size: 1rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Botón de Estadísticas Estilizado */
+.stats-action {
+    margin-top: 25px;
+}
+
+.btn-stats-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    background-color: #f1f5f9;
+    color: #126304;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 1px solid #cbd5e1;
+}
+
+.btn-stats-link:hover {
+    background-color: #e6e6e6;
+    color: #ffffff;
+    border-color: #000000;
+}
+
+.arrow-icon {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-stats-link:hover .arrow-icon {
+    transform: translateX(5px);
+}
+
+/* Elemento decorativo: Barras de datos */
+.data-decoration {
+    position: absolute;
+    right: 20px;
+    bottom: 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 60px;
+    opacity: 0.15;
+}
+
+.bar-item {
+    width: 12px;
+    background-color: #004b8d;
+    border-radius: 3px 3px 0 0;
+}
+
+/* Animación del Pulso */
+@keyframes pulse-red {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
+}
+
+/* Ajuste para móviles según image_d90606.png */
+@media (max-width: 992px) {
+    .results-card {
+        padding: 20px;
+    }
+    .data-decoration {
+        display: none; /* Se oculta en móvil para dar espacio al texto */
+    }
+}
+/* Contenedor principal para centrar y dar aire a la sección */
+.botones-contenedor {
+    display: flex; 
+    justify-content: center; 
+    gap: 25px; 
+    margin: 40px auto;
+    max-width: 1000px; /* Agrandamos el ancho máximo */
+    padding: 20px;
+}
+
+/* Tarjeta de Resultados (La que contiene el texto y el botón) */
+.monitor-secundario-card, 
+section div[style*="border: 1px solid"] { 
+    background: #ffffff;
+    border-radius: 15px !important; /* Bordes más suaves */
+    border: none !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Sombra para dar profundidad */
+    padding: 40px !important; /* Más espacio interno para que respire */
+    width: 100%;
+    transition: transform 0.3s ease;
+}
+
+/* Agrandar el Título principal */
+.monitor-secundario-card h2, 
+.results-info h2 {
+    color: #004b8d;
+    font-size: 2.2rem !important; /* Título mucho más grande */
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+/* Estilo del Párrafo descriptivo */
+.monitor-secundario-card p {
+    font-size: 1.1rem;
+    color: #546e7a;
+    margin-bottom: 30px;
+    max-width: 600px;
+}
+
+/* Botón "Ver Estadísticas" renovado */
+.onpe-btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 35px !important; /* Botón más grande y fácil de clickear */
+    background-color: #ffffff;
+    color: #004b8d !important;
+    border: 2px solid #004b8d !important;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.onpe-btn-outline:hover {
+    background-color: #004b8d !important;
+    color: #ffffff !important;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 75, 141, 0.3);
+}
+
+/* Ajuste para el Badge "EN VIVO" (si lo tienes) */
+.status-indicator {
+    background: #fff1f1;
+    color: #d32f2f;
+    padding: 8px 15px;
+    border-radius: 50px;
+    display: inline-flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    border: 1px solid #ffcdd2;
+}
+
+/* Decoración de barras laterales (opcional, para dar color) */
+.monitor-secundario-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 100%;
+    background: linear-gradient(to bottom, #004b8d, #00a1df);
+    border-radius: 15px 0 0 15px;
+}
+/* 1. FONDO DE LA SECCIÓN */
+#registro.onpe-registro-section {
+    background: #eef2f7 !important; /* Gris azulado para contraste */
+    position: relative;
+    overflow: hidden;
+    min-height: 500px;
+}
+
+/* 2. DECORACIÓN LATERAL (Para que no se vea vacío) */
+#registro::before {
+    content: "ONPE";
+    position: absolute;
+    font-size: 15rem;
+    font-weight: 900;
+    color: rgba(0, 75, 141, 0.03);
+    top: 50%;
+    left: -50px;
+    transform: translateY(-50%) rotate(-90deg);
+}
+
+#registro::after {
+    content: "\f080"; /* Icono de barras FontAwesome */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    font-size: 20rem;
+    color: rgba(0, 75, 141, 0.02);
+    bottom: -100px;
+    right: -50px;
+}
+
+/* 3. LA TARJETA DE AUTENTICACIÓN */
+#auth-container.onpe-card-auth {
+    border-top: 6px solid #004b8d !important; /* Línea azul superior */
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12) !important;
+    border-radius: 12px !important;
+    z-index: 5;
+    transition: all 0.4s ease;
+}
+
+#auth-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0, 75, 141, 0.15) !important;
+}
+
+/* 4. EL ICONO DEL ESCUDO */
+#auth-container i.fa-shield-alt {
+    background: #f0f7ff;
+    padding: 20px;
+    border-radius: 50%;
+    color: #004b8d !important;
+    margin-bottom: 10px;
+}
+
+/* 5. INPUT DE DNI */
+#dni-input.onpe-input {
+    border: 2px solid #ced4da !important;
+    background-color: #ffffff !important;
+    color: #333 !important;
+    transition: all 0.3s;
+}
+
+#dni-input:focus {
+    border-color: #004b8d !important;
+    box-shadow: 0 0 0 4px rgba(0, 75, 141, 0.1) !important;
+    outline: none;
+}
+
+/* 6. BOTÓN DE AUTENTICAR */
+#auth-container .onpe-btn {
+    background: linear-gradient(135deg, #f7222c 0%, #502121 100%) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+#auth-container .onpe-btn:hover {
+    filter: brightness(1.2);
+    box-shadow: 0 8px 20px rgba(0, 46, 90, 0.3) !important;
+}
+
+/* 7. CUADRO DE PRUEBA (PIE DE TARJETA) */
+#auth-container div[style*="background: #f0f0f0"] {
+    background: #f8f9fa !important;
+    border: 1px solid #dee2e6 !important;
+    border-left: 4px solid #6c757d !important;
+    color: #495057 !important;
+}
+/* --- Estilo para el Padrón de Votantes --- */
+
+.padron-container {
+    background: var(--onpe-blanco);
+    border-radius: var(--radio);
+    border: 1px solid var(--onpe-gris-borde);
+    box-shadow: var(--sombra-card);
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.padron-header {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    border-bottom: 2px solid var(--onpe-azul);
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    font-weight: 700;
+    color: var(--onpe-azul);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.votante-item {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    padding: 12px 20px;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+}
+
+.votante-item:hover {
+    background: #f0f7ff;
+}
+
+.votante-nombre {
+    font-family: var(--font-titulo);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.votante-dni {
+    font-size: 0.85rem;
+    color: var(--onpe-gris-suave);
+    font-family: monospace;
+}
+
+/* Badge de Estado de Voto */
+.voto-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    width: fit-content;
+}
+
+.voto-si {
+    background: #e6fffa;
+    color: #28a745;
+    border: 1px solid #c3e6cb;
+}
+
+.voto-no {
+    background: #fff5f5;
+    color: #dc3545;
+    border: 1px solid #feb2b2;
+}
+
+/* Iconos dentro del status */
+.voto-status i {
+    font-size: 0.8rem;
+}
+
+/* Responsive para celulares */
+@media (max-width: 600px) {
+    .padron-header { display: none; }
+    .votante-item {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 15px;
+    }
+    .votante-dni { display: block; margin-top: 2px; }
+}
+/* Contenedor principal de la tarjeta */
+.padron-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border-top: 5px solid #2e7d32; /* Color verde institucional */
+}
+
+/* Estadísticas superiores */
+.padron-stats {
+    display: flex;
+    justify-content: space-around;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #eef0f2;
+}
+
+.padron-stats span {
+    font-size: 0.85rem;
+    color: #555;
+}
+
+/* Filas de la lista de votantes */
+.lista-votantes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Cada fila individual de votante */
+.votante-row {
+    display: flex;
+    justify-content: space-between; /* Manda el estado al otro lado */
+    align-items: center;
+    padding: 12px 18px;
+    background: #fff;
+    border: 1px solid #edf2f7;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.votante-row:hover {
+    border-color: #cbd5e0;
+    background: #fcfdfe;
+    transform: scale(1.01);
+}
+
+/* Información del lado izquierdo (Nombre y DNI) */
+.votante-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.votante-nombre {
+    font-weight: 700;
+    color: #2d3748;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+}
+
+.votante-dni {
+    font-size: 0.8rem;
+    color: #718096;
+    letter-spacing: 0.5px;
+}
+
+/* Badges de estado (Lado derecho) */
+.status-badge {
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Estilo Votó */
+.status-voto {
+    background-color: #e6fffa;
+    color: #2e7d32;
+    border: 1px solid #b2f5ea;
+}
+
+/* Estilo Ausente */
+.status-ausente {
+    background-color: #fff5f5;
+    color: #e53e3e;
+    border: 1px solid #fed7d7;
+}
+
+/* Separador elegante */
+.onpe-divider {
+    border: 0;
+    height: 1px;
+    background: #e2e8f0;
+    margin: 20px 0;
+}

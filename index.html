@@ -5,463 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ONPE — Sistema de Escrutinio Digital SED-2026</title>
   <link rel="stylesheet" href="assets/css/style-onpe.css" />
+  <link rel="stylesheet" href="pages/style.css" />
+
   <script src="https://kit.fontawesome.com/ff1a3f5508.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-
-    /* ══════════════════════════════════════════════════════════
-       HERO CON VIDEO DE FONDO
-    ══════════════════════════════════════════════════════════ */
-    .onpe-hero-video {
-      position: relative;
-      min-height: 520px;
-      display: flex;
-      align-items: center;
-      overflow: hidden;
-      border-bottom: 1px solid var(--onpe-gris-borde);
-    }
-
-    /* Video de fondo */
-    .hero-video-bg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center center;
-      z-index: 0;
-      filter: blur(1.5px) brightness(0.55);
-      transform: scale(1.04); /* evita bordes blancos del blur */
-    }
-
-    /* Overlay degradado sobre el video */
-    .hero-video-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        135deg,
-        rgba(0, 18, 40, 0.72) 0%,
-        rgba(0, 75, 141, 0.45) 60%,
-        rgba(0, 18, 40, 0.65) 100%
-      );
-      z-index: 1;
-    }
-
-    /* Contenido encima del video */
-    .hero-video-content {
-      position: relative;
-      z-index: 2;
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 60px 32px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
-      align-items: center;
-      width: 100%;
-    }
-
-    /* Textos del hero — ahora en blanco */
-    .hero-tag {
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--onpe-teal);
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .hero-h1 {
-      font-family: var(--font-titulo);
-      font-size: 3rem;
-      font-weight: 800;
-      color: #ffffff;
-      line-height: 1.05;
-      margin-bottom: 10px;
-    }
-
-    .hero-h1 span { color: #ff6b6b; }
-
-    .hero-desc {
-      font-size: 0.925rem;
-      color: rgba(255, 255, 255, 0.82);
-      line-height: 1.75;
-      max-width: 480px;
-      margin-bottom: 24px;
-    }
-
-    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
-
-    /* Botón blanco outline para el hero oscuro */
-    .btn-hero-outline {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 11px 22px;
-      background: transparent;
-      color: #ffffff;
-      border: 1.5px solid rgba(255,255,255,0.5);
-      border-radius: var(--radio-sm);
-      font-family: var(--font-cuerpo);
-      font-size: 0.875rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all var(--trans);
-      text-decoration: none;
-    }
-    .btn-hero-outline:hover {
-      background: rgba(255,255,255,0.12);
-      border-color: rgba(255,255,255,0.8);
-      color: #ffffff;
-      transform: translateY(-1px);
-    }
-
-    /* Botón teal para informe */
-    .btn-hero-teal {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 11px 22px;
-      background: var(--onpe-teal);
-      color: #ffffff;
-      border: none;
-      border-radius: var(--radio-sm);
-      font-family: var(--font-cuerpo);
-      font-size: 0.875rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all var(--trans);
-      text-decoration: none;
-      position: relative;
-    }
-    .btn-hero-teal:hover {
-      background: #007a85;
-      color: #ffffff;
-      transform: translateY(-1px);
-    }
-
-    /* ── TOOLTIP INFORME ─────────────────────────────────────── */
-    .tooltip-informe {
-      position: absolute;
-      bottom: calc(100% + 10px);
-      left: 50%;
-      transform: translateX(-50%) translateY(6px);
-      background: var(--onpe-azul);
-      color: #ffffff;
-      font-size: 0.78rem;
-      font-weight: 500;
-      padding: 10px 14px;
-      border-radius: 8px;
-      width: 220px;
-      text-align: center;
-      line-height: 1.4;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease, transform 0.4s ease;
-      z-index: 100;
-    }
-    .tooltip-informe::after {
-      content: '';
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      border: 6px solid transparent;
-      border-top-color: var(--onpe-azul);
-    }
-    .tooltip-informe.visible {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    /* ── CARD AVANCE (sobre video — fondo blanco con sombra) ── */
-    .onpe-avance-card {
-      background: rgba(255, 255, 255, 0.97);
-      border: 1px solid var(--onpe-gris-borde);
-      border-radius: var(--radio);
-      padding: 24px;
-      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.22);
-      backdrop-filter: blur(8px);
-    }
-    .onpe-avance-card h3 {
-      font-family: var(--font-titulo);
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--onpe-azul);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .onpe-avance-pct {
-      font-family: var(--font-titulo);
-      font-size: 3.6rem;
-      font-weight: 800;
-      color: var(--onpe-azul);
-      line-height: 1;
-      margin-bottom: 2px;
-    }
-    .onpe-avance-pct span { font-size: 1.6rem; font-weight: 600; }
-    .onpe-actas-label {
-      font-size: 0.68rem;
-      color: var(--onpe-teal);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 12px;
-    }
-
-    /* ── MINI CARDS ──────────────────────────────────────────── */
-    .onpe-mini-cards {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .onpe-mini-card {
-      background: var(--onpe-blanco);
-      border: 1px solid var(--onpe-gris-borde);
-      border-radius: var(--radio);
-      padding: 14px 10px;
-      text-align: center;
-      box-shadow: 0 2px 12px rgba(0,75,141,0.08);
-      transition: all var(--trans);
-    }
-    .onpe-mini-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 28px rgba(0,75,141,0.16);
-    }
-    .onpe-mini-card .mn {
-      font-family: var(--font-titulo);
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: var(--onpe-azul);
-      line-height: 1;
-      display: block;
-    }
-    .onpe-mini-card .ml {
-      font-size: 0.65rem;
-      color: var(--onpe-gris-suave);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-top: 3px;
-      display: block;
-    }
-    .onpe-mini-card.verde .mn { color: #2e7d32; }
-    .onpe-mini-card.rojo  .mn { color: var(--onpe-rojo); }
-    .onpe-mini-card.teal  .mn { color: var(--onpe-teal); }
-
-    /* ══════════════════════════════════════════════════════════
-       CANDIDATOS
-    ══════════════════════════════════════════════════════════ */
-    .candidatos-section {
-      background: var(--onpe-blanco);
-      border: 1px solid var(--onpe-gris-borde);
-      border-radius: var(--radio);
-      padding: 24px 28px;
-      box-shadow: 0 4px 24px rgba(0,75,141,0.10);
-      margin-bottom: 24px;
-    }
-    .sec-titulo {
-      font-family: var(--font-titulo);
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--onpe-azul);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid var(--onpe-azul-suave);
-    }
-    .candidatos-onpe-grid {
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-      gap: 60px;
-      padding: 10px 0 16px;
-      flex-wrap: wrap;
-    }
-    .candidato-onpe-col {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      text-align: center;
-    }
-    .candidato-foto-circulo {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      overflow: hidden;
-      background: var(--onpe-azul-suave);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      box-shadow: 0 6px 20px rgba(0,75,141,0.18);
-      transition: transform var(--trans), box-shadow var(--trans);
-    }
-    .candidato-foto-circulo:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 30px rgba(0,75,141,0.25);
-    }
-    .candidato-foto-circulo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top center;
-    }
-    .candidato-badge {
-      position: absolute;
-      bottom: 4px;
-      left: 4px;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.6rem;
-      font-weight: 900;
-      border: 2px solid white;
-      color: white;
-    }
-    .candidato-logo-partido { height: 36px; width: auto; object-fit: contain; }
-    .candidato-pct-onpe { font-family: var(--font-titulo); font-size: 2.8rem; font-weight: 800; line-height: 1; }
-    .candidato-nombre-onpe { font-family: var(--font-titulo); font-size: 0.85rem; font-weight: 700; color: var(--onpe-gris-texto); text-transform: uppercase; letter-spacing: 0.5px; }
-    .candidato-partido-onpe { font-size: 0.72rem; color: var(--onpe-gris-suave); }
-
-    .barra-bicolor { display: flex; height: 8px; width: 100%; overflow: hidden; margin-top: 16px; }
-    .barra-bicolor .seg-fp { background: var(--onpe-azul); transition: width 1.2s ease; }
-    .barra-bicolor .seg-jp { background: var(--onpe-rojo); transition: width 1.2s ease; }
-    .barra-etiquetas { display: flex; justify-content: space-between; margin-top: 6px; font-size: 0.72rem; font-weight: 600; }
-
-    /* ══════════════════════════════════════════════════════════
-       REGISTRO DE ACTA — sube antes de "Acerca De"
-    ══════════════════════════════════════════════════════════ */
-    .onpe-registro-section {
-      background: var(--onpe-gris-bg);
-      padding: 40px 32px;
-      border-top: 1px solid var(--onpe-gris-borde);
-    }
-    .onpe-registro-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-      align-items: start;
-    }
-    .onpe-registro-titulo {
-      font-family: var(--font-titulo);
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: var(--onpe-azul);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* ══════════════════════════════════════════════════════════
-       ACERCA DE
-    ══════════════════════════════════════════════════════════ */
-    .onpe-acerca-section {
-      background: var(--onpe-blanco);
-      padding: 0 32px;
-      border-top: 1px solid var(--onpe-gris-borde);
-    }
-    .onpe-acerca-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      border: 1px solid var(--onpe-gris-borde);
-      border-radius: var(--radio);
-      overflow: hidden;
-      margin: 32px auto;
-      box-shadow: 0 2px 16px rgba(0,75,141,0.07);
-    }
-    .onpe-acerca-col { padding: 40px 48px; }
-    .onpe-acerca-col:first-child { border-right: 1px solid var(--onpe-gris-borde); }
-    .onpe-acerca-tag { font-size: 0.68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--onpe-gris-suave); margin-bottom: 12px; }
-    .onpe-acerca-titulo { font-family: var(--font-titulo); font-size: 1.4rem; font-weight: 800; color: var(--onpe-azul); margin-bottom: 12px; line-height: 1.2; }
-    .onpe-acerca-texto { font-size: 0.875rem; color: var(--onpe-gris-suave); line-height: 1.7; margin-bottom: 16px; }
-    .onpe-acerca-link { color: var(--onpe-teal); font-weight: 600; font-size: 0.875rem; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: gap var(--trans); }
-    .onpe-acerca-link:hover { gap: 10px; }
-
-    /* ══════════════════════════════════════════════════════════
-       ILUSTRACIONES 1-5 — al final
-    ══════════════════════════════════════════════════════════ */
-    .onpe-ilus-section {
-      background: var(--onpe-gris-bg);
-      padding: 48px 32px;
-      border-top: 1px solid var(--onpe-gris-borde);
-    }
-    .onpe-ilus-inner { max-width: 1280px; margin: 0 auto; }
-    .onpe-ilus-titulo { font-family: var(--font-titulo); font-size: 1.6rem; font-weight: 800; color: var(--onpe-azul); text-align: center; margin-bottom: 6px; }
-    .onpe-ilus-subtitulo { text-align: center; font-size: 0.85rem; color: var(--onpe-gris-suave); margin-bottom: 32px; }
-    .onpe-ilus-grid { display: flex; justify-content: center; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
-    .onpe-ilus-item { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
-    .onpe-ilus-circulo {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      border: 3px solid var(--onpe-azul);
-      overflow: hidden;
-      background: var(--onpe-azul-suave);
-      transition: transform var(--trans), box-shadow var(--trans);
-      box-shadow: 0 4px 16px rgba(0,75,141,0.12);
-    }
-    .onpe-ilus-circulo:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 28px rgba(0,75,141,0.22);
-    }
-    .onpe-ilus-circulo img { width: 100%; height: 100%; object-fit: cover; }
-    .onpe-ilus-numero { display: flex; align-items: center; gap: 6px; font-family: var(--font-titulo); font-size: 1.5rem; font-weight: 800; color: var(--onpe-azul); }
-    .onpe-ilus-etiqueta { font-size: 0.8rem; font-weight: 600; color: var(--onpe-gris-texto); }
-    .onpe-ilus-dot { width: 28px; height: 5px; border-radius: 3px; margin-top: -4px; }
-
-    /* ══════════════════════════════════════════════════════════
-       RESPONSIVE
-    ══════════════════════════════════════════════════════════ */
-    @media (max-width: 900px) {
-      .hero-video-content   { grid-template-columns: 1fr; padding: 40px 20px; }
-      .onpe-avance-card     { background: rgba(255,255,255,0.96); }
-      .onpe-registro-inner  { grid-template-columns: 1fr; }
-      .onpe-acerca-inner    { grid-template-columns: 1fr; }
-      .onpe-acerca-col:first-child { border-right: none; border-bottom: 1px solid var(--onpe-gris-borde); }
-      .onpe-mini-cards      { grid-template-columns: repeat(2,1fr); }
-      .hero-h1              { font-size: 2.2rem; }
-      .candidatos-onpe-grid { gap: 24px; }
-      .candidato-foto-circulo { width: 80px; height: 80px; }
-      .candidato-pct-onpe   { font-size: 2rem; }
-    }
-    @media (max-width: 480px) {
-      .hero-video-content   { padding: 32px 16px; }
-      .onpe-ilus-section    { padding: 32px 16px; }
-      .onpe-registro-section{ padding: 24px 16px; }
-      .onpe-acerca-section  { padding: 0 16px; }
-      .onpe-acerca-col      { padding: 28px 20px; }
-      .onpe-mini-cards      { grid-template-columns: 1fr 1fr; }
-      .onpe-ilus-circulo    { width: 90px; height: 90px; }
-      .hero-h1              { font-size: 1.8rem; }
-    }
-  </style>
 </head>
 <body>
 
@@ -479,7 +26,7 @@
         </div>
       </a>
       <nav class="onpe-nav-links">
-        <a href="index.html" class="activo"><i class="fas fa-th-large"></i>Resumen</a>
+        <a href="index.html" class="activo"><i class="fas fa-th-large"></i>Inicio</a>
         <a href="pages/estadisticas.html"><i class="fas fa-chart-bar"></i>Presidencial</a>
         <a href="pages/actas.html"><i class="fas fa-file-contract"></i>Actas</a>
         <a href="pages/resultados.html"><i class="fas fa-search"></i>Monitor</a>
@@ -495,18 +42,10 @@
 
     <!-- ══ HERO CON VIDEO ══ -->
     <section class="onpe-hero-video">
-
-      <!-- Video de fondo -->
-      <video class="hero-video-bg"
-             autoplay muted loop playsinline
-             poster="assets/img/onpe/hero-poster.jpg">
+      <video class="hero-video-bg" autoplay muted loop playsinline poster="assets/img/onpe/hero-poster.jpg">
         <source src="assets/video/hero-bg.mp4" type="video/mp4">
       </video>
-
-      <!-- Overlay -->
       <div class="hero-video-overlay"></div>
-
-      <!-- Contenido -->
       <div class="hero-video-content">
         <div>
           <div class="hero-tag">
@@ -521,20 +60,16 @@
           </p>
 
           <div class="hero-btns">
-            <!-- Botón principal -->
             <a href="pages/estadisticas.html" class="onpe-btn">
               <i class="fas fa-chart-bar"></i> Ver Resultados
             </a>
-            <!-- Botón outline -->
             <a href="pages/actas.html" class="btn-hero-outline">
               <i class="fas fa-file-contract"></i> Ver Actas
             </a>
-            <!-- Botón informe con tooltip -->
             <div style="position:relative;display:inline-block;">
               <div class="tooltip-informe" id="tooltip-informe">
                 <i class="fas fa-diagram-project" style="color:var(--onpe-teal);"></i>
-                Aquí están los <strong>5 diagramas UML</strong> que modelan
-                el sistema que estás explorando ahora mismo.
+                Aquí están los <strong>5 diagramas UML</strong> que modelan el sistema.
               </div>
               <a href="informe/index.html" class="btn-hero-teal" id="btn-informe">
                 <i class="fas fa-book-open"></i> Informe UML
@@ -542,7 +77,6 @@
             </div>
           </div>
 
-          <!-- Mini cards -->
           <div class="onpe-mini-cards">
             <div class="onpe-mini-card verde">
               <span class="mn" id="mini-cont">—</span>
@@ -563,350 +97,217 @@
           </div>
         </div>
 
-        <!-- Card avance -->
-        <div class="onpe-avance-card">
-          <h3>
-            <i class="fas fa-chart-pie" style="color:var(--onpe-teal);"></i>
-            Elección de Fórmula Presidencial
-          </h3>
-          <div class="onpe-actas-label">Actas contabilizadas</div>
-          <div class="onpe-avance-pct" id="hero-pct">—<span>%</span></div>
-          <div class="onpe-progress-bar" style="margin-bottom:14px;">
-            <div class="onpe-progress-fill" id="hero-barra" style="width:0%;"></div>
-          </div>
-          <div style="display:flex;align-items:center;gap:16px;">
-            <div style="position:relative;width:100px;height:100px;flex-shrink:0;">
-              <canvas id="dona-hero" width="100" height="100"></canvas>
-            </div>
-            <div class="onpe-leyenda" id="hero-leyenda"></div>
-          </div>
-          <div class="onpe-total-row" id="hero-total">
-            <span>TOTAL</span><span>—</span>
-          </div>
-        </div>
-      </div>
+
     </section>
-
-    <!-- FILTRO -->
-    <div class="onpe-filtro-bar">
-      <button class="onpe-filtro-btn activo">
-        <i class="fas fa-map-marker-alt"></i> TODOS <i class="fas fa-chevron-down"></i>
-      </button>
-      <button class="onpe-filtro-btn">REGIÓN <i class="fas fa-chevron-down"></i></button>
-      <button class="onpe-filtro-btn">PROVINCIA <i class="fas fa-chevron-down"></i></button>
-      <button class="onpe-filtro-btn">DISTRITO <i class="fas fa-chevron-down"></i></button>
-      <div style="margin-left:auto;">
-        <span class="onpe-live-badge"><span class="onpe-live-dot"></span> En vivo</span>
-      </div>
-    </div>
-
-<!-- ══ CANDIDATOS CON GLOBITOS ══ -->
-<div class="onpe-container">
-  <div class="candidatos-section" id="seccion-candidatos">
-
-    <div class="sec-titulo">
-      <i class="fas fa-vote-yea"></i>
-      Resultado — Segunda Vuelta Presidencial
-    </div>
-
-    <!-- Wrapper con globitos en los extremos -->
-    <div style="position:relative;">
-
-      <!-- GLOBITO KEIKO — extremo izquierdo -->
-      <div class="globito-candidato" id="globito-keiko" style="
-        position: absolute;
-        left: -10px;
-        top: 50%;
-        transform: translateY(-50%) translateX(-20px);
-        width: 200px;
-        background: white;
-        border-radius: 12px;
-        border-top: 4px solid #004b8d;
-        box-shadow: 0 8px 32px rgba(0,75,141,0.18);
-        overflow: hidden;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.5s ease, transform 0.5s ease;
-        z-index: 10;
-      ">
-        <img
-          src="assets/img/candidatos/info-keiko.png"
-          alt="Información Keiko Fujimori"
-          style="width:100%;height:auto;display:block;
-                 max-height:200px;object-fit:cover;
-                 object-position:top center;">
-        <div style="padding:10px 12px;background:white;">
-          <p style="font-family:var(--font-titulo);font-size:0.72rem;
-            font-weight:800;color:#004b8d;text-transform:uppercase;
-            letter-spacing:0.5px;margin:0;">Keiko Fujimori</p>
-          <p style="font-size:0.65rem;color:#888;margin:2px 0 0;">
-            Fuerza Popular
-          </p>
+<!-- ══ SECCIÓN DE MONITOREO Y RESULTADOS ══ -->
+<section class="onpe-stats-dashboard">
+    <div class="stats-container">
+        
+                <section class="onpe-results-preview">
+    <div class="results-card">
+        <!-- Indicador de estado -->
+        <div class="status-indicator">
+            <span class="pulse-icon"></span>
+            <span class="status-text">EN VIVO</span>
         </div>
-        <!-- Flecha apuntando a la derecha -->
-        <div style="position:absolute;right:-8px;top:50%;
-          transform:translateY(-50%);
-          width:0;height:0;
-          border-top:8px solid transparent;
-          border-bottom:8px solid transparent;
-          border-left:8px solid white;
-          filter:drop-shadow(2px 0 2px rgba(0,0,0,0.08));"></div>
-      </div>
 
-      <!-- GRID DE CANDIDATOS -->
-      <div class="candidatos-onpe-grid" id="candidatos-grid"></div>
-
-      <!-- GLOBITO SÁNCHEZ — extremo derecho -->
-      <div class="globito-candidato" id="globito-sanchez" style="
-        position: absolute;
-        right: -10px;
-        top: 50%;
-        transform: translateY(-50%) translateX(20px);
-        width: 200px;
-        background: white;
-        border-radius: 12px;
-        border-top: 4px solid #cc0000;
-        box-shadow: 0 8px 32px rgba(204,0,0,0.15);
-        overflow: hidden;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.5s ease, transform 0.5s ease;
-        z-index: 10;
-      ">
-        <img
-          src="assets/img/candidatos/info-sanchez.png"
-          alt="Información Roberto Sánchez"
-          style="width:100%;height:auto;display:block;
-                 max-height:200px;object-fit:cover;
-                 object-position:top center;">
-        <div style="padding:10px 12px;background:white;">
-          <p style="font-family:var(--font-titulo);font-size:0.72rem;
-            font-weight:800;color:#cc0000;text-transform:uppercase;
-            letter-spacing:0.5px;margin:0;">Roberto Sánchez</p>
-          <p style="font-size:0.65rem;color:#888;margin:2px 0 0;">
-            Juntos por el Perú
-          </p>
+        <div class="results-info">
+            <h2>Resultados Oficiales ONPE</h2>
+            <p>Consulta el avance del escrutinio y la participación ciudadana en tiempo real.</p>
         </div>
-        <!-- Flecha apuntando a la izquierda -->
-        <div style="position:absolute;left:-8px;top:50%;
-          transform:translateY(-50%);
-          width:0;height:0;
-          border-top:8px solid transparent;
-          border-bottom:8px solid transparent;
-          border-right:8px solid white;
-          filter:drop-shadow(-2px 0 2px rgba(0,0,0,0.08));"></div>
-      </div>
 
-    </div><!-- fin wrapper -->
-
-    <!-- Barra bicolor -->
-    <div class="barra-bicolor">
-      <div class="seg-fp" id="barra-fp" style="width:50%;"></div>
-      <div class="seg-jp" id="barra-jp" style="width:50%;"></div>
+        <!-- Acceso a Estadísticas -->
+        <div class="stats-action">
+            <a href="pages/estadisticas.html" class="btn-stats-link">
+                <i class="fas fa-chart-bar"></i>
+                <span>Ver Estadísticas</span>
+                <i class="fas fa-chevron-right arrow-icon"></i>
+            </a>
+        </div>
+        
+        <!-- Decoración visual: Simulación de barras de datos -->
+        <div class="data-decoration">
+            <div class="bar-item" style="height: 40%;"></div>
+            <div class="bar-item" style="height: 70%;"></div>
+            <div class="bar-item" style="height: 55%;"></div>
+            <div class="bar-item" style="height: 90%;"></div>
+        </div>
     </div>
-    <div class="barra-etiquetas">
-      <span style="color:var(--onpe-azul);">Fuerza Popular — K. Fujimori</span>
-      <span style="color:var(--onpe-rojo);">Juntos por el Perú — R. Sánchez</span>
-    </div>
+</section>
+      
 
-  </div>
-</div>
-
-<script>
-/* ── GLOBITOS CANDIDATOS ─────────────────────────────────────── */
-(function() {
-  let yaSeMostro = false;
-
-  const seccion  = document.getElementById('seccion-candidatos');
-  const gKeiko   = document.getElementById('globito-keiko');
-  const gSanchez = document.getElementById('globito-sanchez');
-
-  if (!seccion || !gKeiko || !gSanchez) return;
-
-  function mostrarGlobitos() {
-    if (yaSeMostro) return;
-    yaSeMostro = true;
-
-    // Entrada — fade + slide hacia el centro
-    gKeiko.style.opacity   = '1';
-    gKeiko.style.transform = 'translateY(-50%) translateX(0)';
-
-    gSanchez.style.opacity   = '1';
-    gSanchez.style.transform = 'translateY(-50%) translateX(0)';
-
-    // Salida después de 6 segundos
-    setTimeout(() => {
-      gKeiko.style.opacity   = '0';
-      gKeiko.style.transform = 'translateY(-50%) translateX(-20px)';
-
-      gSanchez.style.opacity   = '0';
-      gSanchez.style.transform = 'translateY(-50%) translateX(20px)';
-    }, 8000);
-  }
-
-  // Se activa cuando la sección entra en pantalla
-  const observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting) mostrarGlobitos();
-  }, { threshold: 0.4 });
-
-  observer.observe(seccion);
-})();
-</script>
-    <!-- ══ REGISTRO DE ACTA — sube aquí ══ -->
-    <section class="onpe-registro-section" id="registro">
-      <div class="onpe-registro-inner">
-        <div>
-          <h2 class="onpe-registro-titulo">
-            <i class="fas fa-file-signature" style="color:var(--onpe-teal);"></i>
-            Registro de Acta Digital
-          </h2>
-          <p style="font-size:0.85rem;color:var(--onpe-gris-suave);margin-bottom:16px;">
-            Presidente: <strong id="onpe-nombre-presidente">—</strong>
-          </p>
-          <input type="hidden" id="num-mesa-form" />
-          <div class="onpe-form-grid">
-            <div class="onpe-form-item">
-              <label><span class="color-dot" style="background:var(--onpe-azul);"></span>Fuerza Popular (K. Fujimori)</label>
-              <input type="number" id="votos-fp" placeholder="0" min="0" max="300" class="onpe-input" />
-            </div>
-            <div class="onpe-form-item">
-              <label><span class="color-dot" style="background:var(--onpe-rojo);"></span>Juntos por el Perú (R. Sánchez)</label>
-              <input type="number" id="votos-jp" placeholder="0" min="0" max="300" class="onpe-input" />
-            </div>
-            <div class="onpe-form-item">
-              <label><span class="color-dot" style="background:#adb5bd;"></span>Votos en Blanco</label>
-              <input type="number" id="votos-blancos" placeholder="0" min="0" max="300" class="onpe-input" />
-            </div>
-            <div class="onpe-form-item">
-              <label><span class="color-dot" style="background:#e0e0e0;border:1px solid #ccc;"></span>Votos Nulos</label>
-              <input type="number" id="votos-nulos" placeholder="0" min="0" max="300" class="onpe-input" />
-            </div>
+    <!-- ══ SECCIÓN DE AUTENTICACIÓN Y REGISTRO ══ -->
+    <section class="onpe-registro-section" id="registro" style="padding: 60px 0; background: #f8f9fa;">
+      <div class="onpe-registro-inner" style="max-width: 1000px; margin: auto; display: flex; flex-direction: column; align-items: center;">
+        
+        <!-- Bloque de Autenticación Inicial -->
+        <div id="auth-container" class="onpe-card-auth" style="width: 100%; max-width: 500px; background: white; padding: 40px; border-radius: 15px; shadow: 0 10px 30px rgba(0,0,0,0.1);">
+          <div style="text-align: center; margin-bottom: 25px;">
+            <i class="fas fa-shield-alt" style="font-size: 3rem; color: #004b8d;"></i>
+            <h3 style="margin-top: 15px;">Acceso Presidente de Mesa</h3>
+            <p style="color: #666;">Valide su identidad con RENIEC para habilitar el registro.</p>
           </div>
-          <div id="onpe-contador-suma" style="font-size:0.85rem;min-height:22px;margin:8px 0;font-weight:600;"></div>
-          <p style="font-size:0.78rem;color:var(--onpe-gris-suave);margin-bottom:14px;">
-            * La suma debe ser exactamente <strong>300</strong> votos (padrón de mesa).
-          </p>
-          <button id="btn-enviar-acta" onclick="Actas.procesarActa()" class="onpe-btn" style="width:100%;">
-            <i class="fas fa-paper-plane"></i> Firmar y Enviar Acta
+          
+          <input type="text" id="dni-input" placeholder="Ingrese DNI de 8 dígitos" maxlength="8" class="onpe-input" style="width: 100%; padding: 15px; margin-bottom: 15px; font-size: 1.1rem; text-align: center; border: 2px solid #ddd; border-radius: 8px;" />
+          <button onclick="validarIdentidad()" class="onpe-btn" style="width: 100%; padding: 15px; font-weight: bold;">
+            AUTENTICAR IDENTIDAD
           </button>
-          <div id="resumen-post-registro" style="display:none;margin-top:14px;"></div>
+          <p id="auth-msg" style="text-align: center; margin-top: 15px; font-weight: 600;"></p>
+          
+          <div style="margin-top: 20px; font-size: 0.85rem; color: #888; background: #f0f0f0; padding: 10px; border-radius: 5px;">
+            <strong>Prueba:</strong> Use cualquier número de 8 dígitos (ej. 12345678).
+          </div>
         </div>
 
-        <div>
-          <div class="onpe-auth-box">
-            <h3><i class="fas fa-id-card" style="color:var(--onpe-teal);margin-right:8px;"></i>Acceso Presidente de Mesa</h3>
-            <p>Ingrese su DNI para validación con RENIEC:</p>
-            <input type="text" id="dni-input" placeholder="DNI de 8 dígitos" maxlength="8" class="onpe-input" />
-            <button id="btn-auth" onclick="Auth.validarIdentidad()" class="onpe-btn" style="width:100%;margin-top:10px;">
-              <i class="fas fa-shield-alt"></i> Autenticar Identidad
-            </button>
-            <div id="onpe-mesa-asignada" style="display:none;margin-top:10px;
-              background:var(--onpe-azul);color:white;padding:8px 14px;
-              border-radius:var(--radio-sm);font-weight:700;font-size:0.9rem;"></div>
-            <p id="auth-msg" style="font-size:0.82rem;margin-top:10px;min-height:20px;font-weight:600;"></p>
-          </div>
-          <div style="margin-top:14px;background:var(--onpe-blanco);
-            border:1px solid var(--onpe-gris-borde);border-radius:var(--radio);
-            padding:16px;font-size:0.78rem;
-            box-shadow:0 2px 12px rgba(0,75,141,0.06);">
-            <p style="font-weight:700;color:var(--onpe-azul);margin-bottom:8px;">
-              <i class="fas fa-info-circle"></i> DNIs de prueba:
-            </p>
-            <div style="display:flex;flex-direction:column;gap:4px;color:var(--onpe-gris-suave);">
-              <span><code style="background:#f0f0f0;padding:2px 6px;border-radius:3px;">12345678</code> — Mesa 000001</span>
-              <span><code style="background:#f0f0f0;padding:2px 6px;border-radius:3px;">87654321</code> — Mesa 000002</span>
-              <span><code style="background:#f0f0f0;padding:2px 6px;border-radius:3px;">11223344</code> — Mesa 000003</span>
-            </div>
-          </div>
+        <!-- El contenedor del Formulario (Se llena dinámicamente) -->
+        <div id="form-registro-dinamico" style="display: none; width: 100%;">
+          <!-- Aquí se insertará el HTML vía JavaScript al validar el DNI -->
         </div>
+
       </div>
     </section>
 
+  </main>
+
+  <!-- MODALES -->
+  <div class="onpe-modal" id="modal-exito" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1000; justify-content:center; align-items:center;">
+    <div class="onpe-modal-contenido" style="background:white; padding:40px; border-radius:15px; text-align:center; max-width:400px;">
+      <i class="fas fa-check-circle" style="color:#2e7d32; font-size: 4rem;"></i>
+      <h3 style="margin: 20px 0;">¡Acta Enviada!</h3>
+      <p>Los datos han sido validados y registrados correctamente en el sistema central.</p>
+      <button onclick="location.reload()" class="onpe-btn" style="width:100%; margin-top:20px;">Siguiente Mesa</button>
+    </div>
+  </div>
+
+  <div class="onpe-modal" id="modal-observada" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1000; justify-content:center; align-items:center;">
+    <div class="onpe-modal-contenido" style="background:white; padding:40px; border-radius:15px; text-align:center; max-width:400px;">
+      <i class="fas fa-exclamation-triangle" style="color:#d32f2f; font-size: 4rem;"></i>
+      <h3 style="margin: 20px 0;">Acta Observada</h3>
+      <p>La suma no cuadra con el padrón (300). El acta será enviada al JNE para revisión.</p>
+      <button onclick="location.reload()" class="onpe-btn" style="width:100%; margin-top:20px; background:#d32f2f;">Entendido</button>
+    </div>
+  </div>
+
+
+  <script>
+    const TOTAL_PADRON = 300;
+
+    function validarIdentidad() {
+      const dni = document.getElementById('dni-input').value;
+      const msg = document.getElementById('auth-msg');
+      const authContainer = document.getElementById('auth-container');
+      const formDinamico = document.getElementById('form-registro-dinamico');
+
+      if (dni.length === 8) {
+        // Ocultar login
+        authContainer.style.display = 'none';
+        
+        // Cargar Formulario
+        formDinamico.innerHTML = `
+          <div class="onpe-card-registro" style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+            <h2 style="color: #004b8d; border-bottom: 2px solid #004b8d; padding-bottom: 10px; margin-bottom: 20px;">
+              <i class="fas fa-file-signature"></i> Registro de Acta Digital
+            </h2>
+            <p style="margin-bottom: 25px;"><strong>ID Presidente:</strong> Autenticado vía DNI ${dni}</p>
+            
+            <form onsubmit="procesarActa(); return false;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                <div>
+                  <label style="display:block; font-weight:bold; margin-bottom:10px;">Fuerza Popular</label>
+                  <input type="number" id="v-fp" class="onpe-input" value="0" min="0" style="width:100%; padding:12px; border:1px solid #ccc; border-radius:6px;">
+                </div>
+                <div>
+                  <label style="display:block; font-weight:bold; margin-bottom:10px;">Juntos por el Perú</label>
+                  <input type="number" id="v-jp" class="onpe-input" value="0" min="0" style="width:100%; padding:12px; border:1px solid #ccc; border-radius:6px;">
+                </div>
+                <div>
+                  <label style="display:block; font-weight:bold; margin-bottom:10px;">Votos en Blanco</label>
+                  <input type="number" id="v-bl" class="onpe-input" value="0" min="0" style="width:100%; padding:12px; border:1px solid #ccc; border-radius:6px;">
+                </div>
+                <div>
+                  <label style="display:block; font-weight:bold; margin-bottom:10px;">Votos Nulos</label>
+                  <input type="number" id="v-nu" class="onpe-input" value="0" min="0" style="width:100%; padding:12px; border:1px solid #ccc; border-radius:6px;">
+                </div>
+              </div>
+
+              <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
+                <span style="font-size: 1.2rem; font-weight: bold;">
+                  Suma Total: <span id="total-actual" style="color: #d32f2f;">0</span> / 300
+                </span>
+                <p style="font-size: 0.9rem; color: #666; margin-top: 5px;">* El total debe coincidir con el padrón electoral.</p>
+              </div>
+
+              <button type="submit" class="onpe-btn" style="width:100%; margin-top: 25px; padding: 18px; font-size: 1.1rem;">
+                FIRMAR Y ENVIAR ACTA
+              </button>
+            </form>
+          </div>
+        `;
+        
+        formDinamico.style.display = 'block';
+        activarEscuchaVotos();
+        
+      } else {
+        msg.innerText = "❌ Ingrese un DNI válido de 8 dígitos";
+        msg.style.color = "red";
+      }
+    }
+
+    function activarEscuchaVotos() {
+      const inputs = ['v-fp', 'v-jp', 'v-bl', 'v-nu'];
+      inputs.forEach(id => {
+        document.getElementById(id).addEventListener('input', () => {
+          let suma = 0;
+          inputs.forEach(i => suma += parseInt(document.getElementById(i).value) || 0);
+          
+          const display = document.getElementById('total-actual');
+          display.innerText = suma;
+          display.style.color = (suma === TOTAL_PADRON) ? "#2e7d32" : "#d32f2f";
+        });
+      });
+    }
+
+    function procesarActa() {
+      const v1 = parseInt(document.getElementById('v-fp').value) || 0;
+      const v2 = parseInt(document.getElementById('v-jp').value) || 0;
+      const v3 = parseInt(document.getElementById('v-bl').value) || 0;
+      const v4 = parseInt(document.getElementById('v-nu').value) || 0;
+
+      if ((v1 + v2 + v3 + v4) === TOTAL_PADRON) {
+        document.getElementById('modal-exito').style.display = 'flex';
+      } else {
+        document.getElementById('modal-observada').style.display = 'flex';
+      }
+    }
+  </script>
+</body>
     <!-- ══ ACERCA DE ══ -->
     <section class="onpe-acerca-section">
       <div class="onpe-acerca-inner">
         <div class="onpe-acerca-col">
           <div class="onpe-acerca-tag">ACERCA DE</div>
           <h2 class="onpe-acerca-titulo">Conoce más sobre el proceso electoral 2026</h2>
-          <p class="onpe-acerca-texto">
-            Estar informados es fundamental para una democracia saludable.
-            ¿Quieres conocer más sobre este proceso electoral y cómo
-            funciona el sistema de escrutinio digital?
-          </p>
-          <a href="informe/index.html" class="onpe-acerca-link">
-            Saber más <i class="fas fa-arrow-right"></i>
-          </a>
+          <p class="onpe-acerca-texto">Estar informados es fundamental para una democracia saludable.</p>
+          <a href="informe/index.html" class="onpe-acerca-link">Saber más <i class="fas fa-arrow-right"></i></a>
         </div>
         <div class="onpe-acerca-col">
           <div class="onpe-acerca-tag">LO QUE DEBES SABER</div>
           <h2 class="onpe-acerca-titulo">Algunos puntos importantes sobre estas elecciones 2026</h2>
-          <p class="onpe-acerca-texto">
-            La Segunda Vuelta se realizará el <strong>Domingo 7 de junio de 2026</strong>
-            de 7 a. m. a 6 p. m. Más de 27 millones de peruanos elegirán
-            al Presidente y Vicepresidentes de la República.
-          </p>
-          <p class="onpe-acerca-texto" style="margin-bottom:0;">
-            <strong>Candidatos:</strong> Keiko Fujimori (Fuerza Popular)
-            y Roberto Sánchez (Juntos por el Perú).
-          </p>
+          <p class="onpe-acerca-texto">La Segunda Vuelta se realizará el <strong>Domingo 7 de junio de 2026</strong>.</p>
         </div>
       </div>
     </section>
 
-    <!-- ══ ILUSTRACIONES 1-5 — AL FINAL ══ -->
+    <!-- ══ ILUSTRACIONES ══ -->
     <section class="onpe-ilus-section">
       <div class="onpe-ilus-inner">
         <h2 class="onpe-ilus-titulo">¿Qué elegiremos en la Segunda Vuelta 2026?</h2>
-        <p class="onpe-ilus-subtitulo">
-          Estas son las autoridades por las cuales votaremos el 7 de junio de 2026.
-        </p>
         <div class="onpe-ilus-grid">
           <div class="onpe-ilus-item">
             <div class="onpe-ilus-circulo"><img src="assets/img/onpe/5.png" alt="Presidente"></div>
-            <div class="onpe-ilus-numero">1<div class="onpe-ilus-dot" style="background:#cc0000;"></div></div>
+            <div class="onpe-ilus-numero">1</div>
             <span class="onpe-ilus-etiqueta">Presidente</span>
           </div>
-          <div class="onpe-ilus-item">
-            <div class="onpe-ilus-circulo"><img src="assets/img/onpe/2.png" alt="Vicepresidentes"></div>
-            <div class="onpe-ilus-numero">2<div class="onpe-ilus-dot" style="background:#e65100;"></div></div>
-            <span class="onpe-ilus-etiqueta">Vicepresidentes</span>
-          </div>
-          <div class="onpe-ilus-item">
-            <div class="onpe-ilus-circulo"><img src="assets/img/onpe/3.png" alt="Senadores"></div>
-            <div class="onpe-ilus-numero">60<div class="onpe-ilus-dot" style="background:#009ba8;"></div></div>
-            <span class="onpe-ilus-etiqueta">Senadores</span>
-          </div>
-          <div class="onpe-ilus-item">
-            <div class="onpe-ilus-circulo"><img src="assets/img/onpe/4.png" alt="Diputados"></div>
-            <div class="onpe-ilus-numero">130<div class="onpe-ilus-dot" style="background:#2e7d32;"></div></div>
-            <span class="onpe-ilus-etiqueta">Diputados</span>
-          </div>
-          <div class="onpe-ilus-item">
-            <div class="onpe-ilus-circulo"><img src="assets/img/onpe/1.png" alt="Parlamento Andino"></div>
-            <div class="onpe-ilus-numero">5<div class="onpe-ilus-dot" style="background:#004b8d;"></div></div>
-            <span class="onpe-ilus-etiqueta">Parlamento Andino</span>
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
-          margin-top:40px;max-width:800px;margin-left:auto;margin-right:auto;">
-          <div class="onpe-mini-card" style="text-align:center;">
-            <span class="mn" style="font-size:1.6rem;">27M</span>
-            <span class="ml">Electores</span>
-          </div>
-          <div class="onpe-mini-card" style="text-align:center;">
-            <span class="mn" style="font-size:1.3rem;">86,488</span>
-            <span class="ml">Mesas</span>
-          </div>
-          <div class="onpe-mini-card" style="text-align:center;">
-            <span class="mn" style="font-size:1.6rem;">126</span>
-            <span class="ml">Centros</span>
-          </div>
-          <div class="onpe-mini-card" style="text-align:center;">
-            <span class="mn" style="font-size:1.6rem;">900K</span>
-            <span class="ml">Exterior</span>
-          </div>
-        </div>
-      </div>
     </section>
 
   </main>
@@ -914,19 +315,18 @@
   <!-- MODALES -->
   <div class="onpe-modal" id="modal-exito">
     <div class="onpe-modal-contenido">
-      <i class="fas fa-check-circle" style="color:#2e7d32;"></i>
+      <i class="fas fa-check-circle" style="color:#2e7d32; font-size: 3rem;"></i>
       <h3>¡Acta Enviada!</h3>
       <p>Los datos han sido validados y registrados correctamente.</p>
-      <div class="modal-detalle"></div>
       <button onclick="Actas.cerrarModal('modal-exito')" class="onpe-btn" style="width:100%;">Siguiente Mesa</button>
     </div>
   </div>
+
   <div class="onpe-modal" id="modal-observada">
     <div class="onpe-modal-contenido">
-      <i class="fas fa-balance-scale" style="color:var(--onpe-rojo);"></i>
+      <i class="fas fa-exclamation-triangle" style="color:var(--onpe-rojo); font-size: 3rem;"></i>
       <h3>Acta Observada</h3>
       <p>La suma no cuadra con el padrón. El acta fue enviada al JNE.</p>
-      <div class="modal-detalle"></div>
       <button onclick="Actas.cerrarModal('modal-observada')" class="onpe-btn onpe-btn-rojo" style="width:100%;">Entendido</button>
     </div>
   </div>
@@ -935,138 +335,154 @@
   <footer class="onpe-footer">
     <div class="onpe-footer-grid">
       <div><h4>Oficina Central</h4><p>Jr. Washington 1894<br>Cercado de Lima</p></div>
-      <div><h4>Escríbenos</h4><p>informes@onpe.gob.pe</p><p>Fono: (01) 417-0630</p><p>Línea gratuita: 0800-00513</p></div>
+      <div><h4>Escríbenos</h4><p>informes@onpe.gob.pe</p><p>Fono: (01) 417-0630</p></div>
       <div><h4>Redes Sociales</h4>
         <div class="onpe-social-links">
           <a href="#"><i class="fab fa-facebook-f"></i></a>
           <a href="#"><i class="fab fa-youtube"></i></a>
-          <a href="#"><i class="fab fa-tiktok"></i></a>
           <a href="#"><i class="fab fa-instagram"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
         </div>
       </div>
       <div><h4>SED-2026</h4>
         <p>Jesús Romaldo Sulla Sacsi<br>Anthony Dorly Huilahuaña Chata</p>
-        <p style="margin-top:6px;font-size:0.72rem;opacity:0.6;">Metodologías Ágiles · ISMA SENATI · HT-02</p>
+        <p style="margin-top:6px;font-size:0.72rem;opacity:0.6;">Metodologías Ágiles · ISMA SENATI</p>
       </div>
     </div>
     <div class="onpe-footer-bottom">
-      <span>&copy; 2026 ONPE — Todos los derechos reservados</span>
+      <span>&copy; 2026 ONPE</span>
       <span>Sistema de Escrutinio Digital SED-2026</span>
     </div>
   </footer>
 
   <script src="assets/js/storage.js"></script>
-  <script src="assets/js/auth.js"></script>
   <script src="assets/js/actas.js"></script>
   <script src="assets/js/estadisticas.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const c    = SED.getContador();
-      const pct  = SED.getPorcentajeAvance();
-      const pcts = SED.getPorcentajesVotos();
-
-      /* ── Tooltip informe — aparece a los 2s, desaparece a los 6s ── */
-      const tooltip = document.getElementById('tooltip-informe');
-      if (tooltip) {
-        setTimeout(() => {
-          tooltip.classList.add('visible');
-          setTimeout(() => tooltip.classList.remove('visible'), 4000);
-        }, 2000);
-
-        // También al hacer hover en el botón
-        const btnInforme = document.getElementById('btn-informe');
-        if (btnInforme) {
-          btnInforme.addEventListener('mouseenter', () => tooltip.classList.add('visible'));
-          btnInforme.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
-        }
-      }
-
-      /* ── Mini cards ── */
-      document.getElementById('mini-cont').textContent = c.contabilizadas;
-      document.getElementById('mini-obs').textContent  = c.observadas;
-      document.getElementById('mini-pend').textContent = c.pendientes;
-
-      /* ── Hero avance ── */
-      document.getElementById('hero-pct').innerHTML = pct + '<span>%</span>';
-      setTimeout(() => {
-        document.getElementById('hero-barra').style.width = pct + '%';
-      }, 300);
-
-      /* ── Hero leyenda ── */
-      document.getElementById('hero-leyenda').innerHTML = `
-        <div class="onpe-leyenda-item">
-          <div class="izq"><span class="onpe-leyenda-dot dot-cont"></span><span>Contabilizadas</span></div>
-          <div class="der"><span class="pct">${pct}%</span><span class="num">${c.contabilizadas}</span></div>
-        </div>
-        <div class="onpe-leyenda-item">
-          <div class="izq"><span class="onpe-leyenda-dot dot-jne"></span><span>Para envío al JNE</span></div>
-          <div class="der"><span class="pct">${((c.observadas/(c.totalMesas||1))*100).toFixed(3)}%</span><span class="num">${c.observadas}</span></div>
-        </div>
-        <div class="onpe-leyenda-item">
-          <div class="izq"><span class="onpe-leyenda-dot dot-pend"></span><span>Pendientes</span></div>
-          <div class="der"><span class="pct">0%</span><span class="num">${c.pendientes}</span></div>
-        </div>
-      `;
-      document.getElementById('hero-total').innerHTML = `<span>TOTAL</span><span>${c.totalMesas}</span>`;
-
-      /* ── Dona hero ── */
-      const ctx = document.getElementById('dona-hero')?.getContext('2d');
-      if (ctx) {
-        new Chart(ctx, {
-          type: 'doughnut',
-          data: {
-            datasets: [{
-              data: [c.contabilizadas, c.observadas, Math.max(c.pendientes,0)],
-              backgroundColor: ['#004b8d','#1a6bb5','#dde3ed'],
-              borderWidth: 0,
-            }]
-          },
-          options: {
-            responsive: false,
-            cutout: '72%',
-            animation: { duration: 1000 },
-            plugins: { legend: { display: false }, tooltip: { enabled: false } }
-          }
-        });
-      }
-
-      /* ── Candidatos grid ── */
-      const grid = document.getElementById('candidatos-grid');
-      if (grid) {
-        grid.innerHTML = `
-          <div class="candidato-onpe-col">
-            <div class="candidato-foto-circulo" style="border:3px solid var(--onpe-azul);">
-              <img src="assets/img/candidatos/keiko.png" alt="Keiko" onerror="this.style.display='none'">
-              <div class="candidato-badge" style="background:var(--onpe-azul);">K</div>
-            </div>
-            <img src="assets/img/logos/logo-fp.png" class="candidato-logo-partido" alt="FP" onerror="this.style.display='none'">
-            <div class="candidato-pct-onpe" style="color:var(--onpe-azul);">${pcts.fp}%</div>
-            <div class="candidato-nombre-onpe">KEIKO FUJIMORI</div>
-            <div class="candidato-partido-onpe">Fuerza Popular</div>
-          </div>
-          <div class="candidato-onpe-col">
-            <div class="candidato-foto-circulo" style="border:3px solid var(--onpe-rojo);">
-              <img src="assets/img/candidatos/sanchez.png" alt="Sánchez" onerror="this.style.display='none'">
-              <div class="candidato-badge" style="background:var(--onpe-rojo);">JP</div>
-            </div>
-            <img src="assets/img/logos/logo-jp.png" class="candidato-logo-partido" alt="JP" onerror="this.style.display='none'">
-            <div class="candidato-pct-onpe" style="color:var(--onpe-rojo);">${pcts.jp}%</div>
-            <div class="candidato-nombre-onpe">ROBERTO SÁNCHEZ</div>
-            <div class="candidato-partido-onpe">Juntos por el Perú</div>
-          </div>
-        `;
-      }
-
-      /* ── Barra bicolor ── */
-      setTimeout(() => {
-        const bFP = document.getElementById('barra-fp');
-        const bJP = document.getElementById('barra-jp');
-        if (bFP) bFP.style.width = pcts.fp + '%';
-        if (bJP) bJP.style.width = pcts.jp + '%';
-      }, 400);
+      // Tu lógica de inicialización de gráficos y tooltips aquí
     });
   </script>
+  <script>
+  /* ═══════════════════════════════════════════════════════════════
+     SISTEMA DE ESCRUTINIO DIGITAL SED-2026 - LÓGICA INTEGRADA
+     ═══════════════════════════════════════════════════════════════ */
+  
+  const TOTAL_PADRON = 300;
+  let intentosDNI = 0;
 
+  /**
+   * VALIDAR IDENTIDAD
+   * Al autenticar con éxito, genera dinámicamente el formulario de votos.
+   */
+  function validarIdentidad() {
+    const dniInput = document.getElementById('dni-input');
+    const msg = document.getElementById('auth-msg');
+    const registroSection = document.getElementById('registro');
+
+    if (dniInput.value.length === 8) {
+      // 1. Feedback visual de éxito
+      msg.innerHTML = "✅ Identidad Verificada por RENIEC";
+      msg.style.color = "green";
+
+      // 2. Generar dinámicamente el formulario solicitado bajo el título correcto
+      registroSection.innerHTML = `
+        <h2 class="section-title">Registro de Acta Digital</h2>
+        <div class="contenedor-contacto" style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+          
+          <div class="alerta-mesa" style="background: #eef2f7; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #004b8d;">
+            <i class="fas fa-user-check"></i> <strong>Presidente de Mesa:</strong> Identificado vía DNI ${dniInput.value}
+          </div>
+
+          <form id="acta-form" onsubmit="procesarActa(); return false;">
+            <div class="grid-votos" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              
+              <div class="voto-item">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600;">Fuerza Popular</label>
+                <input type="number" id="votos-fp" value="0" min="0" class="caja" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;" />
+              </div>
+
+              <div class="voto-item">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600;">Juntos por el Perú</label>
+                <input type="number" id="votos-jp" value="0" min="0" class="caja" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;" />
+              </div>
+
+              <div class="voto-item">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600;">Votos en Blanco</label>
+                <input type="number" id="votos-blancos" value="0" min="0" class="caja" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;" />
+              </div>
+
+              <div class="voto-item">
+                <label style="display: block; margin-bottom: 8px; font-weight: 600;">Votos Nulos</label>
+                <input type="number" id="votos-nulos" value="0" min="0" class="caja" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;" />
+              </div>
+
+            </div>
+
+            <div id="suma-real-time" style="margin-top: 20px; font-weight: 700; color: #666;">
+                Suma total: <span id="total-actual">0</span> / 300
+            </div>
+
+            <p style="margin: 15px 0; color: #c62828; font-size: 0.9rem;">
+              * La suma debe ser exactamente <strong>300</strong> votos para evitar que el acta sea observada.
+            </p>
+
+            <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Firmar y Enviar Acta</button>
+          </form>
+        </div>
+      `;
+
+      // 3. Mostrar sección y desplazar vista
+      registroSection.style.display = 'block';
+      registroSection.scrollIntoView({ behavior: 'smooth' });
+
+      // 4. Activar contador en tiempo real
+      activarContador();
+
+    } else {
+      intentosDNI++;
+      msg.innerHTML = "❌ DNI no reconocido. Verifique los 8 dígitos.";
+      msg.style.color = "red";
+    }
+  }
+
+  /**
+   * CONTADOR EN TIEMPO REAL
+   */
+  function activarContador() {
+    const inputs = ['votos-fp', 'votos-jp', 'votos-blancos', 'votos-nulos'];
+    inputs.forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        let suma = 0;
+        inputs.forEach(i => {
+          suma += parseInt(document.getElementById(i).value) || 0;
+        });
+        
+        const display = document.getElementById('total-actual');
+        display.innerText = suma;
+        
+        // Cambio de color si cumple la regla
+        display.style.color = (suma === TOTAL_PADRON) ? "green" : "#c62828";
+      });
+    });
+  }
+
+  /**
+   * PROCESAR ACTA (VALIDACIÓN FINAL)
+   */
+  function procesarActa() {
+    const v1 = parseInt(document.getElementById('votos-fp').value) || 0;
+    const v2 = parseInt(document.getElementById('votos-jp').value) || 0;
+    const vb = parseInt(document.getElementById('votos-blancos').value) || 0;
+    const vn = parseInt(document.getElementById('votos-nulos').value) || 0;
+
+    const total = v1 + v2 + vb + vn;
+
+    if (total === TOTAL_PADRON) {
+      document.getElementById('modal-exito').style.display = 'flex';
+    } else {
+      document.getElementById('modal-observada').style.display = 'flex';
+    }
+  }
+</script>
 </body>
 </html>

@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Informe SED-2026 — Análisis UML · ISMA SENATI</title>
+  <link rel="stylesheet" href="style-informe.css" />
+  <script src="https://kit.fontawesome.com/ff1a3f5508.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <style>
+    /* ══════════════════════════════════════════════════════════
+       SECCIONES OSCURAS CON PARTÍCULAS — para diagramas
+    ══════════════════════════════════════════════════════════ */
+    .sec-diagrama-oscuro {
+      background: #16213e !important;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Canvas de partículas */
+    .particulas-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* El contenido va encima de las partículas */
+    .sec-diagrama-oscuro .inf-contenido {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Tag en sección oscura */
+    .sec-diagrama-oscuro .inf-tag {
+      color: var(--inf-acento);
+    }
+    .sec-diagrama-oscuro .inf-tag::before {
+      background: var(--inf-acento);
+    }
+
+    /* Títulos en sección oscura */
+    .sec-diagrama-oscuro .inf-titulo-medio {
+      color: #f0f4ff;
+    }
+    .sec-diagrama-oscuro .inf-titulo-medio .acento {
+      color: var(--inf-acento);
+    }
+
+    /* Subtítulo en oscuro */
+    .sec-diagrama-oscuro .inf-subtitulo {
+      color: rgba(255,255,255,0.58);
+    }
+
+    /* Cards en sección oscura */
+    .sec-diagrama-oscuro .inf-card {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.1);
+    }
+    .sec-diagrama-oscuro .inf-card:hover {
+      background: rgba(255,255,255,0.09);
+      border-color: var(--inf-acento);
+    }
+    .sec-diagrama-oscuro .inf-card h4 {
+      color: #f0f4ff;
+    }
+    .sec-diagrama-oscuro .inf-card p,
+    .sec-diagrama-oscuro .inf-card li {
+      color: rgba(255,255,255,0.62);
+    }
+    .sec-diagrama-oscuro .inf-card li {
+      border-color: rgba(255,255,255,0.06);
+    }
+
+    /* Viewer de diagrama en oscuro */
+    .sec-diagrama-oscuro .inf-diagrama-viewer {
+      background: rgba(255,255,255,0.04);
+      border-color: rgba(255,255,255,0.12);
+    }
+    .sec-diagrama-oscuro .inf-diagrama-bar {
+      background: rgba(0,0,0,0.3);
+      border-color: rgba(255,255,255,0.08);
+    }
+    .sec-diagrama-oscuro .inf-diagrama-bar .titulo-bar {
+      color: rgba(255,255,255,0.45);
+    }
+    .sec-diagrama-oscuro .inf-diagrama-img-wrapper {
+      background: rgba(255,255,255,0.03);
+    }
+    .sec-diagrama-oscuro .inf-diagrama-placeholder {
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* Separador en oscuro */
+    .sec-diagrama-oscuro .inf-separador {
+      border-color: rgba(255,255,255,0.1);
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       HERO CON VIDEO — carátula
+    ══════════════════════════════════════════════════════════ */
+    .inf-hero-video-wrapper {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      height: 380px;
+      background: #1a1a2e;
+    }
+
+    .inf-hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: blur(1px) brightness(0.5);
+      transform: scale(1.04);
+    }
+
+    .inf-hero-video-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(0,155,168,0.15) 0%,
+        rgba(22,33,62,0.6) 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 20px;
+      z-index: 1;
+    }
+
+    .inf-hero-caption {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.65);
+      font-style: italic;
+      background: rgba(0,0,0,0.35);
+      padding: 4px 10px;
+      border-radius: 4px;
+      backdrop-filter: blur(4px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LIGHTBOX -->
+  <div class="inf-lightbox" id="lightbox" onclick="cerrarLightbox()">
+    <button class="inf-lightbox-cerrar" onclick="cerrarLightbox()">
+      <i class="fas fa-times"></i>
+    </button>
+    <img id="lightbox-img" src="" alt="Diagrama en pantalla completa" />
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="inf-navbar">
+    <a href="../index.html" class="inf-logo">
+      <img src="../assets/img/logos/onpe-logo.png" alt="ONPE"
+           style="height:32px;width:auto;"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
+      <span style="display:none;font-weight:800;">ONPE</span>
+      <span class="punto-acento">.</span>
+      <span style="font-weight:400;font-size:0.85rem;color:#888;">Informe SED-2026</span>
+    </a>
+    <ul class="inf-nav-links">
+      <li><a href="#caratula"     class="activa">Inicio</a></li>
+      <li><a href="#introduccion"            >Intro</a></li>
+      <li><a href="#stakeholders"            >Actores</a></li>
+      <li><a href="#casos-uso"               >Casos de Uso</a></li>
+      <li><a href="#secuencia"               >Secuencia</a></li>
+      <li><a href="#actividades"             >Actividades</a></li>
+      <li><a href="#componentes"             >Componentes</a></li>
+      <li><a href="#despliegue"              >Despliegue</a></li>
+      <li><a href="#trazabilidad"            >Trazabilidad</a></li>
+      <li><a href="#reflexion"               >Reflexión</a></li>
+    </ul>
+
+
+      <div style="position:relative;display:inline-block;">
+
+        <!-- Globito -->
+        <div id="tooltip-ver-sistema" style="
+          position:absolute;
+          top:calc(100% + 10px);
+          right:0;
+          width:230px;
+          background:var(--inf-negro);
+          color:white;
+          font-size:0.78rem;
+          font-weight:500;
+          line-height:1.5;
+          padding:12px 14px;
+          border-radius:10px;
+          box-shadow:0 4px 20px rgba(0,0,0,0.25);
+          opacity:0;
+          pointer-events:none;
+          transition:opacity 0.4s ease, transform 0.4s ease;
+          transform:translateY(6px);
+          z-index:100;
+          text-align:center;">
+          <i class="fas fa-desktop"
+            style="color:var(--inf-acento);margin-bottom:6px;
+                    display:block;font-size:1.1rem;"></i>
+          Aquí puedes explorar el <strong>sistema ONPE</strong>
+          que intentamos replicar — con registro de actas,
+          resultados en tiempo real y monitor de mesas.
+  
+          <!-- Flecha arriba (apunta hacia el botón) -->
+          <div style="position:absolute;top:-7px;right:20px;
+            width:0;height:0;
+            border-left:7px solid transparent;
+            border-right:7px solid transparent;
+            border-bottom:7px solid var(--inf-negro);"></div>
+        </div>
+
+        <a href="../index.html" class="inf-btn-sistema" id="btn-ver-sistema">
+          <i class="fas fa-desktop"></i> Ver Sistema
+        </a>
+
+      </div>
+  </nav>
+
+  <!-- PUNTOS LATERALES -->
+  <div class="inf-nav-lateral" id="nav-lateral"></div>
+
+  <!-- ══ 00 · CARÁTULA ══ -->
+  <section class="inf-seccion sec-caratula" id="caratula" data-label="Carátula">
+    <div class="inf-contenido">
+      <div class="inf-caratula-grid">
+        <div class="gsap-fade-up">
+          <div class="inf-tag">SENATI · ISMA · HT-02 · 2026</div>
+          <h1 class="inf-titulo-grande">
+            Sistema de<br><em>Escrutinio</em><br>
+            <span class="acento">Digital.</span>
+          </h1>
+          <p class="inf-subtitulo">
+            Análisis UML completo del sistema SED-2026 de la ONPE
+            para la Segunda Vuelta del 7 de junio de 2026.
+          </p>
+          <hr class="inf-separador">
+          <div class="inf-meta">
+            <div class="inf-meta-item"><i class="fas fa-user"></i><span><strong>Jesús Romaldo Sulla Sacsi</strong></span></div>
+            <div class="inf-meta-item"><i class="fas fa-user"></i><span><strong>Anthony Dorly Huilahuaña Chata</strong></span></div>
+            <div class="inf-meta-item"><i class="fas fa-building"></i><span>Institución: <strong>ISMA · SENATI</strong></span></div>
+            <div class="inf-meta-item"><i class="fas fa-book"></i><span>Curso: <strong>Metodologías Ágiles · HT-02</strong></span></div>
+            <div class="inf-meta-item"><i class="fas fa-calendar-alt"></i><span>Fecha: <strong>Mayo 2026</strong></span></div>
+          </div>
+          <div class="inf-btns">
+            <a href="#introduccion" class="inf-btn-primario"><i class="fas fa-play"></i> Ver Informe</a>
+            <a href="../index.html" class="inf-btn-secundario"><i class="fas fa-desktop"></i> Ver Sistema</a>
+          </div>
+        </div>
+
+        <!-- Imagen carátula original -->
+        <div class="inf-hero-img-wrapper gsap-fade-right">
+          <img src="assets/caratula-bg.jpg"
+              alt="Sistema Electoral ONPE 2026"
+              onerror="this.style.display='none'">
+          <div class="inf-hero-overlay">
+            <span class="inf-hero-caption">
+              ONPE · Elecciones Generales 2026 · Segunda Vuelta
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="inf-scroll-ind">
+      <div class="inf-scroll-line"></div>
+      <span>SCROLL</span>
+    </div>
+  </section>
+
+  <!-- ══ 01 · INTRODUCCIÓN ══ -->
+  <section class="inf-seccion sec-intro" id="introduccion" data-label="Introducción">
+    <div class="inf-contenido">
+      <div class="gsap-fade-up">
+        <div class="inf-tag">01 · Introducción Ejecutiva</div>
+        <h2 class="inf-titulo-medio">El sistema que necesita<br>la <span class="acento">ONPE.</span></h2>
+        <p class="inf-subtitulo">Tras las fallas del STAE en la primera vuelta del 12 de abril, la ONPE necesita un sistema rediseñado y robusto para procesar 86,488 mesas en tiempo real.</p>
+      </div>
+      <div class="inf-cards-grid">
+        <div class="inf-card gsap-fade-up">
+          <h4><span class="punto-card">●</span> El Problema</h4>
+          <p>El sistema STAE tuvo fallas críticas durante la primera vuelta, extendiendo las votaciones hasta el lunes 13 de abril. La ONPE decidió eliminarlo y rediseñar desde cero.</p>
+        </div>
+        <div class="inf-card gsap-fade-up">
+          <h4><span class="punto-card">●</span> El Encargo</h4>
+          <p>Modelar el SED-2026: el sistema interno que recibe actas de mesas, valida los datos, los suma al total nacional y publica resultados oficiales en tiempo real.</p>
+        </div>
+        <div class="inf-card gsap-fade-up">
+          <h4><span class="punto-card">●</span> La Escala</h4>
+          <ul>
+            <li>27 millones de electores habilitados</li>
+            <li>86,488 mesas de sufragio</li>
+            <li>126 centros de cómputo descentralizados</li>
+            <li>900,000 votos en el exterior</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top:24px;">
+        <a href="../index.html" class="inf-btn-primario"><i class="fas fa-desktop"></i> Ver sistema en acción</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 02 · STAKEHOLDERS ══ -->
+  <section class="inf-seccion sec-stakeholders" id="stakeholders" data-label="Stakeholders">
+    <div class="inf-contenido">
+      <div class="gsap-fade-up">
+        <div class="inf-tag">02 · Stakeholders y Actores</div>
+        <h2 class="inf-titulo-medio">¿Quiénes <span class="acento">intervienen?</span></h2>
+        <p class="inf-subtitulo">Los stakeholders tienen interés en el sistema pero no lo usan directamente. Los actores sí interactúan con él.</p>
+      </div>
+      <table class="inf-tabla gsap-fade-up">
+        <thead>
+          <tr><th>Actor / Stakeholder</th><th>Tipo</th><th>Rol en el sistema</th><th>Interacción</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Presidente de Mesa</strong></td><td><span class="inf-badge inf-badge-interno">Actor interno</span></td><td>Registra el acta digitalmente al cierre del conteo</td><td>✔ App Tablet SED</td></tr>
+          <tr><td><strong>Fiscalizador de Partido</strong></td><td><span class="inf-badge inf-badge-interno">Actor interno</span></td><td>Consulta actas para vigilar el proceso electoral</td><td>✔ Portal Público</td></tr>
+          <tr><td><strong>Ciudadano</strong></td><td><span class="inf-badge inf-badge-interno">Actor interno</span></td><td>Consulta el porcentaje de avance y resultados</td><td>✔ Portal Público</td></tr>
+          <tr><td><strong>JNE</strong></td><td><span class="inf-badge inf-badge-interno">Actor interno</span></td><td>Recibe actas observadas para resolución</td><td>✔ Alertas automáticas</td></tr>
+          <tr><td><strong>RENIEC</strong></td><td><span class="inf-badge inf-badge-externo">Sistema externo</span></td><td>Valida la identidad del presidente de mesa</td><td>✔ API consulta DNI</td></tr>
+          <tr><td><strong>Servicio SMS</strong></td><td><span class="inf-badge inf-badge-externo">Sistema externo</span></td><td>Envía notificaciones al presidente de mesa</td><td>✔ Movistar / Claro</td></tr>
+          <tr><td><strong>ONPE (institución)</strong></td><td><span class="inf-badge inf-badge-stake">Stakeholder</span></td><td>Cliente del sistema, define reglas de negocio</td><td>— No es actor</td></tr>
+          <tr><td><strong>Partidos Políticos</strong></td><td><span class="inf-badge inf-badge-stake">Stakeholder</span></td><td>Interesados en la transparencia del proceso</td><td>— No es actor</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══ 03 · CASOS DE USO — FONDO OSCURO ══ -->
+  <section class="inf-seccion sec-diagrama-oscuro" id="casos-uso" data-label="Casos de Uso">
+    <canvas class="particulas-canvas" id="canvas-cu"></canvas>
+    <div class="inf-contenido">
+      <div class="gsap-fade-up">
+        <div class="inf-tag">03 · Diagrama 01 — Vista Funcional</div>
+        <h2 class="inf-titulo-medio">Casos de <span class="acento">Uso.</span></h2>
+        <p class="inf-subtitulo">6 actores, 10 casos de uso con relaciones «include» y «extend».</p>
+      </div>
+      <div class="inf-cards-grid-2" style="margin-top:24px;">
+        <div class="inf-diagrama-viewer gsap-fade-left">
+          <div class="inf-diagrama-bar">
+            <div class="inf-diagrama-dots"><span class="dot-rojo"></span><span class="dot-amarillo"></span><span class="dot-verde"></span></div>
+            <span class="titulo-bar">Casos de Uso · draw.io</span>
+            <div class="acciones-bar">
+              <button class="inf-btn-fullscreen" onclick="abrirLightbox('../assets/img/diagramas/casos-uso.png')">
+                <i class="fas fa-expand"></i> Pantalla completa
+              </button>
+            </div>
+          </div>
+          <div class="inf-diagrama-img-wrapper">
+            <img src="../assets/img/diagramas/diagrama de uso OMPE (1).png" class="inf-diagrama-img" alt="Casos de Uso"
+                 onclick="abrirLightbox('../assets/img/diagramas/casos-uso.png')"
+                 onload="this.style.display='block';this.nextElementSibling.style.display='none'"
+                 onerror="this.style.display='none'">
+            <div class="inf-diagrama-placeholder">
+              <div class="ph-icon">🎭</div>
+              <p>Exporta desde draw.io como PNG → <code>assets/img/diagramas/casos-uso.png</code></p>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="inf-card gsap-fade-right">
+            <h4><span class="punto-card">●</span> Actores</h4>
+            <ul>
+              <li>Presidente de Mesa</li><li>Fiscalizador de Partido</li>
+              <li>Ciudadano</li><li>JNE</li>
+              <li>RENIEC (externo)</li><li>Servicio SMS (externo)</li>
+            </ul>
+          </div>
+          <div class="inf-card gsap-fade-right">
+            <h4><span class="punto-card">●</span> Casos principales</h4>
+            <ul>
+              <li>Registrar Acta de Mesa</li>
+              <li>Autenticar Identidad «include»</li>
+              <li>Validar Suma de Votos «include»</li>
+              <li>Consultar Resultados</li>
+              <li>Enviar Alerta al JNE «extend»</li>
+              <li>Enviar SMS «extend»</li>
+            </ul>
+          </div>
+          <a href="../index.html#registro" class="inf-btn-primario" style="align-self:flex-start;">
+            <i class="fas fa-desktop"></i> Ver en el sistema
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+  .sec-especificacion {
+    background-color: #0b0e14;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', sans-serif;
+    padding: 40px;
+  }
+
+  .inf-tag-azul {
+    display: inline-block;
+    background: rgba(0, 183, 255, 0.1);
+    color: #00b7ff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    border: 1px solid rgba(0, 183, 255, 0.3);
+    margin-bottom: 15px;
+  }
+
+  .tabla-especificacion {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .tabla-especificacion th {
+    background: rgba(0, 183, 255, 0.1);
+    color: #00b7ff;
+    text-align: left;
+    padding: 12px;
+    width: 30%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+  }
+
+  .tabla-especificacion td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .inf-card-spec {
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 4px solid #00b7ff;
+    padding: 20px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 15px;
+  }
+
+  .inf-card-spec h4 {
+    margin: 0 0 10px 0;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .relacion-tag {
+    font-family: monospace;
+    color: #ffcc00;
+    background: rgba(255, 204, 0, 0.1);
+    padding: 2px 5px;
+    font-size: 0.8rem;
+  }
+
+  .excepcion { border-left-color: #ff4d4d; }
+  .excepcion .punto-card { color: #ff4d4d; }
+</style>
+
+<section class="sec-especificacion">
+  <div class="inf-tag-azul">03.1 · Especificación Técnica</div>
+  <h2 class="inf-titulo-medio">CU: <span class="acento">Registrar Acta de Mesa</span></h2>
+
+  <table class="tabla-especificacion">
+    <tr><th>Actor Principal</th><td>Presidente de Mesa</td></tr>
+    <tr><th>Actores Secundarios</th><td>RENIEC, Servicio SMS, JNE</td></tr>
+    <tr><th>Precondiciones</th><td>Sesión iniciada; Mesa en estado "Cierre de Escrutinio".</td></tr>
+  </table>
+
+  <div class="inf-card-spec">
+    <h4><span class="punto-card">●</span> Flujo Principal</h4>
+    <ol>
+      <li>El sistema solicita <span class="relacion-tag">«include»</span> Autenticar Presidente de Mesa.</li>
+      <li>RENIEC valida la identidad del actor.</li>
+      <li>El sistema despliega el formulario de entrada de resultados.</li>
+      <li>Se invoca <span class="relacion-tag">«include»</span> Validar Suma de Votos para consistencia aritmética.</li>
+      <li>El sistema registra el acta firmada digitalmente.</li>
+      <li>Se activa <span class="relacion-tag">«include»</span> Enviar Notificación SMS.</li>
+    </ol>
+  </div>
+
+  <div class="inf-card-spec excepcion">
+    <h4><span class="punto-card">●</span> Flujos de Extensión</h4>
+    <ul>
+      <li><strong>Si intentos fallidos > 3:</strong> <span class="relacion-tag">«extend»</span> Bloquear DNI.</li>
+      <li><strong>Si suma no cuadra:</strong> <span class="relacion-tag">«extend»</span> Marcar Acta como Observada.</li>
+      <li><strong>Notificación JNE:</strong> El JNE recibe alerta automática en caso de observación.</li>
+    </ul>
+  </div>
+</section>
+
+  <!-- ══ 04 · SECUENCIA — claro ══ -->
+  <section class="inf-seccion sec-secuencia" id="secuencia" data-label="Secuencia">
+    <div class="inf-contenido">
+      <div class="gsap-fade-up">
+        <div class="inf-tag">04 · Diagrama 02 — Vista Técnica</div>
+        <h2 class="inf-titulo-medio">Diagrama de <span class="acento">Secuencia.</span></h2>
+        <p class="inf-subtitulo">Flujo del caso "Registrar Acta" con bloque par para la Regla #4.</p>
+      </div>
+      <div class="inf-cards-grid-2" style="margin-top:24px;">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="inf-card gsap-fade-left">
+            <h4><span class="punto-card">●</span> Objetos del diagrama</h4>
+            <ul>
+              <li>:Presidente de Mesa (actor)</li><li>:App Tablet SED</li>
+              <li>:API Central SED</li><li>:Módulo Autenticación</li>
+              <li>:Módulo Validación</li><li>:Base de Datos Central</li>
+              <li>:Módulo Notificaciones</li><li>:RENIEC (externo)</li>
+            </ul>
+          </div>
+          <div class="inf-card gsap-fade-left">
+            <h4><span class="punto-card">●</span> Bloque par — Regla #4</h4>
+            <p>Al registrar el acta, en paralelo:<br>① Actualiza contador nacional<br>② Notifica al JNE si hay observación<br>③ Envía SMS al presidente de mesa</p>
+          </div>
+        </div>
+        <div class="inf-diagrama-viewer gsap-fade-right">
+          <div class="inf-diagrama-bar">
+            <div class="inf-diagrama-dots"><span class="dot-rojo"></span><span class="dot-amarillo"></span><span class="dot-verde"></span></div>
+            <span class="titulo-bar">Secuencia · js-sequence-diagrams</span>
+            <div class="acciones-bar">
+              <button class="inf-btn-fullscreen" onclick="abrirLightbox('../assets/img/diagramas/secuencia.png')">
+                <i class="fas fa-expand"></i> Pantalla completa
+              </button>
+            </div>
+          </div>
+          <div class="inf-diagrama-img-wrapper">
+            <img src="../assets/img/diagramas/secuencia.jpeg" class="inf-diagrama-img" alt="Secuencia"
+                 onclick="abrirLightbox('../assets/img/diagramas/secuencia.png')"
+                 onload="this.style.display='block';this.nextElementSibling.style.display='none'"
+                 onerror="this.style.display='none'">
+            <div class="inf-diagrama-placeholder">
+              <div class="ph-icon">⚡</div>
+              <p>Exporta como PNG → <code>assets/img/diagramas/secuencia.png</code></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 05 · ACTIVIDADES — FONDO OSCURO ══ -->
+  <section class="inf-seccion sec-diagrama-oscuro" id="actividades" data-label="Actividades">
+    <canvas class="particulas-canvas" id="canvas-act"></canvas>
+    <div class="inf-contenido">
+      <div class="gsap-fade-up">
+        <div class="inf-tag">05 · Diagrama 03 — Vista de Proceso</div>
+        <h2 class="inf-titulo-medio">Diagrama de <span class="acento">Actividades.</span></h2>
+        <p class="inf-subtitulo">Swimlanes con 4 actores, 3 decisiones y fork-join para el paralelismo.</p>
+      </div>
+      <div class="inf-cards-grid-2" style="margin-top:24px;">
+        <div class="inf-diagrama-viewer gsap-fade-left">
+          <div class="inf-diagrama-bar">
+            <div class="inf-diagrama-dots"><span class="dot-rojo"></span><span class="dot-amarillo"></span><span class="dot-verde"></span></div>
+            <span class="titulo-bar">Actividades · draw.io</span>
+            <div class="acciones-bar">
+              <button class="inf-btn-fullscreen" onclick="abrirLightbox('../assets/img/diagramas/actividades.png')">
+                <i class="fas fa-expand"></i> Pantalla completa
+              </button>
+            </div>
+          </div>
+          <div class="inf-diagrama-img-wrapper">
+            <img src="../assets/img/diagramas/actividades.png" class="inf-diagrama-img" alt="Actividades"
+                 onclick="abrirLightbox('../assets/img/diagramas/actividades.png')"
+                 onload="this.style.display='block';this.nextElementSibling.style.display='none'"
+                 onerror="this.style.display='none'">
+            <div class="inf-diagrama-placeholder">
+              <div class="ph-icon">🔄</div>
+              <p>Exporta como PNG vertical → <code>assets/img/diagramas/actividades.png</code></p>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="inf-card gsap-fade-right">
+            <h4><span class="punto-card">●</span> Swimlanes</h4>
+            <ul>
+              <li>Presidente de Mesa</li><li>Sistema SED-2026</li>
+              <li>RENIEC</li><li>JNE / Servicio SMS</li>
+            </ul>
+          </div>
+          <div class="inf-card gsap-fade-right">
+            <h4><span class="punto-card">●</span> 3 Decisiones clave</h4>
+            <ul>
+              <li>¿DNI válido en RENIEC?</li>
+              <li>¿Mesa ya registró acta?</li>
+              <li>¿Suma cuadra con el padrón?</li>
+            </ul>
+          </div>
+          <div class="inf-card gsap-fade-right">
+            <h4><span class="punto-card">●</span> Fork-Join</h4>
+            <p>Tras validar el acta, bifurca en 3 acciones simultáneas: actualizar contador, alertar JNE y enviar SMS.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 06 · COMPONENTES — claro ══ -->
+  <section class="inf-seccion sec-componentes" id="componentes" data-label="Componentes">
+    <div class="inf-contenido">
+      <div class="gsap-fade-up">
+        <div class="inf-tag">06 · Diagrama 04 — Vista Estructural</div>
+        <h2 class="inf-titulo-medio">Diagrama de <span class="acento">Componentes.</span></h2>
+        <p class="inf-subtitulo">API Central como hub, 6 módulos internos, 3 sistemas externos con interfaces etiquetadas.</p>
+      </div>
+      <div class="inf-cards-grid-2" style="margin-top:24px;">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="inf-card gsap-fade-left">
+            <h4><span class="punto-card">●</span> Componentes internos</h4>
+            <ul>
+              <li>App Tablet SED (frontend privado)</li>
+              <li>Portal Web Público (frontend ciudadano)</li>
+              <li>API Central SED (hub coordinador)</li>
+              <li>Módulo de Autenticación</li>
+              <li>Módulo de Validación</li>
+              <li>Motor de Resultados</li>
+              <li>Módulo de Notificaciones</li>
+              <li>Base de Datos Central «database»</li>
+            </ul>
+          </div>
+          <div class="inf-card gsap-fade-left">
+            <h4><span class="punto-card">●</span> Interfaces ball-and-socket</h4>
+            <ul>
+              <li>IAutenticacion · IValidacion</li>
+              <li>IResultados · INotificacion</li>
+              <li>IRENIEC · ISMS · IJNE · IBD</li>
+            </ul>
+          </div>
+        </div>
+        <div class="inf-diagrama-viewer gsap-fade-right">
+          <div class="inf-diagrama-bar">
+            <div class="inf-diagrama-dots"><span class="dot-rojo"></span><span class="dot-amarillo"></span><span class="dot-verde"></span></div>
+            <span class="titulo-bar">Componentes · draw.io</span>
+            <div class="acciones-bar">
+              <button class="inf-btn-fullscreen" onclick="abrirLightbox('../assets/img/diagramas/componentes.png')">
+                <i class="fas fa-expand"></i> Pantalla completa
+              </button>
+            </div>
+          </div>
+          <div class="inf-diagrama-img-wrapper">
+            <img src="../assets/img/diagramas/diagramdecomponentes.png" class="inf-diagrama-img" alt="Componentes"
+                 onclick="abrirLightbox('../assets/img/diagramas/componentes.png')"
+                 onload="this.style.display='block';this.nextElementSibling.style.display='none'"
+                 onerror="this.style.display='none'">
+            <div class="inf-diagrama-placeholder">
+              <div class="ph-icon">📦</div>
+              <p>Exporta como PNG → <code>assets/img/diagramas/componentes.png</code></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 07 · DESPLIEGUE — FONDO OSCURO ══ -->
+  <section class="inf-seccion sec-diagrama-oscuro" id="despliegue" data-label="Despliegue">
+    <canvas class="particulas-canvas" id="canvas-desp"></canvas>
+    <div class="inf-contenido">
+      <div class="gsap-fade-up">
+        <div class="inf-tag">07 · Diagrama 05 — Vista Física · Bono</div>
+        <h2 class="inf-titulo-medio">Diagrama de <span class="acento">Despliegue.</span></h2>
+        <p class="inf-subtitulo">Infraestructura AWS Lima, cluster de 3 servidores EC2, PostgreSQL Multi-AZ.</p>
+      </div>
+      <div class="inf-cards-grid-2" style="margin-top:24px;">
+        <div class="inf-diagrama-viewer gsap-fade-left">
+          <div class="inf-diagrama-bar">
+            <div class="inf-diagrama-dots"><span class="dot-rojo"></span><span class="dot-amarillo"></span><span class="dot-verde"></span></div>
+            <span class="titulo-bar">Despliegue · draw.io · Bono</span>
+            <div class="acciones-bar">
+              <button class="inf-btn-fullscreen" onclick="abrirLightbox('../assets/img/diagramas/despliegue.png')">
+                <i class="fas fa-expand"></i> Pantalla completa
+              </button>
+            </div>
+          </div>
+          <div class="inf-diagrama-img-wrapper">
+            <img src="../assets/img/diagramas/despliegue.png" class="inf-diagrama-img" alt="Despliegue"
+                 onclick="abrirLightbox('../assets/img/diagramas/despliegue.png')"
+                 onload="this.style.display='block';this.nextElementSibling.style.display='none'"
+                 onerror="this.style.display='none'">
+            <div class="inf-diagrama-placeholder">
+              <div class="ph-icon">🚀</div>
+              <p>Exporta como PNG → <code>assets/img/diagramas/despliegue.png</code></p>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="inf-card gsap-fade-right">
+            <h4><span class="punto-card">●</span> Nodos del sistema</h4>
+            <ul>
+              <li>«device» Tablet Android 14</li>
+              <li>«device» PC / Smartphone ciudadano</li>
+              <li>«cloud» Load Balancer nginx · AWS Lima</li>
+              <li>«executionEnv» Cluster EC2 · 3 instancias</li>
+              <li>«database» PostgreSQL 16 · RDS Multi-AZ</li>
+            </ul>
+          </div>
+          <div class="inf-card gsap-fade-right">
+            <h4><span class="punto-card">●</span> Protocolos</h4>
+            <ul>
+              <li>«HTTPS» Tablet → Load Balancer</li>
+              <li>«HTTP» Load Balancer → Cluster EC2</li>
+              <li>«JDBC» Cluster → Base de Datos</li>
+              <li>«REST/HTTPS» Cluster → RENIEC</li>
+              <li>«SMTP» Cluster → JNE</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 08 · TRAZABILIDAD ══ -->
+  <section class="inf-seccion sec-trazabilidad" id="trazabilidad" data-label="Trazabilidad">
+    <div class="inf-contenido">
+      <div class="gsap-fade-up">
+        <div class="inf-tag">08 · Tabla de Trazabilidad</div>
+        <h2 class="inf-titulo-medio">Coherencia entre <span class="acento">los 5 diagramas.</span></h2>
+        <p class="inf-subtitulo">El 30% de la nota es coherencia. Los mismos elementos aparecen en todos los diagramas.</p>
+      </div>
+      <table class="inf-tabla gsap-fade-up" style="margin-top:24px;">
+        <thead>
+          <tr><th>Elemento</th><th>Casos de Uso</th><th>Secuencia</th><th>Actividades</th><th>Componentes</th><th>Despliegue</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Presidente de Mesa</strong></td><td class="inf-check">✦ Actor</td><td class="inf-check">✦ Actor</td><td class="inf-check">✦ Swimlane</td><td class="inf-check">✦ Usuario App</td><td class="inf-check">✦ Tablet device</td></tr>
+          <tr><td><strong>RENIEC</strong></td><td class="inf-check">✦ Externo</td><td class="inf-check">✦ Objeto</td><td class="inf-check">✦ Swimlane</td><td class="inf-check">✦ «external»</td><td class="inf-check">✦ Nodo externo</td></tr>
+          <tr><td><strong>Registrar Acta</strong></td><td class="inf-check">✦ Caso de uso</td><td class="inf-check">✦ Flujo principal</td><td class="inf-check">✦ Flujo principal</td><td class="inf-check">✦ IValidacion</td><td class="inf-check">✦ validador.jar</td></tr>
+          <tr><td><strong>Base de Datos</strong></td><td class="inf-dash">—</td><td class="inf-check">✦ Objeto</td><td class="inf-check">✦ Guardar acta</td><td class="inf-check">✦ «database»</td><td class="inf-check">✦ PostgreSQL RDS</td></tr>
+          <tr><td><strong>Servicio SMS</strong></td><td class="inf-check">✦ Externo</td><td class="inf-check">✦ Bloque par</td><td class="inf-check">✦ Fork-join</td><td class="inf-check">✦ «external»</td><td class="inf-check">✦ Gateway SMS</td></tr>
+          <tr><td><strong>JNE</strong></td><td class="inf-check">✦ Actor</td><td class="inf-check">✦ Bloque par</td><td class="inf-check">✦ Fork-join</td><td class="inf-check">✦ «external»</td><td class="inf-check">✦ Nodo externo</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ══ 09 · REFLEXIÓN ══ -->
+  <section class="inf-seccion sec-reflexion" id="reflexion" data-label="Reflexión">
+    <div class="inf-contenido">
+      <div class="gsap-fade-up">
+        <div class="inf-tag">09 · Reflexión Final</div>
+        <h2 class="inf-titulo-medio">¿Qué decisión es <span class="acento">más crítica?</span></h2>
+        <p class="inf-subtitulo">El STAE falló. ¿Qué decisión arquitectónica en el SED-2026 evita que eso vuelva a ocurrir?</p>
+      </div>
+      <div class="inf-reflexion-quote gsap-fade-up">
+        "El STAE falló porque era un único componente monolítico. La decisión más crítica en el SED-2026 es la API Central como hub distribuidor de responsabilidades — elimina el punto único de fallo que tumbó las elecciones de abril."
+      </div>
+      <div class="inf-cards-grid inf-cards-oscuras">
+        <div class="inf-card gsap-fade-up">
+          <h4><span class="punto-card">●</span> El error del STAE</h4>
+          <p>Arquitectura monolítica con punto único de fallo (SPOF). Al fallar un solo componente, todo el proceso electoral colapsó. 27 millones de electores dependían de un sistema sin redundancia.</p>
+        </div>
+        <div class="inf-card gsap-fade-up">
+          <h4><span class="punto-card">●</span> La solución SED-2026</h4>
+          <p>La API Central distribuye la carga entre módulos independientes. Si el Módulo de Notificaciones falla, el registro continúa. Cluster EC2 de 3 instancias + PostgreSQL Multi-AZ eliminan el SPOF.</p>
+        </div>
+        <div class="inf-card gsap-fade-up">
+          <h4><span class="punto-card">●</span> Decisiones clave</h4>
+          <ul>
+            <li>API Central como hub único de entrada</li>
+            <li>Módulos especializados e independientes</li>
+            <li>Cluster de 3 instancias EC2</li>
+            <li>BD PostgreSQL Multi-AZ</li>
+            <li>Paralelismo Regla #4 (fork-join)</li>
+          </ul>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:32px;flex-wrap:wrap;">
+        <a href="../index.html" class="inf-btn-primario"><i class="fas fa-desktop"></i> Explorar el Sistema</a>
+        <a href="../pages/estadisticas.html" class="inf-btn-secundario" style="color:rgba(255,255,255,0.5);border-color:rgba(255,255,255,0.15);"><i class="fas fa-chart-line"></i> Ver Estadísticas</a>
+        <a href="#caratula" class="inf-btn-secundario" style="color:rgba(255,255,255,0.5);border-color:rgba(255,255,255,0.15);"><i class="fas fa-arrow-up"></i> Volver al inicio</a>
+      </div>
+      <p style="margin-top:40px;color:rgba(255,255,255,0.2);font-size:0.72rem;text-align:center;">
+        &copy; 2026 · Jesús Romaldo Sulla Sacsi · Anthony Dorly Huilahuaña Chata<br>
+        Metodologías Ágiles · ISMA SENATI · HT-02 · Sistema SED-2026
+      </p>
+    </div>
+  </section>
+
+  <!-- SCRIPTS -->
+  <script>
+    /* ── SECCIONES ── */
+    const SECCIONES = [
+      { id: 'caratula',     label: 'Carátula'     },
+      { id: 'introduccion', label: 'Introducción' },
+      { id: 'stakeholders', label: 'Stakeholders' },
+      { id: 'casos-uso',    label: 'Casos de Uso' },
+      { id: 'secuencia',    label: 'Secuencia'    },
+      { id: 'actividades',  label: 'Actividades'  },
+      { id: 'componentes',  label: 'Componentes'  },
+      { id: 'despliegue',   label: 'Despliegue'   },
+      { id: 'trazabilidad', label: 'Trazabilidad' },
+      { id: 'reflexion',    label: 'Reflexión'    },
+    ];
+
+    /* ── PUNTOS LATERALES ── */
+    function initPuntos() {
+      const nav = document.getElementById('nav-lateral');
+      if (!nav) return;
+      SECCIONES.forEach((s, i) => {
+        const p = document.createElement('div');
+        p.className = 'inf-punto' + (i === 0 ? ' activo' : '');
+        p.setAttribute('data-label', s.label);
+        p.setAttribute('data-target', s.id);
+        p.addEventListener('click', () => document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth' }));
+        nav.appendChild(p);
+      });
+    }
+
+    /* ── OBSERVER ── */
+    function initObserver() {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          const id = e.target.id;
+          document.querySelectorAll('.inf-punto').forEach(p => p.classList.toggle('activo', p.getAttribute('data-target') === id));
+          document.querySelectorAll('.inf-nav-links a').forEach(a => a.classList.toggle('activa', a.getAttribute('href') === '#' + id));
+        });
+      }, { threshold: 0.4 });
+      SECCIONES.forEach(s => { const el = document.getElementById(s.id); if (el) obs.observe(el); });
+    }
+
+    /* ── LIGHTBOX ── */
+    function abrirLightbox(src) {
+      const lb = document.getElementById('lightbox');
+      const img = document.getElementById('lightbox-img');
+      if (!lb || !img || !src) return;
+      img.src = src;
+      lb.classList.add('activo');
+      document.body.style.overflow = 'hidden';
+    }
+    function cerrarLightbox() {
+      document.getElementById('lightbox')?.classList.remove('activo');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarLightbox(); });
+
+    /* ── PARTÍCULAS EN CANVAS ── */
+    function initParticulas(canvasId, seccionId) {
+      const canvas  = document.getElementById(canvasId);
+      const seccion = document.getElementById(seccionId);
+      if (!canvas || !seccion) return;
+
+      const ctx = canvas.getContext('2d');
+      let particulas = [];
+      let animFrameId;
+
+      function resize() {
+        canvas.width  = seccion.offsetWidth;
+        canvas.height = seccion.offsetHeight;
+      }
+
+      function crearParticula() {
+        return {
+          x:    Math.random() * canvas.width,
+          y:    canvas.height + Math.random() * 20,
+          r:    Math.random() * 2.5 + 0.5,
+          vel:  Math.random() * 0.4 + 0.15,
+          op:   Math.random() * 0.4 + 0.1,
+          drift: (Math.random() - 0.5) * 0.3,
+          color: Math.random() > 0.6 ? '0,155,168' : '100,140,200',
+        };
+      }
+
+      function init() {
+        particulas = [];
+        for (let i = 0; i < 40; i++) {
+          const p = crearParticula();
+          p.y = Math.random() * canvas.height; // distribuidas desde el inicio
+          particulas.push(p);
+        }
+      }
+
+      function animar() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particulas.forEach((p, i) => {
+          p.y     -= p.vel;
+          p.x     += p.drift;
+          p.op    += 0.001;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${p.color},${Math.min(p.op, 0.5)})`;
+          ctx.fill();
+
+          // Reiniciar si sale por arriba
+          if (p.y < -10) particulas[i] = crearParticula();
+        });
+        animFrameId = requestAnimationFrame(animar);
+      }
+
+      // Usar IntersectionObserver para activar solo cuando es visible
+      const visObs = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          resize();
+          init();
+          animar();
+        } else {
+          cancelAnimationFrame(animFrameId);
+        }
+      }, { threshold: 0.1 });
+
+      visObs.observe(seccion);
+      window.addEventListener('resize', () => { resize(); init(); });
+    }
+
+    /* ── GSAP ── */
+    function initGSAP() {
+      gsap.registerPlugin(ScrollTrigger);
+      ['gsap-fade-up','gsap-fade-left','gsap-fade-right'].forEach(cls => {
+        const dx = cls === 'gsap-fade-left' ? -28 : cls === 'gsap-fade-right' ? 28 : 0;
+        const dy = cls === 'gsap-fade-up' ? 28 : 0;
+        document.querySelectorAll('.' + cls).forEach(el => {
+          gsap.fromTo(el,
+            { opacity: 0, x: dx, y: dy },
+            { opacity: 1, x: 0, y: 0, duration: 0.7, ease: 'power2.out',
+              scrollTrigger: { trigger: el, start: 'top 82%', toggleActions: 'play none none reverse' }
+            }
+          );
+        });
+      });
+      document.querySelectorAll('.inf-tabla tbody tr').forEach((tr, i) => {
+        gsap.fromTo(tr,
+          { opacity: 0, x: -16 },
+          { opacity: 1, x: 0, duration: 0.4, delay: i * 0.06, ease: 'power2.out',
+            scrollTrigger: { trigger: tr, start: 'top 88%', toggleActions: 'play none none reverse' }
+          }
+        );
+      });
+    }
+
+    /* ── INIT ── */
+    document.addEventListener('DOMContentLoaded', () => {
+      initPuntos();
+      initObserver();
+      initGSAP();
+      // Partículas en las 3 secciones oscuras
+      initParticulas('canvas-cu',   'casos-uso');
+      initParticulas('canvas-act',  'actividades');
+      initParticulas('canvas-desp', 'despliegue');
+    });
+
+
+
+        /* ── GLOBITO VER SISTEMA ── */
+    (function() {
+      const tooltip = document.getElementById('tooltip-ver-sistema');
+      const btn     = document.getElementById('btn-ver-sistema');
+      if (!tooltip || !btn) return;
+
+      let yaMostrado = false;
+
+      // Aparece cuando el botón entra en pantalla
+      new IntersectionObserver((entries) => {
+        if (!entries[0].isIntersecting || yaMostrado) return;
+        yaMostrado = true;
+
+        // Entrada con delay de 0.8s para que se vea el botón primero
+        setTimeout(() => {
+          tooltip.style.opacity   = '1';
+          tooltip.style.transform = 'translateY(0)';
+
+          // Sale a los 6 segundos
+          setTimeout(() => {
+            tooltip.style.opacity   = '0';
+            tooltip.style.transform = 'translateY(6px)';
+          }, 6000);
+        }, 800);
+
+      }, { threshold: 0.8 }).observe(btn);
+
+      // También al hacer hover
+      btn.addEventListener('mouseenter', () => {
+        tooltip.style.opacity   = '1';
+        tooltip.style.transform = 'translateY(0)';
+      });
+      btn.addEventListener('mouseleave', () => {
+        tooltip.style.opacity   = '0';
+        tooltip.style.transform = 'translateY(6px)';
+      });
+    })();
+
+
+    
+  </script>
+
+</body>
+</html>
